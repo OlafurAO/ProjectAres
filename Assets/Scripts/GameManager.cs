@@ -28,7 +28,23 @@ public class GameManager : MonoBehaviour {
             bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
 
             if(didHit) {
-                print(rhInfo.collider.gameObject.name);
+                // TODO: change hardcoding
+                
+                //TODO: determine total damage based on unit's base damage
+                //TODO: call victim's TakeDamage() function, pass total damage as parameter
+
+                var attackerScript = tmpCurrentUnit.GetComponent<KnightController>();
+                var victimScript = rhInfo.collider.gameObject.GetComponent<KnightController>();
+
+                int damage = attackerScript.baseDamage;
+                string type = attackerScript.type;
+
+                attackerScript.Attack();                
+                victimScript.TakeDamage(damage, type);
+                
+
+                
+                //print(rhInfo.collider.gameObject.);
             } else {
                 print("clicked on empty space");
             }

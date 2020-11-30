@@ -6,7 +6,7 @@ public class KnightController : MonoBehaviour {
     public int health = 200;
     public int armor = 5;
     public int armorModifier = 0;
-    private int baseDamage = 10;
+    public int baseDamage = 10;
     public int damageModifier = 0;
     
     public string type = "knight";
@@ -21,8 +21,10 @@ public class KnightController : MonoBehaviour {
     private bool isMoving = false;
     private bool isDefending = false;
     public bool isDead = false;
+    public bool isIdle = true;
 
     public Animator animator;
+    public string currentAnimation = "idle";
 
     // Start is called before the first frame update
     void Start() {
@@ -31,10 +33,24 @@ public class KnightController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if(Input.GetMouseButtonDown(0)) {
-            
-        } 
+        if(isAttacking) {
+            animator.Play("attack");
+            isAttacking = false;
+        } else if(isMoving) {
+            animator.Play("run");
+            isMoving = false;
+        }
 
+        if(!isIdle) {
+            if(!animator.GetCurrentAnimatorStateInfo(0).IsName("attack") 
+            && !animator.GetCurrentAnimatorStateInfo(0).IsName("run") 
+            && !animator.GetCurrentAnimatorStateInfo(0).IsName("take_damage")) {
+                animator.Play("idle");
+                isIdle = true;
+                print("IDLE IS PLAYING");
+            }
+        }
+        /*
         if(Input.GetKey(KeyCode.Space)) {
             if(isMoving) isMoving = false;
             isAttacking = true;
@@ -50,27 +66,31 @@ public class KnightController : MonoBehaviour {
         } else {
             animator.Play("idle");
         }
+        */
     }
 
     void Move() {
         //transform.position = new Vector3(0, 0, 0);
     }
 
-    void Attack() {
-        //TODO: determine total damage based on unit's base damage
-        //TODO: call victim's TakeDamage() function, pass total damage as parameter
+    public void Attack() {
+        isAttacking = true;   
+        isIdle = false;     
     }
 
     void Defend() {
         //TODO: add some value to armorModifier
     }
 
-    void TakeDamage() {
+    public void TakeDamage(int damage, string attackerType) {
+        animator.Play("take_damage");
         if(armor != 0) {
-            //TODO: health -= damage/2
-            //TODO: if attacker type == weakness then armor--
+            health -= Mathf.FloorToInt(damage / 2);
+            if(attackerType == weaknessType) {
+                armor--;
+            }
         } else {
-            //TODO: health -= damage
+            health -= damage;
         }
     }
 
