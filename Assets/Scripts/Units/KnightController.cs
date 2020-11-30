@@ -6,7 +6,7 @@ public class KnightController : MonoBehaviour {
     public int health = 200;
     public int armor = 5;
     public int armorModifier = 0;
-    private int baseDamage = 10;
+    public int baseDamage = 10;
     public int damageModifier = 0;
     
     public string type = "knight";
@@ -20,7 +20,9 @@ public class KnightController : MonoBehaviour {
     private bool isAttacking = false;
     private bool isMoving = false;
     private bool isDefending = false;
+    bool isTakingDamage = false;
     public bool isDead = false;
+    public bool isIdle = true;
 
     //Where the unit should move next
     public Vector3 destination;
@@ -28,6 +30,7 @@ public class KnightController : MonoBehaviour {
     public int speed; 
 
     public Animator animator;
+    public string currentAnimation = "idle";
 
     // Start is called before the first frame update
     void Start() {
@@ -49,14 +52,24 @@ public class KnightController : MonoBehaviour {
         } else if(Input.GetKey(KeyCode.A)) {
             if(isAttacking) isAttacking = false; 
             isMoving = true;
+        if(isAttacking) {
+            animator.Play("attack");
+            isAttacking = false;
+        } else if(isMoving) {
+            animator.Play("run");
+            isMoving = false;
+        } else if(isTakingDamage) {
+            animator.Play("hurt");
+            isTakingDamage = false;
         }
 
-        if(isMoving) {
-            animator.Play("run");
-        } else if(isAttacking) {
-            animator.Play("attack");
-        } else {
-            animator.Play("idle");
+        if(!isIdle) {
+            if(!animator.GetCurrentAnimatorStateInfo(0).IsName("attack") 
+            && !animator.GetCurrentAnimatorStateInfo(0).IsName("run") 
+            && !animator.GetCurrentAnimatorStateInfo(0).IsName("hurt")) {
+                animator.Play("idle");
+                isIdle = true;
+            }
         }
         //if there is a new destination then move to it, else don't move
         if(destination != transform.position){
@@ -69,21 +82,33 @@ public class KnightController : MonoBehaviour {
         transform.position = Vector3.Lerp(transform.position, destination, Time.deltaTime/speed);
     }
 
-    void Attack() {
-        //TODO: determine total damage based on unit's base damage
-        //TODO: call victim's TakeDamage() function, pass total damage as parameter
+    // Enable attack animation and disable idle animation
+    public void Attack() {
+        isAttacking = true;   
+        isIdle = false;     
     }
 
     void Defend() {
         //TODO: add some value to armorModifier
     }
 
-    void TakeDamage() {
+    public void TakeDamage(int damage, string attackerType, float animationDelay) {
+        StartCoroutine(TakeDamageAfterDelay(damage, attackerType, animationDelay));
+    }
+
+    // Delay taking damage to line up with the attack animation
+    IEnumerator TakeDamageAfterDelay(int damage, string attackerType, float time) {
+        yield return new WaitForSeconds(time);
+
+        isTakingDamage = true;
+        isIdle = false;
         if(armor != 0) {
-            //TODO: health -= damage/2
-            //TODO: if attacker type == weakness then armor--
+            health -= Mathf.FloorToInt(damage / 2);
+            if(attackerType == weaknessType) {
+                armor--;
+            }
         } else {
-            //TODO: health -= damage
+            health -= damage;
         }
     }
 
