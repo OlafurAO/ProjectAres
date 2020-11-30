@@ -162,6 +162,8 @@ MonoBehaviour:
   attackRange: 1
   location: {x: 0, y: 0, z: 0}
   isDead: 0
+  destination: {x: 0, y: 0, z: 0}
+  speed: 0
   animator: {fileID: 1001461975}
 --- !u!4 &340609354
 Transform:
@@ -231,6 +233,8 @@ MonoBehaviour:
   attackRange: 1
   location: {x: 0, y: 0, z: 0}
   isDead: 0
+  destination: {x: 0, y: 0, z: 0}
+  speed: 3
   animator: {fileID: 1001461975}
 --- !u!4 &671687390
 Transform:

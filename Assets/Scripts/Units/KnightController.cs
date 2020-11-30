@@ -22,17 +22,25 @@ public class KnightController : MonoBehaviour {
     private bool isDefending = false;
     public bool isDead = false;
 
+    //Where the unit should move next
+    public Vector3 destination;
+    //how fast the model should go from one space to the other 
+    public int speed; 
+
     public Animator animator;
 
     // Start is called before the first frame update
     void Start() {
+        destination = transform.position; 
         
     }
 
     // Update is called once per frame
     void Update() {
         if(Input.GetMouseButtonDown(0)) {
-            
+            print(transform.position);
+            print(Input.mousePosition);
+            destination = new Vector3 (Input.mousePosition.x, 0,0);
         } 
 
         if(Input.GetKey(KeyCode.Space)) {
@@ -50,10 +58,15 @@ public class KnightController : MonoBehaviour {
         } else {
             animator.Play("idle");
         }
+        //if there is a new destination then move to it, else don't move
+        if(destination != transform.position){
+            Move();
+        }
     }
 
     void Move() {
-        //transform.position = new Vector3(0, 0, 0);
+        print("moving");
+        transform.position = Vector3.Lerp(transform.position, destination, Time.deltaTime/speed);
     }
 
     void Attack() {
