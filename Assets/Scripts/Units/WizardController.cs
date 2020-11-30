@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KnightController : MonoBehaviour {
-    public int health = 200;
-    public int armor = 5;
+public class WizardController : MonoBehaviour
+{
+    public int health = 150;
+    public int armor = 1;
     public int armorModifier = 0;
-    private int baseDamage = 10;
+    private int baseDamage = 15;
     public int damageModifier = 0;
     
-    public string type = "knight";
-    public string weaknessType = "wizard";
-    public int goldCost = 50;
-    public int movementRange = 5;
-    public int attackRange = 1;
+    public string type = "wizard";
+    public string weaknessType = "archer";
+    public int goldCost = 150;
+    public int movementRange = 8;
+    public int attackRange = 2;
     public Vector3 location;
 
     private bool isAttacking = false;
