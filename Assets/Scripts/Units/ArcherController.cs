@@ -6,7 +6,7 @@ public class ArcherController : MonoBehaviour {
     public int health = 100;
     public int armor = 2;
     public int armorModifier = 0;
-    private int baseDamage = 5;
+    public int baseDamage = 5;
     public int damageModifier = 0;
     
     public string type = "archer";
@@ -20,6 +20,10 @@ public class ArcherController : MonoBehaviour {
     private bool isMoving = false;
     private bool isDefending = false;
     public bool isDead = false;
+    public bool isIdle = true;
+    public bool isTakingDamage = false;
+
+    
 
     public Animator animator;
 
@@ -30,20 +34,15 @@ public class ArcherController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if(Input.GetKey(KeyCode.Space)) {
-            if(isMoving) isMoving = false;
-            isAttacking = true;
-        } else if(Input.GetKey(KeyCode.A)) {
-            if(isAttacking) isAttacking = false; 
-            isMoving = true;
-        }
-
-        if(isMoving) {
-            animator.Play("run");
-        } else if(isAttacking) {
+        if(isAttacking) {
             animator.Play("attack");
-        } else {
-            animator.Play("idle");
+            isAttacking = false;
+        } else if(isMoving) {
+            animator.Play("run");
+            isMoving = false;
+        } else if(isTakingDamage) {
+            animator.Play("hurt");
+            isTakingDamage = false;
         }
     }
 
@@ -51,21 +50,32 @@ public class ArcherController : MonoBehaviour {
         //transform.position = new Vector3(0, 0, 0);
     }
 
-    void Attack() {
-        //TODO: determine total damage based on unit's base damage
-        //TODO: call victim's TakeDamage() function, pass total damage as parameter
+    public void Attack() {
+        isAttacking = true;   
+        isIdle = false;    
     }
 
     void Defend() {
         //TODO: add some value to armorModifier
     }
 
-    void TakeDamage() {
+    public void TakeDamage(int damage, string attackerType, float animationDelay) {
+        StartCoroutine(TakeDamageAfterDelay(damage, attackerType, animationDelay));
+    }
+
+    // Delay taking damage to line up with the attack animation
+    IEnumerator TakeDamageAfterDelay(int damage, string attackerType, float time) {
+        yield return new WaitForSeconds(time);
+
+        isTakingDamage = true;
+        isIdle = false;
         if(armor != 0) {
-            //TODO: health -= damage/2
-            //TODO: if attacker type == weakness then armor--
+            health -= Mathf.FloorToInt(damage / 2);
+            if(attackerType == weaknessType) {
+                armor--;
+            }
         } else {
-            //TODO: health -= damage
+            health -= damage;
         }
     }
 
