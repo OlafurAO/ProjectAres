@@ -16,6 +16,7 @@ public class KnightController : MonoBehaviour {
     public int attackRange = 1;
     public Vector3 location;
 
+    private bool isSelected = false;
     private bool isAttacking = false;
     private bool isMoving = false;
     private bool isDefending = false;
@@ -30,6 +31,10 @@ public class KnightController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if(Input.GetMouseButtonDown(0)) {
+            
+        } 
+
         if(Input.GetKey(KeyCode.Space)) {
             if(isMoving) isMoving = false;
             isAttacking = true;
