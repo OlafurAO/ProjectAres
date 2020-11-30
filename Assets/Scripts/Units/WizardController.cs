@@ -21,6 +21,7 @@ public class WizardController : MonoBehaviour
     private bool isMoving = false;
     private bool isDefending = false;
     public bool isDead = false;
+    public bool deathConfirmed = false;
     public bool isIdle = true;
     public bool isTakingDamage = false;
 
@@ -33,15 +34,27 @@ public class WizardController : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        if(isAttacking) {
-            animator.Play("attack");
-            isAttacking = false;
-        } else if(isMoving) {
-            animator.Play("run");
-            isMoving = false;
-        } else if(isTakingDamage) {
-            animator.Play("hurt");
-            isTakingDamage = false;
+        if(!isDead) {
+            if(isAttacking) {
+                animator.Play("attack");
+                isAttacking = false;
+            } else if(isMoving) {
+                animator.Play("run");
+                isMoving = false;
+            } else if(isTakingDamage) {
+                animator.Play("hurt");
+                isTakingDamage = false;
+            }
+        } else {
+            if(!deathConfirmed) {
+                // 50/50 chance which death animation is played
+                if(Random.Range(0, 2) == 0) {
+                    animator.Play("die2");
+                } else {
+                    animator.Play("die1");
+                }
+                deathConfirmed = true;
+            }    
         }
     }
 
@@ -64,9 +77,6 @@ public class WizardController : MonoBehaviour
 
     IEnumerator TakeDamageAfterDelay(int damage, string attackerType, float time) {
         yield return new WaitForSeconds(time);
-
-        isTakingDamage = true;
-        isIdle = false;
         if(armor != 0) {
             health -= Mathf.FloorToInt(damage / 2);
             if(attackerType == weaknessType) {
@@ -74,6 +84,13 @@ public class WizardController : MonoBehaviour
             }
         } else {
             health -= damage;
+        }
+
+        isIdle = false;
+        if(health <= 0) {
+            isDead = true;
+        } else {
+            isTakingDamage = true;
         }
     }
 
