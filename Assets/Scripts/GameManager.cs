@@ -1,18 +1,53 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
-    public GameObject tmpCurrentUnit;
-    // Start is called before the first frame update
+
+    public List<GameObject> allUnits = new List<GameObject>();
+    public GameObject currentUnit;
+    public int currentUnitIndex;
+
+    private string[] tags = {
+        "Knight", "Archer", "Wizard"
+    };
 
     void Awake() {
         instance = this;
     }
 
+    // Start is called before the first frame update
     void Start() {
-        
+        RollInitiative();
+    }
+
+    //TODO: Randomize
+    void RollInitiative() {
+        allUnits = new List<GameObject>();
+        currentUnitIndex = 0;
+
+        foreach(string tag in tags) {
+            var tmp = new List<GameObject>(GameObject.FindGameObjectsWithTag(tag));
+            allUnits = allUnits.Concat(tmp).ToList();
+        }
+
+        foreach(GameObject i in allUnits) {
+            print(i.name);
+        }
+
+        currentUnit = allUnits.ElementAt(currentUnitIndex);
+    }
+
+    public void EndTurn() {
+        if(currentUnitIndex != allUnits.Count - 1) {
+            //TODO: Move camera
+            currentUnitIndex++;
+            currentUnit = allUnits[currentUnitIndex];
+        } else {
+            RollInitiative();
+        }
     }
 
     // Update is called once per frame
@@ -28,21 +63,21 @@ public class GameManager : MonoBehaviour {
 
             if(didHit){
                 
-                // TODO: change hardcoding
                 int damage = 0;
                 string type = "";
-                if(tmpCurrentUnit.tag == "Knight") {
-                    var attackerScript = tmpCurrentUnit.GetComponent<KnightController>();
+
+                if(currentUnit.tag == "Knight") {
+                    var attackerScript = currentUnit.GetComponent<KnightController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
                     attackerScript.Attack(); 
-                } else if(tmpCurrentUnit.tag == "Archer") {
-                    var attackerScript = tmpCurrentUnit.GetComponent<ArcherController>();
+                } else if(currentUnit.tag == "Archer") {
+                    var attackerScript = currentUnit.GetComponent<ArcherController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
                     attackerScript.Attack(); 
                 } else {
-                    var attackerScript = tmpCurrentUnit.GetComponent<WizardController>();
+                    var attackerScript = currentUnit.GetComponent<WizardController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
                     attackerScript.Attack(); 

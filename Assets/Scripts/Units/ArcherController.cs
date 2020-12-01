@@ -24,8 +24,6 @@ public class ArcherController : MonoBehaviour {
     public bool isIdle = true;
     public bool isTakingDamage = false;
 
-    
-
     public Animator animator;
 
     // Start is called before the first frame update
