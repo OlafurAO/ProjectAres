@@ -28,14 +28,35 @@ public class GameManager : MonoBehaviour {
 
             if(didHit) {
                 // TODO: change hardcoding
-                var attackerScript = tmpCurrentUnit.GetComponent<KnightController>();
-                var victimScript = rhInfo.collider.gameObject.GetComponent<KnightController>();
+                int damage = 0;
+                string type = "";
+                if(tmpCurrentUnit.tag == "Knight") {
+                    var attackerScript = tmpCurrentUnit.GetComponent<KnightController>();
+                    damage = attackerScript.baseDamage;
+                    type = attackerScript.type;
+                    attackerScript.Attack(); 
+                } else if(tmpCurrentUnit.tag == "Archer") {
+                    var attackerScript = tmpCurrentUnit.GetComponent<ArcherController>();
+                    damage = attackerScript.baseDamage;
+                    type = attackerScript.type;
+                    attackerScript.Attack(); 
+                } else {
+                    var attackerScript = tmpCurrentUnit.GetComponent<WizardController>();
+                    damage = attackerScript.baseDamage;
+                    type = attackerScript.type;
+                    attackerScript.Attack(); 
+                }
 
-                int damage = attackerScript.baseDamage;
-                string type = attackerScript.type;
-
-                attackerScript.Attack();                
-                victimScript.TakeDamage(damage, type, 0.5f);
+                if(rhInfo.collider.gameObject.tag == "Knight") {
+                    var victimScript = rhInfo.collider.gameObject.GetComponent<KnightController>();
+                    victimScript.TakeDamage(damage, type, 0.5f);
+                } else if(rhInfo.collider.gameObject.tag == "Archer") {
+                    var victimScript = rhInfo.collider.gameObject.GetComponent<ArcherController>();
+                    victimScript.TakeDamage(damage, type, 0.5f);
+                } else {
+                    var victimScript = rhInfo.collider.gameObject.GetComponent<WizardController>();
+                    victimScript.TakeDamage(damage, type, 0.5f);
+                }               
             } else {
                 print("clicked on empty space");
             }

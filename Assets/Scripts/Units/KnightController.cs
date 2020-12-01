@@ -22,8 +22,8 @@ public class KnightController : MonoBehaviour {
     private bool isDefending = false;
     bool isTakingDamage = false;
     public bool isDead = false;
+    public bool deathConfirmed = false;
     public bool isIdle = true;
-
     public Animator animator;
     public string currentAnimation = "idle";
 
@@ -34,24 +34,27 @@ public class KnightController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if(isAttacking) {
-            animator.Play("attack");
-            isAttacking = false;
-        } else if(isMoving) {
-            animator.Play("run");
-            isMoving = false;
-        } else if(isTakingDamage) {
-            animator.Play("hurt");
-            isTakingDamage = false;
-        }
-
-        if(!isIdle) {
-            if(!animator.GetCurrentAnimatorStateInfo(0).IsName("attack") 
-            && !animator.GetCurrentAnimatorStateInfo(0).IsName("run") 
-            && !animator.GetCurrentAnimatorStateInfo(0).IsName("hurt")) {
-                animator.Play("idle");
-                isIdle = true;
+        if(!isDead) {
+            if(isAttacking) {
+                animator.Play("attack");
+                isAttacking = false;
+            } else if(isMoving) {
+                animator.Play("run");
+                isMoving = false;
+            } else if(isTakingDamage) {
+                animator.Play("hurt");
+                isTakingDamage = false;
             }
+        } else {
+            if(!deathConfirmed) {
+                // 50/50 chance which death animation is played
+                if(Random.Range(0, 2) == 0) {
+                    animator.Play("die2");
+                } else {
+                    animator.Play("die1");
+                }
+                deathConfirmed = true;
+            }    
         }
     }
 
@@ -76,9 +79,6 @@ public class KnightController : MonoBehaviour {
     // Delay taking damage to line up with the attack animation
     IEnumerator TakeDamageAfterDelay(int damage, string attackerType, float time) {
         yield return new WaitForSeconds(time);
-
-        isTakingDamage = true;
-        isIdle = false;
         if(armor != 0) {
             health -= Mathf.FloorToInt(damage / 2);
             if(attackerType == weaknessType) {
@@ -86,6 +86,13 @@ public class KnightController : MonoBehaviour {
             }
         } else {
             health -= damage;
+        }
+
+        isIdle = false;
+        if(health <= 0) {
+            isDead = true;
+        } else {
+            isTakingDamage = true;
         }
     }
 
