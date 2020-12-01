@@ -42,14 +42,14 @@ public class KnightController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if(Input.GetMouseButtonDown(0)) {/*
+        if(Input.GetMouseButtonDown(1)) {
             //commentað út svo dótið hans virki (bæði með "when mouce clicked)
             
             Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit rhInfo;
             if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
                 destination = rhInfo.point;
-            }*/
+            }
         } 
 
         if(Input.GetKey(KeyCode.Space)) {

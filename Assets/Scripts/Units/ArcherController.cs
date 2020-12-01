@@ -25,6 +25,9 @@ public class ArcherController : MonoBehaviour {
     public bool isTakingDamage = false;
 
     public Animator animator;
+    
+    //Where the unit should move next
+    public Vector3 destination;
 
     // Start is called before the first frame update
     void Start() {
