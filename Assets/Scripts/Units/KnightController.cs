@@ -25,6 +25,7 @@ public class KnightController : MonoBehaviour {
     public bool deathConfirmed = false;
     public bool isIdle = true;
 
+
     //Where the unit should move next
     public Vector3 destination;
     //how fast the model should go from one space to the other 
@@ -32,7 +33,6 @@ public class KnightController : MonoBehaviour {
 
     private Vector3 rotation; 
     public Animator animator;
-    public string currentAnimation = "idle";
 
     // Start is called before the first frame update
     void Start() {
