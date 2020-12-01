@@ -301,6 +301,8 @@ MonoBehaviour:
   isDead: 0
   deathConfirmed: 0
   isIdle: 1
+  destination: {x: 0, y: 0, z: 0}
+  speed: 0
   animator: {fileID: 1873674497}
 --- !u!4 &340609354
 Transform:
@@ -373,6 +375,8 @@ MonoBehaviour:
   isDead: 0
   deathConfirmed: 0
   isIdle: 1
+  destination: {x: 0, y: 0, z: 0}
+  speed: 0
   animator: {fileID: 1001461975}
 --- !u!4 &671687390
 Transform:
@@ -1000,6 +1004,7 @@ GameObject:
   - component: {fileID: 1412699207}
   - component: {fileID: 1412699206}
   - component: {fileID: 1412699205}
+  - component: {fileID: 1412699208}
   m_Layer: 0
   m_Name: Wizard
   m_TagString: Wizard
@@ -1063,6 +1068,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 206.4, z: 0}
+--- !u!119 &1412699208
+Projector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412699204}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_NearClipPlane: 0.1
+  m_FarClipPlane: 1
+  m_FieldOfView: 60
+  m_AspectRatio: 1
+  m_Orthographic: 1
+  m_OrthographicSize: 0.4
+  m_Material: {fileID: 2100000, guid: 385e7fcb100243148b3f0a4122c369a4, type: 2}
+  m_IgnoreLayers:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1001 &1493483564
 PrefabInstance:
   m_ObjectHideFlags: 0
