@@ -25,19 +25,33 @@ public class WizardController : MonoBehaviour
     public bool isIdle = true;
     public bool isTakingDamage = false;
 
-    public Animator animator;
-    
     //Where the unit should move next
     public Vector3 destination;
+    private Vector3 rotation; 
+    //how fast the model should go from one space to the other 
+    public int speed = 5; 
+
+    public Animator animator;
+    
 
     // Start is called before the first frame update
     void Start() {
-        
+        destination = transform.position;  
+        location = transform.position;
     }
 
     // Update is called once per frame
     void Update() {
         if(!isDead) {
+            //if there is a new destination then move to it, else don't move
+            if(destination != transform.position){
+                rotation = Vector3.RotateTowards(transform.forward, destination, speed, 0.0f);
+                Move();
+            } else {
+                isMoving = false;
+                isIdle = true;
+            }
+
             if(isAttacking) {
                 animator.Play("attack");
                 isAttacking = false;
@@ -61,8 +75,15 @@ public class WizardController : MonoBehaviour
         }
     }
 
+    public void StartMoving(Vector3 dest) {
+        destination = dest;
+        isMoving = true;
+        isIdle = false;
+    }
+
     void Move() {
-        //transform.position = new Vector3(0, 0, 0);
+        transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime* speed);
+        transform.rotation = Quaternion.LookRotation(rotation);
     }
 
     public void Attack() {
@@ -100,5 +121,9 @@ public class WizardController : MonoBehaviour
     // Deployment phase
     void PlaceUnit(Vector3 position) {
         //transform.position = position;
+    }
+
+    public bool IsUnitDead() {
+        return isDead;
     }
 }

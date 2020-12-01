@@ -25,19 +25,21 @@ public class KnightController : MonoBehaviour {
     public bool deathConfirmed = false;
     public bool isIdle = true;
 
+    private bool startPlayingMoveAnimation = false;
+
 
     //Where the unit should move next
     public Vector3 destination;
-    //how fast the model should go from one space to the other 
-    public int speed; 
-
     private Vector3 rotation; 
+    //how fast the model should go from one space to the other 
+    public int speed = 5; 
+
     public Animator animator;
 
     // Start is called before the first frame update
     void Start() {
-        destination = transform.position; 
-        
+        destination = transform.position;    
+        location = transform.position;
     }
 
     // Update is called once per frame
@@ -75,16 +77,27 @@ public class KnightController : MonoBehaviour {
             && !animator.GetCurrentAnimatorStateInfo(0).IsName("run") 
             && !animator.GetCurrentAnimatorStateInfo(0).IsName("hurt")) {
                 animator.Play("idle");
-                isIdle = true;
             }
         }
         if(!isDead) {
+            //if there is a new destination then move to it, else don't move
+            if(destination != transform.position){
+                rotation = Vector3.RotateTowards(transform.forward, destination, speed, 0.0f);
+                Move();
+            } else {
+                isMoving = false;
+                isIdle = true;
+            }
+
             if(isAttacking) {
                 animator.Play("attack");
                 isAttacking = false;
             } else if(isMoving) {
+                if(startPlayingMoveAnimation) {
+                    startPlayingMoveAnimation = false;
+                    
+                }
                 animator.Play("run");
-                isMoving = false;
             } else if(isTakingDamage) {
                 animator.Play("hurt");
                 isTakingDamage = false;
@@ -97,26 +110,22 @@ public class KnightController : MonoBehaviour {
                 } else {
                     animator.Play("die1");
                 }
+
                 deathConfirmed = true;
             }    
         }
-        //if there is a new destination then move to it, else don't move
-        if(destination != transform.position){
-            isMoving = true;
-            isIdle = false;
-            rotation = Vector3.RotateTowards(transform.forward, destination, speed, 0.0f);
-            Move();
-        }else
-        {
-            isMoving = false;
-            isIdle = true;
-        }
+    }
+
+    public void StartMoving(Vector3 dest) {
+        destination = dest;
+        startPlayingMoveAnimation = true;
+        isMoving = true;
+        isIdle = false;
     }
 
     void Move() {
-        print("moving");
-        transform.rotation = Quaternion.LookRotation(rotation);
         transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime* speed);
+        transform.rotation = Quaternion.LookRotation(rotation);
     }
 
     // Enable attack animation and disable idle animation
@@ -156,5 +165,9 @@ public class KnightController : MonoBehaviour {
     // Deployment phase
     void PlaceUnit(Vector3 position) {
         //transform.position = position;
+    }
+
+    public bool IsUnitDead() {
+        return isDead;
     }
 }
