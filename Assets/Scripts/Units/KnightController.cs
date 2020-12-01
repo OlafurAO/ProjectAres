@@ -29,6 +29,7 @@ public class KnightController : MonoBehaviour {
     //how fast the model should go from one space to the other 
     public int speed; 
 
+    private Vector3 rotation; 
     public Animator animator;
     public string currentAnimation = "idle";
 
@@ -41,9 +42,13 @@ public class KnightController : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if(Input.GetMouseButtonDown(0)) {
-            print(transform.position);
-            print(Input.mousePosition);
-            destination = new Vector3 (Input.mousePosition.x, 0,0);
+            //commentað út svo dótið hans virki (bæði með "when mouce clicked)
+            /*
+            Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit rhInfo;
+            if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
+                destination = rhInfo.point;
+            }*/
         } 
 
         if(Input.GetKey(KeyCode.Space)) {
@@ -62,6 +67,7 @@ public class KnightController : MonoBehaviour {
             animator.Play("hurt");
             isTakingDamage = false;
         }
+        }
 
         if(!isIdle) {
             if(!animator.GetCurrentAnimatorStateInfo(0).IsName("attack") 
@@ -73,12 +79,20 @@ public class KnightController : MonoBehaviour {
         }
         //if there is a new destination then move to it, else don't move
         if(destination != transform.position){
+            isMoving = true;
+            isIdle = false;
+            rotation = Vector3.RotateTowards(transform.forward, destination, speed, 0.0f);
             Move();
+        }else
+        {
+            isMoving = false;
+            isIdle = true;
         }
     }
 
     void Move() {
         print("moving");
+        transform.rotation = Quaternion.LookRotation(rotation);
         transform.position = Vector3.Lerp(transform.position, destination, Time.deltaTime/speed);
     }
 
