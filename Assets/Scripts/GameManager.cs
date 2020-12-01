@@ -62,7 +62,8 @@ public class GameManager : MonoBehaviour {
             RaycastHit rhInfo;
             bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
 
-            if(didHit) {
+            if(didHit){
+                
                 int damage = 0;
                 string type = "";
 
@@ -92,10 +93,10 @@ public class GameManager : MonoBehaviour {
                 } else {
                     var victimScript = rhInfo.collider.gameObject.GetComponent<WizardController>();
                     victimScript.TakeDamage(damage, type, 0.5f);
-                }               
+                }            
             } else {
                 print("clicked on empty space");
-            }
-        }       
+            } 
+        };
     }
 }
