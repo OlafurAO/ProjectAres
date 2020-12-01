@@ -24,8 +24,8 @@ public class KnightController : MonoBehaviour {
     public bool isDead = false;
     public bool deathConfirmed = false;
     public bool isIdle = true;
+
     public Animator animator;
-    public string currentAnimation = "idle";
 
     // Start is called before the first frame update
     void Start() {
