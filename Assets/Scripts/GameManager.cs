@@ -111,22 +111,22 @@ public class GameManager : MonoBehaviour {
 
                 int damage = 0;
                 string type = "";
-
+                Vector3 victimLocation= rhInfo.collider.gameObject.GetComponent<Transform>().position;
                 if(currentUnit.tag == "Knight") {
                     var attackerScript = currentUnit.GetComponent<KnightController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
-                    attackerScript.Attack(); 
+                    attackerScript.Attack(victimLocation); 
                 } else if(currentUnit.tag == "Archer") {
                     var attackerScript = currentUnit.GetComponent<ArcherController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
-                    attackerScript.Attack(); 
+                    attackerScript.Attack(victimLocation); 
                 } else {
                     var attackerScript = currentUnit.GetComponent<WizardController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
-                    attackerScript.Attack(); 
+                    attackerScript.Attack(victimLocation); 
                 }
 
                 if(rhInfo.collider.gameObject.tag == "Knight") {
@@ -138,7 +138,7 @@ public class GameManager : MonoBehaviour {
                 } else {
                     var victimScript = rhInfo.collider.gameObject.GetComponent<WizardController>();
                     victimScript.TakeDamage(damage, type, 0.5f);
-                }                   
+                }
             } else {
                 if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
                     if(currentUnit.tag == "Knight") {
