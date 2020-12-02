@@ -13,8 +13,10 @@ public class GameManager : MonoBehaviour {
     public int currentUnitIndex;
 
     public List<RawImage> initiativePortraits = new List<RawImage>();
-
     public List<Texture2D> portraitTextures = new List<Texture2D>();
+
+    // To keep track of the portrait's location for the initiative highlighter
+    public List<Vector2> portraitLocations = new List<Vector2>();
 
     // TODO: add different colored teams
     private string[] portraitTextureNames = {
@@ -34,7 +36,9 @@ public class GameManager : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         //TODO: Create units via code
-        //UNIT COMPONENTS: a tag with their unit type, box controller, model, boxcontroller, animator
+        // UNIT COMPONENTS: a tag with their unit type, box controller, model, boxcontroller, 
+        // animator, Selector (set to inactive at first, Mesh Renderer: Cast shadows = off), 
+        // layer = "Unit" (for both object and model)
         // Use GameObject.AddComponent function
 
         // TODO: load audio clips
@@ -67,11 +71,60 @@ public class GameManager : MonoBehaviour {
         
         // Set the current unit as the first unit in the list
         currentUnit = allUnits.ElementAt(currentUnitIndex);
+        EnableCurrentUnitCircle();
         SetInitiativePortraits();
+        HighlightCurrentUnitsPortrait();
+    }
+
+    // Enables the circle around the current unit
+    void EnableCurrentUnitCircle() {
+        currentUnit.gameObject.transform.Find("Selector").gameObject.SetActive(true);
+    }
+
+    // Disables the circle around the current unit
+    void DisableCurrentUnitCircle() {
+        currentUnit.gameObject.transform.Find("Selector").gameObject.SetActive(false);
+    }
+
+    // For some reason after the first round, two units keep their circles. 
+    // Call this function at the beginning of every round to mitigate that
+    void DisableAllUnitCircles() {
+        foreach(GameObject unit in allUnits) {
+            unit.gameObject.transform.Find("Selector").gameObject.SetActive(false);
+        }
+    }
+
+    //TODO: Border around current unit's portrait
+    void HighlightCurrentUnitsPortrait() {
+        // Destroy previous hughlighters
+        var highlighters = GameObject.FindGameObjectsWithTag("Highlighter");
+        for(var i = 0; i < highlighters.Length; i++) {
+            Destroy(highlighters[i]);
+        }
+
+        GameObject highlighter = new GameObject("Highlighter");
+        highlighter.tag = "Highlighter";
+        RectTransform trans = highlighter.AddComponent<RectTransform>();
+
+        // Set the canvas as a parent
+        trans.transform.SetParent(canvas.transform);
+        // Not sure what this does but I'm sure it does something
+        trans.localScale = Vector3.one;
+        
+        // Sets the position of the highlighter
+        trans.anchoredPosition = portraitLocations[currentUnitIndex]; //new Vector2(200, Screen.height/2 - 50);
+        // Sets the size of the highlighter
+        trans.sizeDelta = new Vector2(50, 50);
+
+        Image image = highlighter.AddComponent<Image>();        
+        Texture2D tex = Resources.Load<Texture2D>("Images/Shapes/square");
+        image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+        highlighter.transform.SetParent(canvas.transform);
     }
 
     void SetInitiativePortraits() {
         DestroyAllPortraits();
+        portraitLocations = new List<Vector2>();
 
         int middleIndex = 0;
         if(allUnits.Count % 2 == 0) {
@@ -81,15 +134,17 @@ public class GameManager : MonoBehaviour {
             print("odd number");
             middleIndex = Mathf.CeilToInt(allUnits.Count / 2) + 1;
         }
-        print(middleIndex);
 
-        // TODO: Remove all protraits from the previous round
         int portraitCount = 1;
         foreach(GameObject unit in allUnits) {
+            // Create a new gameobject to store the image
             GameObject imageObject = new GameObject("name_" + portraitCount.ToString());
             imageObject.tag = "Portrait";
             RectTransform trans = imageObject.AddComponent<RectTransform>();
+
+            // Set the canvas as a parent
             trans.transform.SetParent(canvas.transform);
+            // Not sure what this does but I'm sure it does something
             trans.localScale = Vector3.one;
 
             // TODO: find out offset for even list lengths
@@ -99,10 +154,16 @@ public class GameManager : MonoBehaviour {
                 : portraitCount == middleIndex ? 0 
                 : portraitCount - middleIndex;
 
+            // Sets the position of the portrait
             trans.anchoredPosition = new Vector2(offset * 60, Screen.height/2 - 50);
+            // Sets the size of the portrait
             trans.sizeDelta = new Vector2(50, 50);
 
+            // Save this portrait's location for the highlighter
+            portraitLocations.Add(trans.anchoredPosition);
+
             Texture2D tex = null;
+            // Find the unit's texture 
             foreach(Texture2D texture in portraitTextures) {
                 if(texture.name.ToLower().Contains(unit.tag.ToLower())) {
                     tex = texture;
@@ -111,7 +172,7 @@ public class GameManager : MonoBehaviour {
 
             if(tex != null) {
                 Image image = imageObject.AddComponent<Image>();
-                //Texture2D tex = Resources.Load<Texture2D>(filePath);
+                // Set the unit's texture as the image's sprite
                 image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
                 imageObject.transform.SetParent(canvas.transform);
             }
@@ -130,10 +191,14 @@ public class GameManager : MonoBehaviour {
     public void EndTurn() {
         // If the list is over, then the round is over and initiative needs to be rolled again
         if(currentUnitIndex != allUnits.Count - 1) {
-            //TODO: Move camera
+            //TODO: Move camera to current unit
             currentUnitIndex++;
+            DisableCurrentUnitCircle();
             currentUnit = allUnits[currentUnitIndex];
+            EnableCurrentUnitCircle();
+            HighlightCurrentUnitsPortrait();
         } else {
+            DisableAllUnitCircles();
             RollInitiative();
         }
     }
@@ -208,23 +273,22 @@ public class GameManager : MonoBehaviour {
         // We need to store the units to remove in a list and remove them manually
         // because removing from a list while looping through it throws an error
         var unitsToRemove = new List<GameObject>();
+        var removeIndexList = new List<int>();
+        
         foreach(GameObject unit in allUnits) {
             if(unit.tag == "Knight") {
                 var script = unit.GetComponent<KnightController>();
                 if(script.IsUnitDead()) {
-                    //allUnits.Remove(unit);
                     unitsToRemove.Add(unit);
                 }
             } else if(unit.tag == "Archer") {
                 var script = unit.GetComponent<ArcherController>();
                 if(script.IsUnitDead()) {
-                    //allUnits.Remove(unit);
                     unitsToRemove.Add(unit);
                 }
             } else {
                 var script = unit.GetComponent<WizardController>();
                 if(script.IsUnitDead()) {
-                    //allUnits.Remove(unit);
                     unitsToRemove.Add(unit);
                 }
             }
@@ -233,5 +297,7 @@ public class GameManager : MonoBehaviour {
         foreach(GameObject unit in unitsToRemove) {
             allUnits.Remove(unit);
         }
+
+        if(removeIndexList.Count != 0) SetInitiativePortraits();
     }
 }

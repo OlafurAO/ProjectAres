@@ -9,6 +9,7 @@ TagManager:
   - Wizard
   - Plane
   - Portrait
+  - Highlighter
   layers:
   - Default
   - TransparentFX
@@ -18,8 +19,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Plane
+  - Unit
   - 
   - 
   - 
