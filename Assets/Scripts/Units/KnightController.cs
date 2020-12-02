@@ -82,7 +82,6 @@ public class KnightController : MonoBehaviour {
         if(!isDead) {
             //if there is a new destination then move to it, else don't move
             if(destination != transform.position){
-                rotation = Vector3.RotateTowards(transform.forward, destination, speed, 0.0f);
                 Move();
             } else {
                 isMoving = false;
@@ -125,7 +124,7 @@ public class KnightController : MonoBehaviour {
 
     void Move() {
         transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime* speed);
-        transform.rotation = Quaternion.LookRotation(rotation);
+        transform.LookAt(destination);
     }
 
     // Enable attack animation and disable idle animation
