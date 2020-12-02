@@ -32,6 +32,7 @@ public class WizardController : MonoBehaviour
     public int speed = 5; 
 
     public Animator animator;
+    
 
     // Start is called before the first frame update
     void Start() {
@@ -44,7 +45,6 @@ public class WizardController : MonoBehaviour
         if(!isDead) {
             //if there is a new destination then move to it, else don't move
             if(destination != transform.position){
-                rotation = Vector3.RotateTowards(transform.forward, destination, speed, 0.0f);
                 Move();
             } else {
                 isMoving = false;
@@ -82,7 +82,7 @@ public class WizardController : MonoBehaviour
 
     void Move() {
         transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime* speed);
-        transform.rotation = Quaternion.LookRotation(rotation);
+        transform.LookAt(destination);
     }
 
     public void Attack() {

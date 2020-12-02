@@ -44,10 +44,44 @@ public class KnightController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if(Input.GetMouseButtonDown(1)) {
+            //commentað út svo dótið hans virki (bæði með "when mouce clicked)
+            
+            Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit rhInfo;
+            if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
+                destination = rhInfo.point;
+            }
+        } 
+
+        if(Input.GetKey(KeyCode.Space)) {
+            if(isMoving) isMoving = false;
+            isAttacking = true;
+        } else if(Input.GetKey(KeyCode.A)) {
+            if(isAttacking) isAttacking = false; 
+            isMoving = true;
+        if(isAttacking) {
+            animator.Play("attack");
+            isAttacking = false;
+        } else if(isMoving) {
+            animator.Play("run");
+            isMoving = false;
+        } else if(isTakingDamage) {
+            animator.Play("hurt");
+            isTakingDamage = false;
+        }
+        }
+
+        if(!isIdle) {
+            if(!animator.GetCurrentAnimatorStateInfo(0).IsName("attack") 
+            && !animator.GetCurrentAnimatorStateInfo(0).IsName("run") 
+            && !animator.GetCurrentAnimatorStateInfo(0).IsName("hurt")) {
+                animator.Play("idle");
+            }
+        }
         if(!isDead) {
             //if there is a new destination then move to it, else don't move
             if(destination != transform.position){
-                rotation = Vector3.RotateTowards(transform.forward, destination, speed, 0.0f);
                 Move();
             } else {
                 isMoving = false;
@@ -90,7 +124,7 @@ public class KnightController : MonoBehaviour {
 
     void Move() {
         transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime* speed);
-        transform.rotation = Quaternion.LookRotation(rotation);
+        transform.LookAt(destination);
     }
 
     // Enable attack animation and disable idle animation
