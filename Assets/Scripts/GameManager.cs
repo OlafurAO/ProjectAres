@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour {
             // TODO: find out offset for even list lengths
 
             // Determines the x position of the portrait
-            int offset = portraitCount < middleIndex ? -portraitCount 
+            int offset = portraitCount < middleIndex ? -(middleIndex - portraitCount)
                 : portraitCount == middleIndex ? 0 
                 : portraitCount - middleIndex;
 
