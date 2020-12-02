@@ -8,6 +8,7 @@ TagManager:
   - Archer
   - Wizard
   - Plane
+  - Portrait
   layers:
   - Default
   - TransparentFX

@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour {
 
     public List<RawImage> initiativePortraits = new List<RawImage>();
 
-    public List<Texture> portraitTextures = new List<Texture>();
+    public List<Texture2D> portraitTextures = new List<Texture2D>();
 
     // TODO: add different colored teams
     private string[] portraitTextureNames = {
@@ -43,24 +43,10 @@ public class GameManager : MonoBehaviour {
     }
 
     void LoadPortraitTextures() {
-        int textureCount = 0;
         foreach(string name in portraitTextureNames) {
-            string filePath = "Images/" + name;
-            Texture texture = Resources.Load<Texture>(filePath);
+            string filePath = "Images/UnitPortraits/" + name;
+            Texture2D texture = Resources.Load<Texture2D>(filePath);
             portraitTextures.Add(texture);
-            textureCount++;
-
-            GameObject imageObject = new GameObject("name_" + textureCount.ToString());
-            RectTransform trans = imageObject.AddComponent<RectTransform>();
-            trans.transform.SetParent(canvas.transform);
-            trans.localScale = Vector3.one;
-            trans.anchoredPosition = new Vector2(150, 200);
-            trans.sizeDelta = new Vector2(150, 200);
-
-            Image image = imageObject.AddComponent<Image>();
-            Texture2D tex = Resources.Load<Texture2D>(filePath);
-            //image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
-            imageObject.transform.SetParent(canvas.transform);
         }
     }
 
@@ -81,6 +67,64 @@ public class GameManager : MonoBehaviour {
         
         // Set the current unit as the first unit in the list
         currentUnit = allUnits.ElementAt(currentUnitIndex);
+        SetInitiativePortraits();
+    }
+
+    void SetInitiativePortraits() {
+        DestroyAllPortraits();
+
+        int middleIndex = 0;
+        if(allUnits.Count % 2 == 0) {
+            print("even number");
+            middleIndex = allUnits.Count / 2; 
+        } else {
+            print("odd number");
+            middleIndex = Mathf.CeilToInt(allUnits.Count / 2) + 1;
+        }
+        print(middleIndex);
+
+        // TODO: Remove all protraits from the previous round
+        int portraitCount = 1;
+        foreach(GameObject unit in allUnits) {
+            GameObject imageObject = new GameObject("name_" + portraitCount.ToString());
+            imageObject.tag = "Portrait";
+            RectTransform trans = imageObject.AddComponent<RectTransform>();
+            trans.transform.SetParent(canvas.transform);
+            trans.localScale = Vector3.one;
+
+            // TODO: find out offset for even list lengths
+
+            // Determines the x position of the portrait
+            int offset = portraitCount < middleIndex ? -portraitCount 
+                : portraitCount == middleIndex ? 0 
+                : portraitCount - middleIndex;
+
+            trans.anchoredPosition = new Vector2(offset * 60, Screen.height/2 - 50);
+            trans.sizeDelta = new Vector2(50, 50);
+
+            Texture2D tex = null;
+            foreach(Texture2D texture in portraitTextures) {
+                if(texture.name.ToLower().Contains(unit.tag.ToLower())) {
+                    tex = texture;
+                }
+            }
+
+            if(tex != null) {
+                Image image = imageObject.AddComponent<Image>();
+                //Texture2D tex = Resources.Load<Texture2D>(filePath);
+                image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                imageObject.transform.SetParent(canvas.transform);
+            }
+
+            portraitCount++;
+        }
+    }
+
+    void DestroyAllPortraits() {
+        var portraits = GameObject.FindGameObjectsWithTag("Portrait");
+        for(var i = 0; i < portraits.Length; i++) {
+            Destroy(portraits[i]);
+        }
     }
 
     public void EndTurn() {
