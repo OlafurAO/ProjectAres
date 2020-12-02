@@ -42,7 +42,6 @@ public class ArcherController : MonoBehaviour {
     void Update() {
         if(!isDead) {
             if(destination != transform.position){
-                rotation = Vector3.RotateTowards(transform.forward, destination, speed, 0.0f);
                 Move();
             } else {
                 isMoving = false;
@@ -80,7 +79,7 @@ public class ArcherController : MonoBehaviour {
 
     void Move() {
         transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime* speed);
-        transform.rotation = Quaternion.LookRotation(rotation);
+        transform.LookAt(destination);
     }
 
     public void Attack() {
