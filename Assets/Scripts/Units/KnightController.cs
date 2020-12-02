@@ -128,9 +128,10 @@ public class KnightController : MonoBehaviour {
     }
 
     // Enable attack animation and disable idle animation
-    public void Attack() {
+    public void Attack(Vector3 victimPos) {
         isAttacking = true;   
         isIdle = false;     
+        transform.LookAt(victimPos);
     }
 
     void Defend() {
