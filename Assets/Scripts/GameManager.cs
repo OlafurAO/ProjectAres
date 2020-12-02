@@ -2,26 +2,66 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
+    public GameObject canvas;
 
     public List<GameObject> allUnits = new List<GameObject>();
     public GameObject currentUnit;
     public int currentUnitIndex;
+
+    public List<RawImage> initiativePortraits = new List<RawImage>();
+
+    public List<Texture> portraitTextures = new List<Texture>();
+
+    // TODO: add different colored teams
+    private string[] portraitTextureNames = {
+        "Knight", "Archer", "Wizard"
+    };
+
     private string[] tags = {
         "Knight", "Archer", "Wizard"
     };
 
     void Awake() {
         instance = this;
+        canvas = GameObject.Find("Canvas");
+        LoadPortraitTextures();
     }
 
     // Start is called before the first frame update
     void Start() {
         //TODO: Create units via code
         //UNIT COMPONENTS: a tag with their unit type, box controller, model, boxcontroller, animator
+        // Use GameObject.AddComponent function
+
+        // TODO: load audio clips
+        // var audioClip = Resources.Load<AudioClip>("Audio/audioClip01");
         RollInitiative();
+    }
+
+    void LoadPortraitTextures() {
+        int textureCount = 0;
+        foreach(string name in portraitTextureNames) {
+            string filePath = "Images/" + name;
+            Texture texture = Resources.Load<Texture>(filePath);
+            portraitTextures.Add(texture);
+            textureCount++;
+
+            GameObject imageObject = new GameObject("name_" + textureCount.ToString());
+            RectTransform trans = imageObject.AddComponent<RectTransform>();
+            trans.transform.SetParent(canvas.transform);
+            trans.localScale = Vector3.one;
+            trans.anchoredPosition = new Vector2(150, 200);
+            trans.sizeDelta = new Vector2(150, 200);
+
+            Image image = imageObject.AddComponent<Image>();
+            Texture2D tex = Resources.Load<Texture2D>(filePath);
+            image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+            imageObject.transform.SetParent(canvas.transform);
+        }
     }
 
     void RollInitiative() {
@@ -63,10 +103,10 @@ public class GameManager : MonoBehaviour {
             RaycastHit rhInfo;
             bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
 
-            // Don't allow units to attack themselves
             if(didHit && (rhInfo.collider.gameObject.tag == "Knight" 
               || rhInfo.collider.gameObject.tag == "Archer" || rhInfo.collider.gameObject.tag == "Wizard" )){
-                  
+                
+                // Don't allow units to attack themselves
                 if(rhInfo.collider.gameObject == currentUnit) return;
 
                 int damage = 0;
