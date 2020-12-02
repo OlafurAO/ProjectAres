@@ -82,9 +82,10 @@ public class ArcherController : MonoBehaviour {
         transform.LookAt(destination);
     }
 
-    public void Attack() {
+    public void Attack(Vector3 victimPos) {
         isAttacking = true;   
-        isIdle = false;    
+        isIdle = false;     
+        transform.LookAt(victimPos);
     }
 
     void Defend() {
