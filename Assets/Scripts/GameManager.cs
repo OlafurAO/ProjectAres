@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour {
 
             Image image = imageObject.AddComponent<Image>();
             Texture2D tex = Resources.Load<Texture2D>(filePath);
-            image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+            //image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
             imageObject.transform.SetParent(canvas.transform);
         }
     }
@@ -98,11 +98,11 @@ public class GameManager : MonoBehaviour {
     void Update() {
         // Check for left mouse button click
         if(Input.GetMouseButtonDown(0)) {
-            // Did player click on a unit?
             Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit rhInfo;
             bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
 
+            // Did player click on a unit?
             if(didHit && (rhInfo.collider.gameObject.tag == "Knight" 
               || rhInfo.collider.gameObject.tag == "Archer" || rhInfo.collider.gameObject.tag == "Wizard" )){
                 
