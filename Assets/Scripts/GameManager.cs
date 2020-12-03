@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour {
     // To keep track of the portrait's location for the initiative highlighter
     public List<Vector2> portraitLocations = new List<Vector2>();
 
+    public HexGrid grid; 
+
     // TODO: add different colored teams
     private string[] portraitTextureNames = {
         "KnightBlue", "ArcherBlue", "WizardBlue", 
@@ -294,6 +296,10 @@ public class GameManager : MonoBehaviour {
                 }
             } else {
                 if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
+                    var index = grid.TouchCell(rhInfo.point);
+                    print(index.coordinates.X);
+                    print(index.coordinates.Y);
+                    print(index.coordinates.Z);
                     if(currentUnit.tag == "Knight") {
                         var script = currentUnit.GetComponent<KnightController>();
                         script.StartMoving(rhInfo.point);
@@ -310,6 +316,16 @@ public class GameManager : MonoBehaviour {
 
         //TODO: Remove dead bois from initiative animation
         CheckForDeadUnits();
+    }
+
+
+    List<int> NullLocation= new List<int>(){1,2,3,4,5};
+
+    Vector3 GetMoveLocation(int x, int z) {
+        var up = NullLocation[z];
+        var left = up + ("length" * x);
+        return new Vector3 (left, 0, up);
+
     }
 
     void CheckForDeadUnits() {
