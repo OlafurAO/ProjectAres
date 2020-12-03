@@ -32,7 +32,7 @@ public class WizardController : MonoBehaviour
     //Where the unit should move next
     public Vector3 destination;
     
-    public Image DefenceImage;
+    public GameObject DefenceImage;
     private Vector3 rotation; 
     //how fast the model should go from one space to the other 
     public int speed = 5; 
@@ -112,13 +112,13 @@ public class WizardController : MonoBehaviour
     public void Defend() {
         //TODO: add some value to armorModifier
         isDefending = true; 
-        DefenceImage.enabled = true;
+        DefenceImage.GetComponent<Renderer>().enabled = true;
     }
 
     public void UnDefend() {
         //TODO: add some value to armorModifier
         isDefending = false; 
-        DefenceImage.enabled = false;
+        DefenceImage.GetComponent<Renderer>().enabled = false;
     }
 
     public void TakeDamage(int damage, string attackerType, float animationDelay) {

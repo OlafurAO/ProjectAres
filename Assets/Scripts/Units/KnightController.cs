@@ -30,7 +30,7 @@ public class KnightController : MonoBehaviour {
     private bool startPlayingIdleAnimation = true;
 
 
-    public Image DefenceImage;
+    public GameObject DefenceImage;
     //Where the unit should move next
     public Vector3 destination;
     private Vector3 rotation; 
@@ -113,13 +113,13 @@ public class KnightController : MonoBehaviour {
     public void Defend() {
         //TODO: add some value to armorModifier
         isDefending = true; 
-        DefenceImage.enabled = true; 
+        DefenceImage.GetComponent<Renderer>().enabled = true; 
     }
 
     public void UnDefend() {
         //TODO: add some value to armorModifier
         isDefending = false; 
-        DefenceImage.enabled = false;
+        DefenceImage.GetComponent<Renderer>().enabled = false;
     }
     public void TakeDamage(int damage, string attackerType, float animationDelay) {
         StartCoroutine(TakeDamageAfterDelay(damage, attackerType, animationDelay));
