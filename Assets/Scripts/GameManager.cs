@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
     public GameObject canvas;
@@ -19,6 +18,8 @@ public class GameManager : MonoBehaviour {
 
     // To keep track of the portrait's location for the initiative highlighter
     public List<Vector2> portraitLocations = new List<Vector2>();
+
+    public HexGrid grid; 
 
     // TODO: add different colored teams
     private string[] portraitTextureNames = {
@@ -295,15 +296,17 @@ public class GameManager : MonoBehaviour {
                 }
             } else {
                 if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
+                    var index = grid.TouchCell(rhInfo.point);
+                    Vector3 destination = GetMoveLocation(index.coordinates.X, index.coordinates.Z);
                     if(currentUnit.tag == "Knight") {
                         var script = currentUnit.GetComponent<KnightController>();
-                        script.StartMoving(rhInfo.point);
+                        script.StartMoving(destination);
                     } else if(currentUnit.tag == "Archer") {
                         var script = currentUnit.GetComponent<ArcherController>();  
-                        script.StartMoving(rhInfo.point);
+                        script.StartMoving(destination);
                     } else {
                         var script = currentUnit.GetComponent<WizardController>();
-                        script.StartMoving(rhInfo.point);
+                        script.StartMoving(destination);
                     }
                 }
             } 
@@ -311,6 +314,16 @@ public class GameManager : MonoBehaviour {
 
         //TODO: Remove dead bois from initiative animation
         CheckForDeadUnits();
+    }
+
+
+    List<(double, double)> NullLocation= new List<(double, double)>(){ ( 0, -3),(1.5,0),(3.5,3),(5.5,6),(7,9),(8.5,12)};
+
+    Vector3 GetMoveLocation(int x, int z) {
+        var up = NullLocation[z];
+        var left = (float)up.Item1 + (3.5 * x);
+        return new Vector3 ((float)left, 0, (float)up.Item2);
+
     }
 
     void CheckForDeadUnits() {

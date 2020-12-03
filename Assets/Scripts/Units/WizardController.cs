@@ -91,11 +91,16 @@ public class WizardController : MonoBehaviour
     }
 
     public void StartMoving(Vector3 dest) {
-        destination = dest;
-        startPlayingIdleAnimation = true;
-        startPlayingMoveAnimation = true;
-        isMoving = true;
-        isIdle = false;
+        float length = Vector3.Distance(transform.position, dest);
+        if(length > 7){
+            print("no way hosey");
+        }else{
+            destination = dest;
+            startPlayingIdleAnimation = true;
+            startPlayingMoveAnimation = true;
+            isMoving = true;
+            isIdle = false;
+        }
     }
 
     void Move() {
