@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
@@ -20,6 +21,8 @@ public class GameManager : MonoBehaviour {
     // To keep track of the portrait's location for the initiative highlighter
     public List<Vector2> portraitLocations = new List<Vector2>();
 
+    public HexGrid grid; 
+
     // TODO: add different colored teams
     private string[] portraitTextureNames = {
         "KnightBlue", "ArcherBlue", "WizardBlue", 
@@ -31,8 +34,14 @@ public class GameManager : MonoBehaviour {
     };
 
     private string[] tags = {
-        "Knight", "Archer", "Wizard"
+        "KnightBlue", "ArcherBlue", "WizardBlue",
+        "KnightRed", "ArcherRed", "WizardRed",
     };
+
+    // TODO: fix harcoding
+    private int blueUnitsRemaining = 3;
+    private int redUnitsRemaining = 3;
+    bool gameOver = false;
 
     void Awake() {
         instance = this;
@@ -112,7 +121,6 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    //TODO: Border around current unit's portrait
     void HighlightCurrentUnitsPortrait() {
         // Destroy previous hughlighters
         var highlighters = GameObject.FindGameObjectsWithTag("Highlighter");
@@ -215,11 +223,12 @@ public class GameManager : MonoBehaviour {
             currentUnit = allUnits[currentUnitIndex];
             EnableCurrentUnitCircle();
             HighlightCurrentUnitsPortrait();
+
             //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
-            if(currentUnit.tag == "Knight") {
+            if(currentUnit.tag.Contains("Knight")) {
                 var attackerScript = currentUnit.GetComponent<KnightController>();
                 attackerScript.UnDefend(); 
-            } else if(currentUnit.tag == "Archer") {
+            } else if(currentUnit.tag.Contains("Archer")) {
                 var attackerScript = currentUnit.GetComponent<ArcherController>();
                 attackerScript.UnDefend(); 
             } else {
@@ -234,59 +243,79 @@ public class GameManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if(gameOver) {
+            return;
+        }
+
+        if(blueUnitsRemaining == 0) {
+            print("Red won!");
+            gameOver = true;
+        } else if(redUnitsRemaining == 0) {
+            gameOver = true;
+            print("Blue won!");
+        }
+
+
         // Check for left mouse button click
-        if(Input.GetMouseButtonDown(0)) {            
+        if(Input.GetMouseButtonDown(0)) {    
+            // Did player click on a UI button? if so, don't do anything else
+            if(EventSystem.current.IsPointerOverGameObject()) {
+                return;
+            }
+
             // Did player click on a unit?
             Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit rhInfo;
             bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
 
-            print(rhInfo.collider.gameObject.tag);
-            if(rhInfo.collider.gameObject.tag == "UI") return;
-
             // Did player click on a unit?
-            if(didHit && (rhInfo.collider.gameObject.tag == "Knight" || rhInfo.collider.gameObject.tag == "Archer" 
-              || rhInfo.collider.gameObject.tag == "Wizard" || rhInfo.collider.gameObject.tag == "Defeated")){
-                
-                // Don't allow units to attack themselves
+            if(didHit && (rhInfo.collider.gameObject.tag.Contains("Knight") || rhInfo.collider.gameObject.tag.Contains("Archer") 
+              || rhInfo.collider.gameObject.tag.Contains("Wizard") || rhInfo.collider.gameObject.tag.Contains("Defeated"))){
+                if(rhInfo.collider.gameObject.tag.Contains("Defeated")) return;
+                // No friendly fire!
                 if(rhInfo.collider.gameObject == currentUnit){
                     //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
-                    if(currentUnit.tag == "Knight") {
+                    if(currentUnit.tag.Contains("Knight")) {
                         var attackerScript = currentUnit.GetComponent<KnightController>();
                         attackerScript.Defend(); 
-                    } else if(currentUnit.tag == "Archer") {
+                    } else if(currentUnit.tag.Contains("Archer")) {
                         var attackerScript = currentUnit.GetComponent<ArcherController>();
                         attackerScript.Defend(); 
                     } else {
                         var attackerScript = currentUnit.GetComponent<WizardController>();
                         attackerScript.Defend(); 
                     }
-                };
+                } else if((currentUnit.tag.Contains("Red") && rhInfo.collider.gameObject.tag.Contains("Red"))
+                  || (currentUnit.tag.Contains("Blue") && rhInfo.collider.gameObject.tag.Contains("Blue"))) {
+                    return;  
+                }
 
                 int damage = 0;
                 string type = "";
+                bool InRange = false; 
                 Vector3 victimLocation= rhInfo.collider.gameObject.GetComponent<Transform>().position;
-                if(currentUnit.tag == "Knight") {
+                if(currentUnit.tag.Contains("Knight")) {
                     var attackerScript = currentUnit.GetComponent<KnightController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
-                    attackerScript.Attack(victimLocation); 
-                } else if(currentUnit.tag == "Archer") {
+                    InRange = attackerScript.Attack(victimLocation); 
+                } else if(currentUnit.tag.Contains("Knight")) {
                     var attackerScript = currentUnit.GetComponent<ArcherController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
-                    attackerScript.Attack(victimLocation); 
+                    InRange = attackerScript.Attack(victimLocation); 
                 } else {
                     var attackerScript = currentUnit.GetComponent<WizardController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
-                    attackerScript.Attack(victimLocation); 
+                    InRange = attackerScript.Attack(victimLocation); 
                 }
-
-                if(rhInfo.collider.gameObject.tag == "Knight") {
+                
+                if(!InRange) return; 
+                if(rhInfo.collider.gameObject.tag.Contains("Knight")) {
                     var victimScript = rhInfo.collider.gameObject.GetComponent<KnightController>();
                     victimScript.TakeDamage(damage, type, 0.5f);
-                } else if(rhInfo.collider.gameObject.tag == "Archer") {
+                } else if(rhInfo.collider.gameObject.tag.Contains("Archer")) {
                     var victimScript = rhInfo.collider.gameObject.GetComponent<ArcherController>();
                     victimScript.TakeDamage(damage, type, 0.5f);
                 } else {
@@ -295,15 +324,17 @@ public class GameManager : MonoBehaviour {
                 }
             } else {
                 if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
-                    if(currentUnit.tag == "Knight") {
+                    var index = grid.TouchCell(rhInfo.point);
+                    Vector3 destination = GetMoveLocation(index.coordinates.X, index.coordinates.Z);
+                    if(currentUnit.tag.Contains("Knight")) {
                         var script = currentUnit.GetComponent<KnightController>();
-                        script.StartMoving(rhInfo.point);
-                    } else if(currentUnit.tag == "Archer") {
+                        script.StartMoving(destination, index.coordinates);
+                    } else if(currentUnit.tag.Contains("Knight")) {
                         var script = currentUnit.GetComponent<ArcherController>();  
-                        script.StartMoving(rhInfo.point);
+                        script.StartMoving(destination, index.coordinates );
                     } else {
                         var script = currentUnit.GetComponent<WizardController>();
-                        script.StartMoving(rhInfo.point);
+                        script.StartMoving(destination, index.coordinates );
                     }
                 }
             } 
@@ -313,6 +344,16 @@ public class GameManager : MonoBehaviour {
         CheckForDeadUnits();
     }
 
+
+    List<(double, double)> NullLocation= new List<(double, double)>(){ ( 0, -3),(1.5,0),(3.5,3),(5.5,6),(7,9),(8.5,12)};
+
+    Vector3 GetMoveLocation(int x, int z) {
+        var up = NullLocation[z];
+        var left = (float)up.Item1 + (3.5 * x);
+        return new Vector3 ((float)left, 0, (float)up.Item2);
+
+    }
+
     void CheckForDeadUnits() {
         // Check for any dead units and remove them from the list.
         // We need to store the units to remove in a list and remove them manually
@@ -320,7 +361,7 @@ public class GameManager : MonoBehaviour {
         var unitsToRemove = new List<GameObject>();
         int index = 0;
         foreach(GameObject unit in allUnits) {
-            if(unit.tag == "Knight") {
+            if(unit.tag.Contains("Knight")) {
                 var script = unit.GetComponent<KnightController>();
                 if(script.IsUnitDead()) {
                     unitsToRemove.Add(unit);
@@ -328,7 +369,7 @@ public class GameManager : MonoBehaviour {
                         currentUnitIndex--;
                     }
                 }
-            } else if(unit.tag == "Archer") {
+            } else if(unit.tag.Contains("Archer")) {
                 var script = unit.GetComponent<ArcherController>();
                 if(script.IsUnitDead()) {
                     unitsToRemove.Add(unit);
@@ -351,6 +392,11 @@ public class GameManager : MonoBehaviour {
 
         foreach(GameObject unit in unitsToRemove) {
             allUnits.Remove(unit);
+            if(unit.tag.Contains("Blue")) {
+                blueUnitsRemaining--;
+            } else {
+                redUnitsRemaining--;                
+            }
             unit.tag = "Defeated";
         }
 

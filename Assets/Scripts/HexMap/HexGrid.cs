@@ -55,28 +55,18 @@ public class HexGrid : MonoBehaviour {
 		label.text = cell.coordinates.ToStringOnSeperateLines();
 	}
 
-	public void TouchCell (Vector3 position) {
+	public HexCell TouchCell (Vector3 position) {
 		position = transform.InverseTransformPoint(position);
 		HexCoordinates coordinates = HexCoordinates.FromPosition(position);
 		int index = coordinates.X + coordinates.Z * width + coordinates.Z / 2;
 		HexCell cell = cells[index];
 		cell.color = touchedColor;
 		hexMesh.Triangulate(cells);
+		return cell; 
 	}
 
 	
 	void Update () {
-		if (Input.GetMouseButton(0)) {
-			HandleInput();
-		}
 	}
-	void HandleInput () {
-		Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit hit;
-		if (Physics.Raycast(inputRay, out hit)) {
-			TouchCell(hit.point);
-		}
-	}
-
 }
 

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class KnightController : MonoBehaviour {
     public int health = 200;
+    public HexCoordinates IndexedLocation;
     public int armor = 5;
     public int armorModifier = 0;
     public int baseDamage = 10;
@@ -16,8 +17,7 @@ public class KnightController : MonoBehaviour {
     public int movementRange = 5;
     public int attackRange = 1;
     public Vector3 location;
-
-    private bool isSelected = false;
+    
     private bool isAttacking = false;
     private bool isMoving = false;
     private bool isDefending = false;
@@ -29,13 +29,13 @@ public class KnightController : MonoBehaviour {
     private bool startPlayingMoveAnimation = false;
     private bool startPlayingIdleAnimation = true;
 
-
     public GameObject DefenceImage;
     //Where the unit should move next
     public Vector3 destination;
     private Vector3 rotation; 
     //how fast the model should go from one space to the other 
     public int speed = 5; 
+    public string team;
 
     public Animator animator;
 
@@ -90,12 +90,18 @@ public class KnightController : MonoBehaviour {
         }
     }
 
-    public void StartMoving(Vector3 dest) {
-        destination = dest;
-        startPlayingIdleAnimation = true;
-        startPlayingMoveAnimation = true;
-        isMoving = true;
-        isIdle = false;
+    public void StartMoving(Vector3 dest, HexCoordinates hex) {
+        float length = Vector3.Distance(transform.position, dest);
+        if(length > 7){
+            print("no way hosey");
+        }else{
+            destination = dest;
+            startPlayingIdleAnimation = true;
+            startPlayingMoveAnimation = true;
+            isMoving = true;
+            isIdle = false;
+            IndexedLocation = hex; 
+        }
     }
 
     void Move() {
@@ -104,10 +110,17 @@ public class KnightController : MonoBehaviour {
     }
 
     // Enable attack animation and disable idle animation
-    public void Attack(Vector3 victimPos) {
-        isAttacking = true;   
-        isIdle = false;     
-        transform.LookAt(victimPos);
+    public bool Attack(Vector3 victimPos) {
+        float length = Vector3.Distance(transform.position, victimPos);
+        if(length >3.5){
+            print("no way hosey");
+        }else{
+            isAttacking = true;   
+            isIdle = false;     
+            transform.LookAt(victimPos);
+            return true; 
+        }
+        return false; 
     }
 
     public void Defend() {
