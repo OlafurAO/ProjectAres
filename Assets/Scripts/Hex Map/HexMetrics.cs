@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class HexMeetrics
 {
-    public const float outerRadius = 10f;
+    public const float outerRadius = 2f;
     public const float innerRadius = outerRadius * 0.866025404f;
 
 
