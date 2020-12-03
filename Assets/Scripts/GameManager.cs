@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
@@ -22,6 +23,8 @@ public class GameManager : MonoBehaviour {
     public List<Vector2> portraitLocations = new List<Vector2>();
 
     public HexGrid grid; 
+
+    public TMPro.TextMeshProUGUI winnerLabel;
 
     // TODO: add different colored teams
     private string[] portraitTextureNames = {
@@ -60,6 +63,10 @@ public class GameManager : MonoBehaviour {
         // layer = "Unit" (for both object and model)
         // Use GameObject.AddComponent function
         RollInitiative();
+    }
+
+    public void Restart() {
+        SceneManager.LoadScene("SampleScene");
     }
 
     void LoadPortraitTextures() {
@@ -254,11 +261,11 @@ public class GameManager : MonoBehaviour {
         }
 
         if(blueUnitsRemaining == 0) {
-            print("Red won!");
+            winnerLabel.text = "Red wins!";
             gameOver = true;
         } else if(redUnitsRemaining == 0) {
+            winnerLabel.text = "Red wins!";
             gameOver = true;
-            print("Blue won!");
         }
 
 
@@ -368,7 +375,7 @@ public class GameManager : MonoBehaviour {
     }
 
 
-    List<(double, double)> NullLocation= new List<(double, double)>(){ ( 0, 0),(1.5,3),(3.5,6),(5.5,9),(7,12),(8.5,15)};
+    List<(double, double)> NullLocation = new List<(double, double)>(){ ( 0, 0),(1.5,3),(3.5,6),(5.5,9),(7,12),(8.5,15)};
 
     Vector3 GetMoveLocation(int x, int z) {
         var up = NullLocation[z];
