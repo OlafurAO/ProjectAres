@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class KnightController : MonoBehaviour {
     public int health = 200;
+    public HexCoordinates IndexedLocation;
     public int armor = 5;
     public int armorModifier = 0;
     public int baseDamage = 10;
@@ -89,7 +90,7 @@ public class KnightController : MonoBehaviour {
         }
     }
 
-    public void StartMoving(Vector3 dest) {
+    public void StartMoving(Vector3 dest, HexCoordinates hex) {
         float length = Vector3.Distance(transform.position, dest);
         if(length > 7){
             print("no way hosey");
@@ -99,6 +100,7 @@ public class KnightController : MonoBehaviour {
             startPlayingMoveAnimation = true;
             isMoving = true;
             isIdle = false;
+            IndexedLocation = hex; 
         }
     }
 
@@ -108,10 +110,17 @@ public class KnightController : MonoBehaviour {
     }
 
     // Enable attack animation and disable idle animation
-    public void Attack(Vector3 victimPos) {
-        isAttacking = true;   
-        isIdle = false;     
-        transform.LookAt(victimPos);
+    public bool Attack(Vector3 victimPos) {
+        float length = Vector3.Distance(transform.position, victimPos);
+        if(length >3.5){
+            print("no way hosey");
+        }else{
+            isAttacking = true;   
+            isIdle = false;     
+            transform.LookAt(victimPos);
+            return true; 
+        }
+        return false; 
     }
 
     public void Defend() {
