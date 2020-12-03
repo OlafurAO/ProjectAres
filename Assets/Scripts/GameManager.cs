@@ -292,18 +292,22 @@ public class GameManager : MonoBehaviour {
                     victimScript.TakeDamage(damage, type, 0.5f);
                 }
             } else {
-                if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
-                    if(currentUnit.tag == "Knight") {
-                        var script = currentUnit.GetComponent<KnightController>();
-                        script.StartMoving(rhInfo.point);
-                    } else if(currentUnit.tag == "Archer") {
-                        var script = currentUnit.GetComponent<ArcherController>();  
-                        script.StartMoving(rhInfo.point);
-                    } else {
-                        var script = currentUnit.GetComponent<WizardController>();
-                        script.StartMoving(rhInfo.point);
+                print(rhInfo.collider.gameObject.tag);
+                // Layer 5 = "UI"
+                if(rhInfo.collider.gameObject.tag != "UI") {
+                    if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
+                        if(currentUnit.tag == "Knight") {
+                            var script = currentUnit.GetComponent<KnightController>();
+                            script.StartMoving(rhInfo.point);
+                        } else if(currentUnit.tag == "Archer") {
+                            var script = currentUnit.GetComponent<ArcherController>();  
+                            script.StartMoving(rhInfo.point);
+                        } else {
+                            var script = currentUnit.GetComponent<WizardController>();
+                            script.StartMoving(rhInfo.point);
+                        }
                     }
-                }
+                }    
             } 
         };
 
