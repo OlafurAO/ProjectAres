@@ -11,6 +11,13 @@ TagManager:
   - Portrait
   - Highlighter
   - UI
+  - Defeated
+  - KnightRed
+  - ArcherRed
+  - WizardRed
+  - KnightBlue
+  - ArcherBlue
+  - WizardBlue
   layers:
   - Default
   - TransparentFX
