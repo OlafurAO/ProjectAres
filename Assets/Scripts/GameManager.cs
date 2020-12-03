@@ -297,18 +297,16 @@ public class GameManager : MonoBehaviour {
             } else {
                 if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
                     var index = grid.TouchCell(rhInfo.point);
-                    print(index.coordinates.X);
-                    print(index.coordinates.Y);
-                    print(index.coordinates.Z);
+                    Vector3 destination = GetMoveLocation(index.coordinates.X, index.coordinates.Z);
                     if(currentUnit.tag == "Knight") {
                         var script = currentUnit.GetComponent<KnightController>();
-                        script.StartMoving(rhInfo.point);
+                        script.StartMoving(destination);
                     } else if(currentUnit.tag == "Archer") {
                         var script = currentUnit.GetComponent<ArcherController>();  
-                        script.StartMoving(rhInfo.point);
+                        script.StartMoving(destination);
                     } else {
                         var script = currentUnit.GetComponent<WizardController>();
-                        script.StartMoving(rhInfo.point);
+                        script.StartMoving(destination);
                     }
                 }
             } 
@@ -319,12 +317,12 @@ public class GameManager : MonoBehaviour {
     }
 
 
-    List<int> NullLocation= new List<int>(){1,2,3,4,5};
+    List<(double, double)> NullLocation= new List<(double, double)>(){ ( 0, -3),(1.5,0),(3.5,3),(5.5,6),(7,9),(8.5,12)};
 
     Vector3 GetMoveLocation(int x, int z) {
         var up = NullLocation[z];
-        var left = up + ("length" * x);
-        return new Vector3 (left, 0, up);
+        var left = (float)up.Item1 + (3.5 * x);
+        return new Vector3 ((float)left, 0, (float)up.Item2);
 
     }
 
