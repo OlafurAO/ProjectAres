@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
     public GameObject canvas;
