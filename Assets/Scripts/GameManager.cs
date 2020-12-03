@@ -42,6 +42,8 @@ public class GameManager : MonoBehaviour {
     private int blueUnitsRemaining = 3;
     private int redUnitsRemaining = 3;
     bool gameOver = false;
+    bool movement; 
+    bool action; 
 
     void Awake() {
         instance = this;
@@ -101,6 +103,8 @@ public class GameManager : MonoBehaviour {
         EnableCurrentUnitCircle();
         SetInitiativePortraits();
         HighlightCurrentUnitsPortrait();
+        movement = true; 
+        action = true; 
     }
 
     // Enables the circle around the current unit
@@ -239,6 +243,8 @@ public class GameManager : MonoBehaviour {
             DisableAllUnitCircles();
             RollInitiative();
         }
+        action = true; 
+        movement = true; 
     }
 
     // Update is called once per frame
@@ -272,18 +278,25 @@ public class GameManager : MonoBehaviour {
             if(didHit && (rhInfo.collider.gameObject.tag.Contains("Knight") || rhInfo.collider.gameObject.tag.Contains("Archer") 
               || rhInfo.collider.gameObject.tag.Contains("Wizard") || rhInfo.collider.gameObject.tag.Contains("Defeated"))){
                 if(rhInfo.collider.gameObject.tag.Contains("Defeated")) return;
+                if(!action) return; 
                 // No friendly fire!
                 if(rhInfo.collider.gameObject == currentUnit){
                     //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
                     if(currentUnit.tag.Contains("Knight")) {
                         var attackerScript = currentUnit.GetComponent<KnightController>();
                         attackerScript.Defend(); 
+                        action = false;
+                        movement = false; 
                     } else if(currentUnit.tag.Contains("Archer")) {
                         var attackerScript = currentUnit.GetComponent<ArcherController>();
-                        attackerScript.Defend(); 
+                        attackerScript.Defend();  
+                        action = false;
+                        movement = false; 
                     } else {
                         var attackerScript = currentUnit.GetComponent<WizardController>();
-                        attackerScript.Defend(); 
+                        attackerScript.Defend();  
+                        action = false;
+                        movement = false; 
                     }
                 } else if((currentUnit.tag.Contains("Red") && rhInfo.collider.gameObject.tag.Contains("Red"))
                   || (currentUnit.tag.Contains("Blue") && rhInfo.collider.gameObject.tag.Contains("Blue"))) {
@@ -298,17 +311,23 @@ public class GameManager : MonoBehaviour {
                     var attackerScript = currentUnit.GetComponent<KnightController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
-                    InRange = attackerScript.Attack(victimLocation); 
+                    InRange = attackerScript.Attack(victimLocation);
+                    action = false; 
+                    movement = false; 
                 } else if(currentUnit.tag.Contains("Knight")) {
                     var attackerScript = currentUnit.GetComponent<ArcherController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
                     InRange = attackerScript.Attack(victimLocation); 
+                    action = false; 
+                    movement = false; 
                 } else {
                     var attackerScript = currentUnit.GetComponent<WizardController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
                     InRange = attackerScript.Attack(victimLocation); 
+                    action = false; 
+                    movement = false; 
                 }
                 
                 if(!InRange) return; 
@@ -323,18 +342,22 @@ public class GameManager : MonoBehaviour {
                     victimScript.TakeDamage(damage, type, 0.5f);
                 }
             } else {
+                if(!movement) return; 
                 if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
                     var index = grid.TouchCell(rhInfo.point);
                     Vector3 destination = GetMoveLocation(index.coordinates.X, index.coordinates.Z);
                     if(currentUnit.tag.Contains("Knight")) {
                         var script = currentUnit.GetComponent<KnightController>();
                         script.StartMoving(destination, index.coordinates);
+                        movement = false; 
                     } else if(currentUnit.tag.Contains("Knight")) {
                         var script = currentUnit.GetComponent<ArcherController>();  
                         script.StartMoving(destination, index.coordinates );
+                        movement = false; 
                     } else {
                         var script = currentUnit.GetComponent<WizardController>();
                         script.StartMoving(destination, index.coordinates );
+                        movement = false; 
                     }
                 }
             } 
@@ -345,7 +368,7 @@ public class GameManager : MonoBehaviour {
     }
 
 
-    List<(double, double)> NullLocation= new List<(double, double)>(){ ( 0, -3),(1.5,0),(3.5,3),(5.5,6),(7,9),(8.5,12)};
+    List<(double, double)> NullLocation= new List<(double, double)>(){ ( 0, 0),(1.5,3),(3.5,6),(5.5,9),(7,12),(8.5,15)};
 
     Vector3 GetMoveLocation(int x, int z) {
         var up = NullLocation[z];
