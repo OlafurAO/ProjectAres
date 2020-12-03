@@ -36,6 +36,7 @@ public class WizardController : MonoBehaviour
     private Vector3 rotation; 
     //how fast the model should go from one space to the other 
     public int speed = 5; 
+    public string team;
 
     public Animator animator;
     

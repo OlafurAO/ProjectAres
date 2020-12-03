@@ -16,8 +16,7 @@ public class KnightController : MonoBehaviour {
     public int movementRange = 5;
     public int attackRange = 1;
     public Vector3 location;
-
-    private bool isSelected = false;
+    
     private bool isAttacking = false;
     private bool isMoving = false;
     private bool isDefending = false;
@@ -29,13 +28,13 @@ public class KnightController : MonoBehaviour {
     private bool startPlayingMoveAnimation = false;
     private bool startPlayingIdleAnimation = true;
 
-
     public GameObject DefenceImage;
     //Where the unit should move next
     public Vector3 destination;
     private Vector3 rotation; 
     //how fast the model should go from one space to the other 
     public int speed = 5; 
+    public string team;
 
     public Animator animator;
 
