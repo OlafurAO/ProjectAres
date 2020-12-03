@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class WizardController : MonoBehaviour
 {
     public int health = 150;
+    public HexCoordinates IndexedLocation;
     public int armor = 1;
     public int armorModifier = 0;
     public int baseDamage = 15;
@@ -90,7 +91,7 @@ public class WizardController : MonoBehaviour
         }
     }
 
-    public void StartMoving(Vector3 dest) {
+    public void StartMoving(Vector3 dest, HexCoordinates hex) {
         float length = Vector3.Distance(transform.position, dest);
         if(length > 7){
             print("no way hosey");
@@ -100,6 +101,7 @@ public class WizardController : MonoBehaviour
             startPlayingMoveAnimation = true;
             isMoving = true;
             isIdle = false;
+            IndexedLocation = hex; 
         }
     }
 
@@ -108,10 +110,17 @@ public class WizardController : MonoBehaviour
         transform.LookAt(destination);
     }
 
-    public void Attack(Vector3 victimPos) {
-        isAttacking = true;   
-        isIdle = false;     
-        transform.LookAt(victimPos);
+    public bool Attack(Vector3 victimPos) {
+        float length = Vector3.Distance(transform.position, victimPos);
+        if(length >7){
+            print("no way hosey");
+        }else{
+            isAttacking = true;   
+            isIdle = false;     
+            transform.LookAt(victimPos);
+            return true; 
+        }
+        return false; 
     }
 
     public void Defend() {
