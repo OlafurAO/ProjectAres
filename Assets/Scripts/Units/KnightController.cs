@@ -29,6 +29,7 @@ public class KnightController : MonoBehaviour {
     private bool startPlayingMoveAnimation = false;
     private bool startPlayingIdleAnimation = true;
 
+    public HexCell CurrCell; 
     public GameObject DefenceImage;
     //Where the unit should move next
     public Vector3 destination;
@@ -90,9 +91,9 @@ public class KnightController : MonoBehaviour {
         }
     }
 
-    public void StartMoving(Vector3 dest, HexCoordinates hex) {
+    public void StartMoving(Vector3 dest, HexCell hex) {
         float length = Vector3.Distance(transform.position, dest);
-        if(length > 7){
+        if(length > 7&& !hex.isOccupied){
             print("no way hosey");
         }else{
             destination = dest;
@@ -100,7 +101,12 @@ public class KnightController : MonoBehaviour {
             startPlayingMoveAnimation = true;
             isMoving = true;
             isIdle = false;
-            IndexedLocation = hex; 
+            IndexedLocation = hex.coordinates; 
+            hex.isOccupied = true; 
+            if(CurrCell != null){
+                CurrCell.isOccupied = false; 
+            } 
+            CurrCell = hex; 
         }
     }
 

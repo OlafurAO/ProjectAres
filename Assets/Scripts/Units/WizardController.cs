@@ -7,6 +7,7 @@ public class WizardController : MonoBehaviour
 {
     public int health = 150;
     public HexCoordinates IndexedLocation;
+    public HexCell CurrCell; 
     public int armor = 1;
     public int armorModifier = 0;
     public int baseDamage = 15;
@@ -92,9 +93,9 @@ public class WizardController : MonoBehaviour
         }
     }
 
-    public void StartMoving(Vector3 dest, HexCoordinates hex) {
+    public void StartMoving(Vector3 dest, HexCell hex) {
         float length = Vector3.Distance(transform.position, dest);
-        if(length > 7){
+        if(length > 7&& !hex.isOccupied){
             print("no way hosey");
         }else{
             destination = dest;
@@ -102,7 +103,12 @@ public class WizardController : MonoBehaviour
             startPlayingMoveAnimation = true;
             isMoving = true;
             isIdle = false;
-            IndexedLocation = hex; 
+            IndexedLocation = hex.coordinates; 
+            hex.isOccupied = true;
+            if(CurrCell != null){
+                CurrCell.isOccupied = false; 
+            } 
+            CurrCell = hex; 
         }
     }
 
