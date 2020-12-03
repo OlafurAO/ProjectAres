@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class KnightController : MonoBehaviour {
     public int health = 200;
@@ -29,6 +30,7 @@ public class KnightController : MonoBehaviour {
     private bool startPlayingIdleAnimation = true;
 
 
+    public Image DefenceImage;
     //Where the unit should move next
     public Vector3 destination;
     private Vector3 rotation; 
@@ -50,7 +52,11 @@ public class KnightController : MonoBehaviour {
             if(destination != transform.position){
                 Move();
             } else {
-                if(startPlayingIdleAnimation) {
+                if(isDefending){
+                    animator.Play("Defence");
+                    isMoving = false;
+                    isIdle = true;
+                }else if(startPlayingIdleAnimation) {
                     startPlayingIdleAnimation = false;
                     animator.Play("idle");
                     isMoving = false;
@@ -104,10 +110,17 @@ public class KnightController : MonoBehaviour {
         transform.LookAt(victimPos);
     }
 
-    void Defend() {
+    public void Defend() {
         //TODO: add some value to armorModifier
+        isDefending = true; 
+        DefenceImage.enabled = true; 
     }
 
+    public void UnDefend() {
+        //TODO: add some value to armorModifier
+        isDefending = false; 
+        DefenceImage.enabled = false;
+    }
     public void TakeDamage(int damage, string attackerType, float animationDelay) {
         StartCoroutine(TakeDamageAfterDelay(damage, attackerType, animationDelay));
     }
