@@ -91,11 +91,15 @@ public class WizardController : MonoBehaviour
         transform.LookAt(victimPos);
     }
 
-    void Defend() {
+    public void Defend() {
         //TODO: add some value to armorModifier
+        isDefending = true; 
     }
 
     public void TakeDamage(int damage, string attackerType, float animationDelay) {
+        if(isDefending == true){
+            damage = (int)(damage/2); 
+        }
         StartCoroutine(TakeDamageAfterDelay(damage, attackerType, animationDelay));
     }
 

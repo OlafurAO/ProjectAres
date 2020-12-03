@@ -58,6 +58,7 @@ public class GameManager : MonoBehaviour {
     void Update() {
         // Check for left mouse button click
         if(Input.GetMouseButtonDown(0)) {
+            //print(currentUnit);
             // Did player click on a unit?
             Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit rhInfo;
