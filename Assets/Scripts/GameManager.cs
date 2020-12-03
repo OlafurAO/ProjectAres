@@ -266,24 +266,26 @@ public class GameManager : MonoBehaviour {
 
                 int damage = 0;
                 string type = "";
+                bool InRange = false; 
                 Vector3 victimLocation= rhInfo.collider.gameObject.GetComponent<Transform>().position;
                 if(currentUnit.tag == "Knight") {
                     var attackerScript = currentUnit.GetComponent<KnightController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
-                    attackerScript.Attack(victimLocation); 
+                    InRange = attackerScript.Attack(victimLocation); 
                 } else if(currentUnit.tag == "Archer") {
                     var attackerScript = currentUnit.GetComponent<ArcherController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
-                    attackerScript.Attack(victimLocation); 
+                    InRange = attackerScript.Attack(victimLocation); 
                 } else {
                     var attackerScript = currentUnit.GetComponent<WizardController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
-                    attackerScript.Attack(victimLocation); 
+                    InRange = attackerScript.Attack(victimLocation); 
                 }
-
+                
+                if(!InRange) return; 
                 if(rhInfo.collider.gameObject.tag == "Knight") {
                     var victimScript = rhInfo.collider.gameObject.GetComponent<KnightController>();
                     victimScript.TakeDamage(damage, type, 0.5f);
@@ -300,13 +302,13 @@ public class GameManager : MonoBehaviour {
                     Vector3 destination = GetMoveLocation(index.coordinates.X, index.coordinates.Z);
                     if(currentUnit.tag == "Knight") {
                         var script = currentUnit.GetComponent<KnightController>();
-                        script.StartMoving(destination);
+                        script.StartMoving(destination, index.coordinates);
                     } else if(currentUnit.tag == "Archer") {
                         var script = currentUnit.GetComponent<ArcherController>();  
-                        script.StartMoving(destination);
+                        script.StartMoving(destination, index.coordinates );
                     } else {
                         var script = currentUnit.GetComponent<WizardController>();
-                        script.StartMoving(destination);
+                        script.StartMoving(destination, index.coordinates );
                     }
                 }
             } 
