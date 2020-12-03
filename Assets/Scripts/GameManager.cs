@@ -235,12 +235,14 @@ public class GameManager : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         // Check for left mouse button click
-        if(Input.GetMouseButtonDown(0)) {
-            //print(currentUnit);
+        if(Input.GetMouseButtonDown(0)) {            
             // Did player click on a unit?
             Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit rhInfo;
             bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
+
+            print(rhInfo.collider.gameObject.tag);
+            if(rhInfo.collider.gameObject.tag == "UI") return;
 
             // Did player click on a unit?
             if(didHit && (rhInfo.collider.gameObject.tag == "Knight" 
@@ -250,15 +252,15 @@ public class GameManager : MonoBehaviour {
                 if(rhInfo.collider.gameObject == currentUnit){
                     //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
                     if(currentUnit.tag == "Knight") {
-                    var attackerScript = currentUnit.GetComponent<KnightController>();
-                    attackerScript.Defend(); 
-                } else if(currentUnit.tag == "Archer") {
-                    var attackerScript = currentUnit.GetComponent<ArcherController>();
-                    attackerScript.Defend(); 
-                } else {
-                    var attackerScript = currentUnit.GetComponent<WizardController>();
-                    attackerScript.Defend(); 
-                }
+                        var attackerScript = currentUnit.GetComponent<KnightController>();
+                        attackerScript.Defend(); 
+                    } else if(currentUnit.tag == "Archer") {
+                        var attackerScript = currentUnit.GetComponent<ArcherController>();
+                        attackerScript.Defend(); 
+                    } else {
+                        var attackerScript = currentUnit.GetComponent<WizardController>();
+                        attackerScript.Defend(); 
+                    }
                 };
 
                 int damage = 0;
@@ -292,22 +294,18 @@ public class GameManager : MonoBehaviour {
                     victimScript.TakeDamage(damage, type, 0.5f);
                 }
             } else {
-                print(rhInfo.collider.gameObject.tag);
-                // Layer 5 = "UI"
-                if(rhInfo.collider.gameObject.tag != "UI") {
-                    if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
-                        if(currentUnit.tag == "Knight") {
-                            var script = currentUnit.GetComponent<KnightController>();
-                            script.StartMoving(rhInfo.point);
-                        } else if(currentUnit.tag == "Archer") {
-                            var script = currentUnit.GetComponent<ArcherController>();  
-                            script.StartMoving(rhInfo.point);
-                        } else {
-                            var script = currentUnit.GetComponent<WizardController>();
-                            script.StartMoving(rhInfo.point);
-                        }
+                if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
+                    if(currentUnit.tag == "Knight") {
+                        var script = currentUnit.GetComponent<KnightController>();
+                        script.StartMoving(rhInfo.point);
+                    } else if(currentUnit.tag == "Archer") {
+                        var script = currentUnit.GetComponent<ArcherController>();  
+                        script.StartMoving(rhInfo.point);
+                    } else {
+                        var script = currentUnit.GetComponent<WizardController>();
+                        script.StartMoving(rhInfo.point);
                     }
-                }    
+                }
             } 
         };
 
