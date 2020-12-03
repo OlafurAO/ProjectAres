@@ -26,6 +26,7 @@ public class KnightController : MonoBehaviour {
     public bool isIdle = true;
 
     private bool startPlayingMoveAnimation = false;
+    private bool startPlayingIdleAnimation = true;
 
 
     //Where the unit should move next
@@ -49,8 +50,12 @@ public class KnightController : MonoBehaviour {
             if(destination != transform.position){
                 Move();
             } else {
-                isMoving = false;
-                isIdle = true;
+                if(startPlayingIdleAnimation) {
+                    startPlayingIdleAnimation = false;
+                    animator.Play("idle");
+                    isMoving = false;
+                    isIdle = true;
+                }
             }
 
             if(isAttacking) {
@@ -59,13 +64,12 @@ public class KnightController : MonoBehaviour {
             } else if(isMoving) {
                 if(startPlayingMoveAnimation) {
                     startPlayingMoveAnimation = false;
-                    
+                    animator.Play("run");      
                 }
-                animator.Play("run");
             } else if(isTakingDamage) {
                 animator.Play("hurt");
                 isTakingDamage = false;
-            }
+            } 
         } else {
             if(!deathConfirmed) {
                 // 50/50 chance which death animation is played
@@ -82,6 +86,7 @@ public class KnightController : MonoBehaviour {
 
     public void StartMoving(Vector3 dest) {
         destination = dest;
+        startPlayingIdleAnimation = true;
         startPlayingMoveAnimation = true;
         isMoving = true;
         isIdle = false;
