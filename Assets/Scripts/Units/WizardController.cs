@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WizardController : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class WizardController : MonoBehaviour
 
     //Where the unit should move next
     public Vector3 destination;
+    
+    public Image DefenceImage;
     private Vector3 rotation; 
     //how fast the model should go from one space to the other 
     public int speed = 5; 
@@ -50,7 +53,11 @@ public class WizardController : MonoBehaviour
             if(destination != transform.position){
                 Move();
             } else {
-                if(startPlayingIdleAnimation) {
+                if(isDefending){
+                    animator.Play("Defence");
+                    isMoving = false;
+                    isIdle = true;
+                }else if(startPlayingIdleAnimation) {
                     startPlayingIdleAnimation = false;
                     animator.Play("idle");
                     isMoving = false;
@@ -105,6 +112,13 @@ public class WizardController : MonoBehaviour
     public void Defend() {
         //TODO: add some value to armorModifier
         isDefending = true; 
+        DefenceImage.enabled = true;
+    }
+
+    public void UnDefend() {
+        //TODO: add some value to armorModifier
+        isDefending = false; 
+        DefenceImage.enabled = false;
     }
 
     public void TakeDamage(int damage, string attackerType, float animationDelay) {
