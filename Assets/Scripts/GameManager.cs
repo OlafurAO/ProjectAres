@@ -355,15 +355,15 @@ public class GameManager : MonoBehaviour {
                     Vector3 destination = GetMoveLocation(index.coordinates.X, index.coordinates.Z);
                     if(currentUnit.tag.Contains("Knight")) {
                         var script = currentUnit.GetComponent<KnightController>();
-                        script.StartMoving(destination, index.coordinates);
+                        script.StartMoving(destination, index);
                         movement = false; 
                     } else if(currentUnit.tag.Contains("Archer")) {
                         var script = currentUnit.GetComponent<ArcherController>();  
-                        script.StartMoving(destination, index.coordinates );
+                        script.StartMoving(destination, index );
                         movement = false; 
                     } else {
                         var script = currentUnit.GetComponent<WizardController>();
-                        script.StartMoving(destination, index.coordinates );
+                        script.StartMoving(destination, index );
                         movement = false; 
                     }
                 }
