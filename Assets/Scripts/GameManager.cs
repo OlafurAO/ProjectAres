@@ -299,7 +299,7 @@ public class GameManager : MonoBehaviour {
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
                     InRange = attackerScript.Attack(victimLocation); 
-                } else if(currentUnit.tag.Contains("Knight")) {
+                } else if(currentUnit.tag.Contains("Archer")) {
                     var attackerScript = currentUnit.GetComponent<ArcherController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
@@ -329,7 +329,7 @@ public class GameManager : MonoBehaviour {
                     if(currentUnit.tag.Contains("Knight")) {
                         var script = currentUnit.GetComponent<KnightController>();
                         script.StartMoving(destination, index.coordinates);
-                    } else if(currentUnit.tag.Contains("Knight")) {
+                    } else if(currentUnit.tag.Contains("Archer")) {
                         var script = currentUnit.GetComponent<ArcherController>();  
                         script.StartMoving(destination, index.coordinates );
                     } else {
