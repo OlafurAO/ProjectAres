@@ -275,7 +275,6 @@ public class GameManager : MonoBehaviour {
         // We need to store the units to remove in a list and remove them manually
         // because removing from a list while looping through it throws an error
         var unitsToRemove = new List<GameObject>();
-        var removeIndexList = new List<int>();
         
         foreach(GameObject unit in allUnits) {
             if(unit.tag == "Knight") {
@@ -300,6 +299,9 @@ public class GameManager : MonoBehaviour {
             allUnits.Remove(unit);
         }
 
-        if(removeIndexList.Count != 0) SetInitiativePortraits();
+        if(unitsToRemove.Count != 0) {
+            SetInitiativePortraits();
+            HighlightCurrentUnitsPortrait();
+        }    
     }
 }
