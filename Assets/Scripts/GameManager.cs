@@ -215,6 +215,17 @@ public class GameManager : MonoBehaviour {
             currentUnit = allUnits[currentUnitIndex];
             EnableCurrentUnitCircle();
             HighlightCurrentUnitsPortrait();
+            //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
+            if(currentUnit.tag == "Knight") {
+                var attackerScript = currentUnit.GetComponent<KnightController>();
+                attackerScript.UnDefend(); 
+            } else if(currentUnit.tag == "Archer") {
+                var attackerScript = currentUnit.GetComponent<ArcherController>();
+                attackerScript.UnDefend(); 
+            } else {
+                var attackerScript = currentUnit.GetComponent<WizardController>();
+                attackerScript.UnDefend(); 
+            }
         } else {
             DisableAllUnitCircles();
             RollInitiative();
@@ -225,6 +236,8 @@ public class GameManager : MonoBehaviour {
     void Update() {
         // Check for left mouse button click
         if(Input.GetMouseButtonDown(0)) {
+            //print(currentUnit);
+            // Did player click on a unit?
             Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit rhInfo;
             bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
@@ -234,7 +247,19 @@ public class GameManager : MonoBehaviour {
               || rhInfo.collider.gameObject.tag == "Archer" || rhInfo.collider.gameObject.tag == "Wizard" )){
                 
                 // Don't allow units to attack themselves
-                if(rhInfo.collider.gameObject == currentUnit) return;
+                if(rhInfo.collider.gameObject == currentUnit){
+                    //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
+                    if(currentUnit.tag == "Knight") {
+                    var attackerScript = currentUnit.GetComponent<KnightController>();
+                    attackerScript.Defend(); 
+                } else if(currentUnit.tag == "Archer") {
+                    var attackerScript = currentUnit.GetComponent<ArcherController>();
+                    attackerScript.Defend(); 
+                } else {
+                    var attackerScript = currentUnit.GetComponent<WizardController>();
+                    attackerScript.Defend(); 
+                }
+                };
 
                 int damage = 0;
                 string type = "";

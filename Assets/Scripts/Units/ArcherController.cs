@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ArcherController : MonoBehaviour {
     public int health = 100;
@@ -34,6 +35,8 @@ public class ArcherController : MonoBehaviour {
     public int speed = 5; 
 
     public Animator animator;
+    
+    public Image DefenceImage;
 
     // Start is called before the first frame update
     void Start() {
@@ -47,7 +50,11 @@ public class ArcherController : MonoBehaviour {
             if(destination != transform.position){
                 Move();
             } else {
-                if(startPlayingIdleAnimation) {
+                if(isDefending){
+                    animator.Play("Defence");
+                    isMoving = false;
+                    isIdle = true;
+                }else if(startPlayingIdleAnimation) {
                     startPlayingIdleAnimation = false;
                     animator.Play("idle");
                     isMoving = false;
@@ -99,10 +106,17 @@ public class ArcherController : MonoBehaviour {
         transform.LookAt(victimPos);
     }
 
-    void Defend() {
+    public void Defend() {
         //TODO: add some value to armorModifier
+        isDefending = true; 
+        DefenceImage.enabled = true;
     }
 
+    public void UnDefend() {
+        //TODO: add some value to armorModifier
+        isDefending = false; 
+        DefenceImage.enabled = false;
+    }
     public void TakeDamage(int damage, string attackerType, float animationDelay) {
         StartCoroutine(TakeDamageAfterDelay(damage, attackerType, animationDelay));
     }
