@@ -68,6 +68,9 @@ public class HexGrid : MonoBehaviour {
 
 	
 	void Update () {
-	}
+	}/*
+	public Void OccupyCell(HexCell cell){
+		
+	}*/
 }
 
