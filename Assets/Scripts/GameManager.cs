@@ -15,12 +15,19 @@ public class GameManager : MonoBehaviour {
     public List<RawImage> initiativePortraits = new List<RawImage>();
     public List<Texture2D> portraitTextures = new List<Texture2D>();
 
+    public List<AudioClip> audioClips = new List<AudioClip>();
+
     // To keep track of the portrait's location for the initiative highlighter
     public List<Vector2> portraitLocations = new List<Vector2>();
 
     // TODO: add different colored teams
     private string[] portraitTextureNames = {
-        "Knight", "Archer", "Wizard"
+        "KnightBlue", "ArcherBlue", "WizardBlue", 
+        "KnightRed", "ArcherRed", "WizardRed"
+    };
+
+    private string[] sfxNames = {
+        "archer_attack", "hit", "knight_attack", "wizard_attack"
     };
 
     private string[] tags = {
@@ -31,6 +38,7 @@ public class GameManager : MonoBehaviour {
         instance = this;
         canvas = GameObject.Find("Canvas");
         LoadPortraitTextures();
+        LoadAudioClips();
     }
 
     // Start is called before the first frame update
@@ -40,17 +48,27 @@ public class GameManager : MonoBehaviour {
         // animator, Selector (set to inactive at first, Mesh Renderer: Cast shadows = off), 
         // layer = "Unit" (for both object and model)
         // Use GameObject.AddComponent function
-
-        // TODO: load audio clips
-        // var audioClip = Resources.Load<AudioClip>("Audio/audioClip01");
         RollInitiative();
     }
 
     void LoadPortraitTextures() {
         foreach(string name in portraitTextureNames) {
             string filePath = "Images/UnitPortraits/" + name;
+            print(filePath);
             Texture2D texture = Resources.Load<Texture2D>(filePath);
             portraitTextures.Add(texture);
+        }
+    }
+
+    void LoadAudioClips() {
+        // TODO: load audio clips
+        // var audioClip = Resources.Load<AudioClip>("Audio/audioClip01");
+        foreach(string name in sfxNames) {
+            string filePath = "SFX/" + name;
+            print(filePath);
+            AudioClip audioClip = Resources.Load<AudioClip>(filePath);
+            audioClips.Add(audioClip);
+            //print(audioClip.name);
         }
     }
 
@@ -217,30 +235,32 @@ public class GameManager : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         // Check for left mouse button click
-        if(Input.GetMouseButtonDown(0)) {
-            //print(currentUnit);
+        if(Input.GetMouseButtonDown(0)) {            
             // Did player click on a unit?
             Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit rhInfo;
             bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
 
+            print(rhInfo.collider.gameObject.tag);
+            if(rhInfo.collider.gameObject.tag == "UI") return;
+
             // Did player click on a unit?
-            if(didHit && (rhInfo.collider.gameObject.tag == "Knight" 
-              || rhInfo.collider.gameObject.tag == "Archer" || rhInfo.collider.gameObject.tag == "Wizard" )){
+            if(didHit && (rhInfo.collider.gameObject.tag == "Knight" || rhInfo.collider.gameObject.tag == "Archer" 
+              || rhInfo.collider.gameObject.tag == "Wizard" || rhInfo.collider.gameObject.tag == "Defeated")){
                 
                 // Don't allow units to attack themselves
                 if(rhInfo.collider.gameObject == currentUnit){
                     //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
                     if(currentUnit.tag == "Knight") {
-                    var attackerScript = currentUnit.GetComponent<KnightController>();
-                    attackerScript.Defend(); 
-                } else if(currentUnit.tag == "Archer") {
-                    var attackerScript = currentUnit.GetComponent<ArcherController>();
-                    attackerScript.Defend(); 
-                } else {
-                    var attackerScript = currentUnit.GetComponent<WizardController>();
-                    attackerScript.Defend(); 
-                }
+                        var attackerScript = currentUnit.GetComponent<KnightController>();
+                        attackerScript.Defend(); 
+                    } else if(currentUnit.tag == "Archer") {
+                        var attackerScript = currentUnit.GetComponent<ArcherController>();
+                        attackerScript.Defend(); 
+                    } else {
+                        var attackerScript = currentUnit.GetComponent<WizardController>();
+                        attackerScript.Defend(); 
+                    }
                 };
 
                 int damage = 0;
@@ -298,28 +318,40 @@ public class GameManager : MonoBehaviour {
         // We need to store the units to remove in a list and remove them manually
         // because removing from a list while looping through it throws an error
         var unitsToRemove = new List<GameObject>();
-        
+        int index = 0;
         foreach(GameObject unit in allUnits) {
             if(unit.tag == "Knight") {
                 var script = unit.GetComponent<KnightController>();
                 if(script.IsUnitDead()) {
                     unitsToRemove.Add(unit);
+                    if(index < currentUnitIndex) {
+                        currentUnitIndex--;
+                    }
                 }
             } else if(unit.tag == "Archer") {
                 var script = unit.GetComponent<ArcherController>();
                 if(script.IsUnitDead()) {
                     unitsToRemove.Add(unit);
+                    if(index < currentUnitIndex) {
+                        currentUnitIndex--;
+                    }
                 }
             } else {
                 var script = unit.GetComponent<WizardController>();
                 if(script.IsUnitDead()) {
                     unitsToRemove.Add(unit);
+                    if(index < currentUnitIndex) {
+                        currentUnitIndex--;
+                    }
                 }
             }
+
+            index++;
         }
 
         foreach(GameObject unit in unitsToRemove) {
             allUnits.Remove(unit);
+            unit.tag = "Defeated";
         }
 
         if(unitsToRemove.Count != 0) {
