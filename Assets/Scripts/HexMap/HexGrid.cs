@@ -14,12 +14,12 @@ public class HexGrid : MonoBehaviour {
 	public Text cellLabelPrefab;
 	HexMesh hexMesh;
 
-	Canvas gridCanvas;
+	//Canvas gridCanvas;
 
 	HexCell[] cells;
 
 	void Awake () {
-		gridCanvas = GetComponentInChildren<Canvas>();
+		//gridCanvas = GetComponentInChildren<Canvas>();
 		hexMesh = GetComponentInChildren<HexMesh>();
 		cells = new HexCell[height * width];
 
@@ -47,12 +47,13 @@ public class HexGrid : MonoBehaviour {
 		cell.transform.localPosition = position;
 		cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
 		cell.color = defaultColor;
-
+		/*
 		Text label = Instantiate<Text>(cellLabelPrefab);
 		label.rectTransform.SetParent(gridCanvas.transform, false);
 		label.rectTransform.anchoredPosition =
 			new Vector2(position.x, position.z);
 		label.text = cell.coordinates.ToStringOnSeperateLines();
+		*/
 	}
 
 	public HexCell TouchCell (Vector3 position) {
