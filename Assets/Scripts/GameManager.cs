@@ -245,8 +245,8 @@ public class GameManager : MonoBehaviour {
             if(rhInfo.collider.gameObject.tag == "UI") return;
 
             // Did player click on a unit?
-            if(didHit && (rhInfo.collider.gameObject.tag == "Knight" 
-              || rhInfo.collider.gameObject.tag == "Archer" || rhInfo.collider.gameObject.tag == "Wizard" )){
+            if(didHit && (rhInfo.collider.gameObject.tag == "Knight" || rhInfo.collider.gameObject.tag == "Archer" 
+              || rhInfo.collider.gameObject.tag == "Wizard" || rhInfo.collider.gameObject.tag == "Defeated")){
                 
                 // Don't allow units to attack themselves
                 if(rhInfo.collider.gameObject == currentUnit){
@@ -351,6 +351,7 @@ public class GameManager : MonoBehaviour {
 
         foreach(GameObject unit in unitsToRemove) {
             allUnits.Remove(unit);
+            unit.tag = "Defeated";
         }
 
         if(unitsToRemove.Count != 0) {

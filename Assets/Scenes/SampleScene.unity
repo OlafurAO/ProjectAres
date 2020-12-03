@@ -1363,7 +1363,7 @@ PrefabInstance:
     - target: {fileID: 22337212382180786, guid: 2fe2b26fb86197341a6915aeae619de4,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22337212382180786, guid: 2fe2b26fb86197341a6915aeae619de4,
         type: 3}
@@ -2442,7 +2442,7 @@ GameObject:
   - component: {fileID: 363598050}
   m_Layer: 5
   m_Name: Button
-  m_TagString: Untagged
+  m_TagString: UI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2718,7 +2718,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 24, y: 0, z: 0}
 --- !u!1 &421870817
 GameObject:
