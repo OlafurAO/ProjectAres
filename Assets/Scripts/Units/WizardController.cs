@@ -24,6 +24,9 @@ public class WizardController : MonoBehaviour
     public bool deathConfirmed = false;
     public bool isIdle = true;
     public bool isTakingDamage = false;
+    
+    private bool startPlayingMoveAnimation = false;
+    private bool startPlayingIdleAnimation = true;
 
     //Where the unit should move next
     public Vector3 destination;
@@ -47,16 +50,22 @@ public class WizardController : MonoBehaviour
             if(destination != transform.position){
                 Move();
             } else {
-                isMoving = false;
-                isIdle = true;
+                if(startPlayingIdleAnimation) {
+                    startPlayingIdleAnimation = false;
+                    animator.Play("idle");
+                    isMoving = false;
+                    isIdle = true;
+                }
             }
 
             if(isAttacking) {
                 animator.Play("attack");
                 isAttacking = false;
             } else if(isMoving) {
-                animator.Play("run");
-                isMoving = false;
+                if(startPlayingMoveAnimation) {
+                    startPlayingMoveAnimation = false;
+                    animator.Play("run");      
+                }
             } else if(isTakingDamage) {
                 animator.Play("hurt");
                 isTakingDamage = false;
@@ -76,6 +85,8 @@ public class WizardController : MonoBehaviour
 
     public void StartMoving(Vector3 dest) {
         destination = dest;
+        startPlayingIdleAnimation = true;
+        startPlayingMoveAnimation = true;
         isMoving = true;
         isIdle = false;
     }
