@@ -26,6 +26,7 @@ public class KnightController : MonoBehaviour {
     public bool isIdle = true;
 
     private bool startPlayingMoveAnimation = false;
+    private bool startPlayingIdleAnimation = true;
 
 
     //Where the unit should move next
@@ -44,48 +45,17 @@ public class KnightController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if(Input.GetMouseButtonDown(1)) {
-            //commentað út svo dótið hans virki (bæði með "when mouce clicked)
-            
-            Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit rhInfo;
-            if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
-                destination = rhInfo.point;
-            }
-        } 
-
-        if(Input.GetKey(KeyCode.Space)) {
-            if(isMoving) isMoving = false;
-            isAttacking = true;
-        } else if(Input.GetKey(KeyCode.A)) {
-            if(isAttacking) isAttacking = false; 
-            isMoving = true;
-        if(isAttacking) {
-            animator.Play("attack");
-            isAttacking = false;
-        } else if(isMoving) {
-            animator.Play("run");
-            isMoving = false;
-        } else if(isTakingDamage) {
-            animator.Play("hurt");
-            isTakingDamage = false;
-        }
-        }
-
-        if(!isIdle) {
-            if(!animator.GetCurrentAnimatorStateInfo(0).IsName("attack") 
-            && !animator.GetCurrentAnimatorStateInfo(0).IsName("run") 
-            && !animator.GetCurrentAnimatorStateInfo(0).IsName("hurt")) {
-                animator.Play("idle");
-            }
-        }
         if(!isDead) {
             //if there is a new destination then move to it, else don't move
             if(destination != transform.position){
                 Move();
             } else {
-                isMoving = false;
-                isIdle = true;
+                if(startPlayingIdleAnimation) {
+                    startPlayingIdleAnimation = false;
+                    animator.Play("idle");
+                    isMoving = false;
+                    isIdle = true;
+                }
             }
 
             if(isAttacking) {
@@ -94,13 +64,12 @@ public class KnightController : MonoBehaviour {
             } else if(isMoving) {
                 if(startPlayingMoveAnimation) {
                     startPlayingMoveAnimation = false;
-                    
+                    animator.Play("run");      
                 }
-                animator.Play("run");
             } else if(isTakingDamage) {
                 animator.Play("hurt");
                 isTakingDamage = false;
-            }
+            } 
         } else {
             if(!deathConfirmed) {
                 // 50/50 chance which death animation is played
@@ -117,6 +86,7 @@ public class KnightController : MonoBehaviour {
 
     public void StartMoving(Vector3 dest) {
         destination = dest;
+        startPlayingIdleAnimation = true;
         startPlayingMoveAnimation = true;
         isMoving = true;
         isIdle = false;
