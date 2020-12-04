@@ -6,9 +6,10 @@ using UnityEngine.UI;
 public class ArcherController : MonoBehaviour {
     public HexGrid grid; 
     public int health = 100;
+    public int maxHealth = 60;
     public int armor = 2;
     public int armorModifier = 0;
-    public int baseDamage = 5;
+    public int baseDamage = 10;
     public int damageModifier = 0;
     
     public string type = "archer";
@@ -40,6 +41,7 @@ public class ArcherController : MonoBehaviour {
     public Animator animator;
     
     public GameObject DefenceImage;
+    public Image healthBar;
     public HexCoordinates IndexedLocation;
 
     // Start is called before the first frame update
@@ -91,14 +93,15 @@ public class ArcherController : MonoBehaviour {
         }
     }
 
-    public void StartMoving(Vector3 dest, HexCell hex) {
+    public bool StartMoving(Vector3 dest, HexCell hex) {
         float length = Vector3.Distance(transform.position, dest);
         if(length > 7){
             print("no way hosey");
+            return false;
         }else{
             if(hex.isOccupied){
                 print("no wayer hoseyer");
-                return; 
+                return false; 
             }
             destination = dest;
             startPlayingIdleAnimation = true;
@@ -110,7 +113,8 @@ public class ArcherController : MonoBehaviour {
             if(CurrCell != null){
                 grid.UnOccupyCell(CurrCell);
             } 
-            CurrCell = hex;  
+            CurrCell = hex;
+            return true;  
         }
     }
 
@@ -158,6 +162,8 @@ public class ArcherController : MonoBehaviour {
         } else {
             health -= damage;
         }
+
+        healthBar.fillAmount = ((float)health / (float)maxHealth);
 
         isIdle = false;
         if(health <= 0) {
