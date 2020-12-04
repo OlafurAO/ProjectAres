@@ -34,6 +34,7 @@ public class KnightController : MonoBehaviour {
     public HexCell CurrCell; 
     public GameObject DefenceImage;
     public Image healthBar;
+    public Text armorDisplay;
 
     //Where the unit should move next
     public Vector3 destination;
@@ -48,6 +49,7 @@ public class KnightController : MonoBehaviour {
     void Start() {
         destination = transform.position;    
         location = transform.position;
+        armorDisplay.text = "Armor: " + armor;
     }
 
     // Update is called once per frame
@@ -167,6 +169,7 @@ public class KnightController : MonoBehaviour {
         }
 
         healthBar.fillAmount = ((float)health / (float)maxHealth);
+        armorDisplay.text = "Armor: " + armor;
 
         isIdle = false;
         if(health <= 0) {

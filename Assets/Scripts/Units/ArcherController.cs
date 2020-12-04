@@ -42,12 +42,14 @@ public class ArcherController : MonoBehaviour {
     
     public GameObject DefenceImage;
     public Image healthBar;
+    public Text armorDisplay;
     public HexCoordinates IndexedLocation;
 
     // Start is called before the first frame update
     void Start() {
         destination = transform.position;  
         location = transform.position;
+        armorDisplay.text = "Armor: " + armor;
     }
 
     // Update is called once per frame
@@ -164,6 +166,7 @@ public class ArcherController : MonoBehaviour {
         }
 
         healthBar.fillAmount = ((float)health / (float)maxHealth);
+        armorDisplay.text = "Armor: " + armor;
 
         isIdle = false;
         if(health <= 0) {
