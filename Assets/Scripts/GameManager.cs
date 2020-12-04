@@ -338,6 +338,7 @@ public class GameManager : MonoBehaviour {
                         action = false;
                         movement = false; 
                     }
+                    return; 
                 } else if((currentUnit.tag.Contains("Red") && rhInfo.collider.gameObject.tag.Contains("Red"))
                   || (currentUnit.tag.Contains("Blue") && rhInfo.collider.gameObject.tag.Contains("Blue"))) {
                     return;  
@@ -388,16 +389,16 @@ public class GameManager : MonoBehaviour {
                     Vector3 destination = GetMoveLocation(index.coordinates.X, index.coordinates.Z);
                     if(currentUnit.tag.Contains("Knight")) {
                         var script = currentUnit.GetComponent<KnightController>();
-                        script.StartMoving(destination, index);
-                        movement = false; 
+                        bool move = script.StartMoving(destination, index);
+                        if(move) movement = false; 
                     } else if(currentUnit.tag.Contains("Archer")) {
                         var script = currentUnit.GetComponent<ArcherController>();  
-                        script.StartMoving(destination, index );
-                        movement = false; 
+                        bool move = script.StartMoving(destination, index );
+                        if(move) movement = false; 
                     } else {
                         var script = currentUnit.GetComponent<WizardController>();
-                        script.StartMoving(destination, index );
-                        movement = false; 
+                        bool move = script.StartMoving(destination, index );
+                        if(move) movement = false; 
                     }
                 }
             } 
