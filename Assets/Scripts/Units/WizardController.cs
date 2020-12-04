@@ -37,6 +37,7 @@ public class WizardController : MonoBehaviour
     
     public GameObject DefenceImage;
     public Image healthBar;
+    public Text armorDisplay;
     private Vector3 rotation; 
     //how fast the model should go from one space to the other 
     public int speed = 5; 
@@ -51,6 +52,7 @@ public class WizardController : MonoBehaviour
     void Start() {
         destination = transform.position;  
         location = transform.position;
+        armorDisplay.text = "Armor: " + armor;
     }
 
     // Update is called once per frame
@@ -171,6 +173,7 @@ public class WizardController : MonoBehaviour
         }
 
         healthBar.fillAmount = ((float)health / (float)maxHealth);
+        armorDisplay.text = "Armor: " + armor;
 
         isIdle = false;
         if(health <= 0) {
