@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ArcherController : MonoBehaviour {
+    public HexGrid grid; 
     public int health = 100;
     public int armor = 2;
     public int armorModifier = 0;
@@ -92,18 +93,22 @@ public class ArcherController : MonoBehaviour {
 
     public void StartMoving(Vector3 dest, HexCell hex) {
         float length = Vector3.Distance(transform.position, dest);
-        if(length > 7 && !hex.isOccupied){
+        if(length > 7){
             print("no way hosey");
         }else{
+            if(hex.isOccupied){
+                print("no wayer hoseyer");
+                return; 
+            }
             destination = dest;
             startPlayingIdleAnimation = true;
             startPlayingMoveAnimation = true;
             isMoving = true;
             isIdle = false;
             IndexedLocation = hex.coordinates;
-            hex.isOccupied = true;
+            grid.OccupyCell(hex);
             if(CurrCell != null){
-                CurrCell.isOccupied = false; 
+                grid.UnOccupyCell(CurrCell);
             } 
             CurrCell = hex;  
         }

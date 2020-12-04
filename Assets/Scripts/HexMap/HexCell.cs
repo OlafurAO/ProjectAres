@@ -6,5 +6,5 @@ public class HexCell : MonoBehaviour
 {
     public HexCoordinates coordinates;
     public Color color;
-    public bool isOccupied;
+    public bool isOccupied = true;
 }

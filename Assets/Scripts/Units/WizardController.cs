@@ -40,6 +40,8 @@ public class WizardController : MonoBehaviour
     public int speed = 5; 
     public string team;
 
+    public HexGrid grid; 
+
     public Animator animator;
     
 
@@ -95,18 +97,22 @@ public class WizardController : MonoBehaviour
 
     public void StartMoving(Vector3 dest, HexCell hex) {
         float length = Vector3.Distance(transform.position, dest);
-        if(length > 7&& !hex.isOccupied){
+        if(length > 7){
             print("no way hosey");
         }else{
+            if(hex.isOccupied){
+                print("nowayer hoseyer");
+                return; 
+            }
             destination = dest;
             startPlayingIdleAnimation = true;
             startPlayingMoveAnimation = true;
             isMoving = true;
             isIdle = false;
             IndexedLocation = hex.coordinates; 
-            hex.isOccupied = true;
+            grid.OccupyCell(hex);
             if(CurrCell != null){
-                CurrCell.isOccupied = false; 
+                grid.UnOccupyCell(CurrCell);
             } 
             CurrCell = hex; 
         }

@@ -68,9 +68,16 @@ public class HexGrid : MonoBehaviour {
 
 	
 	void Update () {
-	}/*
-	public Void OccupyCell(HexCell cell){
-		
-	}*/
+	}
+	
+	public void OccupyCell(HexCell cell){
+		int index = cell.coordinates.X + cell.coordinates.Z * width + cell.coordinates.Z / 2;
+		cells[index].isOccupied = true; 
+	}
+	public void UnOccupyCell(HexCell cell){
+		int index = cell.coordinates.X + cell.coordinates.Z * width + cell.coordinates.Z / 2;
+		cells[index].isOccupied = false;
+
+	}
 }
 

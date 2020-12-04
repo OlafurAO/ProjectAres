@@ -305,6 +305,7 @@ public class GameManager : MonoBehaviour {
                         action = false;
                         movement = false; 
                     }
+                    return; 
                 } else if((currentUnit.tag.Contains("Red") && rhInfo.collider.gameObject.tag.Contains("Red"))
                   || (currentUnit.tag.Contains("Blue") && rhInfo.collider.gameObject.tag.Contains("Blue"))) {
                     return;  
