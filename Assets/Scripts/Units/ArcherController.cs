@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ArcherController : MonoBehaviour {
-    public int health = 100;
+    public int maxHealth = 60;
+    public int health = 60;
     public int armor = 2;
     public int armorModifier = 0;
-    public int baseDamage = 5;
+    public int baseDamage = 10;
     public int damageModifier = 0;
     
     public string type = "archer";
@@ -39,6 +40,7 @@ public class ArcherController : MonoBehaviour {
     public Animator animator;
     
     public GameObject DefenceImage;
+    public Image healthBar;
     public HexCoordinates IndexedLocation;
 
     // Start is called before the first frame update
@@ -153,6 +155,8 @@ public class ArcherController : MonoBehaviour {
         } else {
             health -= damage;
         }
+
+        healthBar.fillAmount = ((float)health / (float)maxHealth);
 
         isIdle = false;
         if(health <= 0) {

@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
+    public static Camera mainCamera;
     public GameObject canvas;
 
     public List<GameObject> allUnits = new List<GameObject>();
@@ -50,6 +51,8 @@ public class GameManager : MonoBehaviour {
 
     void Awake() {
         instance = this;
+        mainCamera = Camera.main;
+        mainCamera.enabled = true;
         canvas = GameObject.Find("Canvas");
         LoadPortraitTextures();
         LoadAudioClips();
@@ -254,8 +257,38 @@ public class GameManager : MonoBehaviour {
         movement = true; 
     }
 
+    void MoveCamera() {
+        // Move camera
+        if(Input.GetKey(KeyCode.A)) {
+            if(mainCamera.transform.position.x > 5) {
+                mainCamera.transform.Translate(new Vector3(-10f * Time.deltaTime, 0, 0));
+            }    
+        } else if(Input.GetKey(KeyCode.D)) {
+            if(mainCamera.transform.position.x < 25) {
+                mainCamera.transform.Translate(new Vector3(10f * Time.deltaTime, 0, 0));
+            }    
+        } else if(Input.GetKey(KeyCode.W)) { 
+            if(mainCamera.transform.position.y > 2) {
+                mainCamera.transform.Translate(new Vector3(0, 0, 10f * Time.deltaTime));
+            }    
+        } else if(Input.GetKey(KeyCode.S)) {
+            if(mainCamera.transform.position.y < 10) {
+                mainCamera.transform.Translate(new Vector3(0, 0, -10f * Time.deltaTime));
+            }    
+        } else if(Input.GetKey(KeyCode.E)) { 
+            if(mainCamera.transform.position.y < 10) {
+                mainCamera.transform.Translate(new Vector3(0, 10f * Time.deltaTime, 0));
+            }    
+        } else if(Input.GetKey(KeyCode.Q)) {
+            if(mainCamera.transform.position.y > 2) {
+                mainCamera.transform.Translate(new Vector3(0, -10f * Time.deltaTime, 0));
+            }
+        }
+    }
+
     // Update is called once per frame
     void Update() {
+        MoveCamera();
         if(gameOver) {
             return;
         }
