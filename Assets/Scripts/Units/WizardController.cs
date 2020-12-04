@@ -5,12 +5,13 @@ using UnityEngine.UI;
 
 public class WizardController : MonoBehaviour
 {
-    public int health = 150;
+    public int maxHealth = 80;
+    public int health = 80;
     public HexCoordinates IndexedLocation;
     public HexCell CurrCell; 
     public int armor = 1;
     public int armorModifier = 0;
-    public int baseDamage = 15;
+    public int baseDamage = 20;
     public int damageModifier = 0;
     
     public string type = "wizard";
@@ -35,6 +36,7 @@ public class WizardController : MonoBehaviour
     public Vector3 destination;
     
     public GameObject DefenceImage;
+    public Image healthBar;
     private Vector3 rotation; 
     //how fast the model should go from one space to the other 
     public int speed = 5; 
@@ -159,6 +161,8 @@ public class WizardController : MonoBehaviour
         } else {
             health -= damage;
         }
+
+        healthBar.fillAmount = ((float)health / (float)maxHealth);
 
         isIdle = false;
         if(health <= 0) {

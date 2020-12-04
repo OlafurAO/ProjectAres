@@ -4,11 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class KnightController : MonoBehaviour {
-    public int health = 200;
+    public int maxHealth = 100;
+    public int health = 100;
     public HexCoordinates IndexedLocation;
     public int armor = 5;
     public int armorModifier = 0;
-    public int baseDamage = 10;
+    public int baseDamage = 15;
     public int damageModifier = 0;
     
     public string type = "knight";
@@ -31,6 +32,8 @@ public class KnightController : MonoBehaviour {
 
     public HexCell CurrCell; 
     public GameObject DefenceImage;
+    public Image healthBar;
+
     //Where the unit should move next
     public Vector3 destination;
     private Vector3 rotation; 
@@ -155,6 +158,8 @@ public class KnightController : MonoBehaviour {
         } else {
             health -= damage;
         }
+
+        healthBar.fillAmount = ((float)health / (float)maxHealth);
 
         isIdle = false;
         if(health <= 0) {
