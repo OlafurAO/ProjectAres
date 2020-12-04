@@ -6,5 +6,7 @@ public class HexCell : MonoBehaviour
 {
     public HexCoordinates coordinates;
     public Color color;
-    public bool isOccupied = true;
+    public bool isOccupied = false;
+    public Canvas canvas; 
+
 }

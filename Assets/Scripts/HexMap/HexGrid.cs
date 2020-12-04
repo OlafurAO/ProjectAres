@@ -14,6 +14,8 @@ public class HexGrid : MonoBehaviour {
 	public Text cellLabelPrefab;
 	HexMesh hexMesh;
 
+	public Canvas canvas1;
+
 	//Canvas gridCanvas;
 
 	HexCell[] cells;
@@ -41,7 +43,7 @@ public class HexGrid : MonoBehaviour {
 		position.x = (x + z * 0.5f - z/2) * (HexMeetrics.innerRadius * 2f);
 		position.y = 0f;
 		position.z = z * (HexMeetrics.outerRadius * 1.5f);
-
+		cellPrefab.canvas = canvas1; 
 		HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
 		cell.transform.SetParent(transform, false);
 		cell.transform.localPosition = position;
@@ -79,5 +81,10 @@ public class HexGrid : MonoBehaviour {
 		cells[index].isOccupied = false;
 
 	}
+
+/*	public void canvasthingy(HexCell cell){
+		cell.canvas.RectTransform.PosX = cell.position.X; 
+
+	}*/
 }
 

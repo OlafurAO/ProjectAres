@@ -306,6 +306,7 @@ public class GameManager : MonoBehaviour {
         if(Input.GetMouseButtonDown(0)) {    
             // Did player click on a UI button? if so, don't do anything else
             if(EventSystem.current.IsPointerOverGameObject()) {
+                print("thingy");
                 return;
             }
 
@@ -353,25 +354,25 @@ public class GameManager : MonoBehaviour {
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
                     InRange = attackerScript.Attack(victimLocation);
-                    action = false; 
-                    movement = false; 
                 } else if(currentUnit.tag.Contains("Archer")) {
                     var attackerScript = currentUnit.GetComponent<ArcherController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
                     InRange = attackerScript.Attack(victimLocation); 
-                    action = false; 
-                    movement = false; 
                 } else {
                     var attackerScript = currentUnit.GetComponent<WizardController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
                     InRange = attackerScript.Attack(victimLocation); 
-                    action = false; 
-                    movement = false; 
                 }
                 
-                if(!InRange) return; 
+                if(InRange) {
+                    action = false; 
+                    movement = false;
+                }else{
+                    action = true; 
+                    return;
+                } 
                 if(rhInfo.collider.gameObject.tag.Contains("Knight")) {
                     var victimScript = rhInfo.collider.gameObject.GetComponent<KnightController>();
                     victimScript.TakeDamage(damage, type, 0.5f);
