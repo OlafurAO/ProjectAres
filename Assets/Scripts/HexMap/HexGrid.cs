@@ -14,6 +14,8 @@ public class HexGrid : MonoBehaviour {
 	public Text cellLabelPrefab;
 	HexMesh hexMesh;
 
+	public Canvas canvas1;
+
 	//Canvas gridCanvas;
 
 	HexCell[] cells;
@@ -41,12 +43,26 @@ public class HexGrid : MonoBehaviour {
 		position.x = (x + z * 0.5f - z/2) * (HexMeetrics.innerRadius * 2f);
 		position.y = 0f;
 		position.z = z * (HexMeetrics.outerRadius * 1.5f);
-
+		cellPrefab.isOccupied = false;
 		HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
+		
 		cell.transform.SetParent(transform, false);
 		cell.transform.localPosition = position;
 		cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
 		cell.color = defaultColor;
+		Canvas temp = Instantiate<Canvas>(canvas1);
+		temp.transform.SetParent(cell.transform, false);
+		cell.canvas = temp;
+		//Button butt = cell.canvas.transform.GetComponent<Button>();
+		//cell.buttControl = butt.GetComponent<ButtonController>();
+		//print(butt.gameObject);
+		cell.canvas.enabled = false;
+		
+		//code Stefan might re-use later on 
+		/*MeshRenderer meshRenderer = temp.GetComponent<MeshRenderer>();
+		meshRenderer.enabled = false;
+		*/
+		
 		/*
 		Text label = Instantiate<Text>(cellLabelPrefab);
 		label.rectTransform.SetParent(gridCanvas.transform, false);
@@ -63,6 +79,15 @@ public class HexGrid : MonoBehaviour {
 		HexCell cell = cells[index];
 		cell.color = touchedColor;
 		hexMesh.Triangulate(cells);
+		cell.canvas.enabled = true;
+		
+		//testing canvas so stefan can place button on top of canvas
+		//cell.buttControl.EnableButton();
+		
+		//code Stefan might re-use later on 
+		/*MeshRenderer meshRenderer = temp.GetComponent<MeshRenderer>();
+		meshRenderer.enabled = false;
+		*/
 		return cell; 
 	}
 
@@ -79,5 +104,11 @@ public class HexGrid : MonoBehaviour {
 		cells[index].isOccupied = false;
 
 	}
+
+/*	public void canvasthingy(HexCell cell){
+		cell.canvas.RectTransform.PosX = cell.position.X; 
+
+	}*/
+
 }
 
