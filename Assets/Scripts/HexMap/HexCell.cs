@@ -8,6 +8,8 @@ public class HexCell : MonoBehaviour
     public HexCoordinates coordinates;
     public Color color;
     public bool isOccupied = false;
-    public Canvas canvas; 
+    public Canvas MoveCanvas; 
+    public Canvas AttackCanvas;
+    public Canvas DefenceCanvas;
 
 }

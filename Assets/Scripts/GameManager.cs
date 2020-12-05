@@ -51,6 +51,16 @@ public class GameManager : MonoBehaviour {
     bool movement; 
     bool action; 
 
+    public Vector3 victimLocation;
+    //store conteroller of the victim  
+    public WizardController wizVictim;
+    public KnightController knightVictim; 
+    public ArcherController archVictim; 
+    //store what type the victim is (wiz, knight, arch)
+    public string VictimUnit; 
+    //stores a canvas of the newest button visable (so we can disable it if needed (click on 2 tiles at onece and 1 one dissapears))
+    private Canvas currButtonCanvas;
+
     void Awake() {
         instance = this;
         mainCamera = Camera.main;
@@ -316,83 +326,62 @@ public class GameManager : MonoBehaviour {
             Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit rhInfo;
             bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
+            HexCell index; 
 
             // Did player click on a unit?
             if(didHit && (rhInfo.collider.gameObject.tag.Contains("Knight") || rhInfo.collider.gameObject.tag.Contains("Archer") 
               || rhInfo.collider.gameObject.tag.Contains("Wizard") || rhInfo.collider.gameObject.tag.Contains("Defeated"))){
                 if(rhInfo.collider.gameObject.tag.Contains("Defeated")) return;
                 if(!action) return; 
-                // No friendly fire!
                 if(rhInfo.collider.gameObject == currentUnit){
-                    //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
-                    if(currentUnit.tag.Contains("Knight")) {
-                        var attackerScript = currentUnit.GetComponent<KnightController>();
-                        attackerScript.Defend(); 
-                        action = false;
-                        movement = false; 
-                    } else if(currentUnit.tag.Contains("Archer")) {
-                        var attackerScript = currentUnit.GetComponent<ArcherController>();
-                        attackerScript.Defend();  
-                        action = false;
-                        movement = false; 
-                    } else {
-                        var attackerScript = currentUnit.GetComponent<WizardController>();
-                        attackerScript.Defend();  
-                        action = false;
-                        movement = false; 
+                    //if "defence" then display button and if pressed run "defend" command/ function below
+                    if(SelectedCell != null){
+                        grid.DisableButton(currButtonCanvas);
                     }
+                    index = grid.DefenceCell(rhInfo.point);
+                    currButtonCanvas = index.DefenceCanvas;
+                    SelectedCell = index;
+                    
                     return; 
+                // No friendly fire!
                 } else if((currentUnit.tag.Contains("Red") && rhInfo.collider.gameObject.tag.Contains("Red"))
                   || (currentUnit.tag.Contains("Blue") && rhInfo.collider.gameObject.tag.Contains("Blue"))) {
                     return;  
                 }
 
-                int damage = 0;
-                string type = "";
-                bool InRange = false; 
-                Vector3 victimLocation= rhInfo.collider.gameObject.GetComponent<Transform>().position;
-                if(currentUnit.tag.Contains("Knight")) {
-                    var attackerScript = currentUnit.GetComponent<KnightController>();
-                    damage = attackerScript.baseDamage;
-                    type = attackerScript.type;
-                    InRange = attackerScript.Attack(victimLocation);
-                } else if(currentUnit.tag.Contains("Archer")) {
-                    var attackerScript = currentUnit.GetComponent<ArcherController>();
-                    damage = attackerScript.baseDamage;
-                    type = attackerScript.type;
-                    InRange = attackerScript.Attack(victimLocation); 
-                    
-                } else {
-                    var attackerScript = currentUnit.GetComponent<WizardController>();
-                    damage = attackerScript.baseDamage;
-                    type = attackerScript.type;
-                    InRange = attackerScript.Attack(victimLocation); 
-                    
-                }
-                
-                if(InRange) {
-                        action = false; 
-                        movement = false;
-                    } else{
-                        action = true; 
-                        return;
-                    } 
+                print("attack");
+
+                //attack 
+                //victim stuff put in global so that the other method doesn't need to get it (þarf script og þannig frá rhInfo.Colider stuff)
+                victimLocation= rhInfo.collider.gameObject.GetComponent<Transform>().position;
                 if(rhInfo.collider.gameObject.tag.Contains("Knight")) {
-                    var victimScript = rhInfo.collider.gameObject.GetComponent<KnightController>();
-                    victimScript.TakeDamage(damage, type, 0.5f);
+                    knightVictim = rhInfo.collider.gameObject.GetComponent<KnightController>();
+                    VictimUnit = "Knight";
                 } else if(rhInfo.collider.gameObject.tag.Contains("Archer")) {
-                    var victimScript = rhInfo.collider.gameObject.GetComponent<ArcherController>();
-                    victimScript.TakeDamage(damage, type, 0.5f);
+                    archVictim = rhInfo.collider.gameObject.GetComponent<ArcherController>();
+                    VictimUnit = "Archer";
                 } else {
-                    var victimScript = rhInfo.collider.gameObject.GetComponent<WizardController>();
-                    victimScript.TakeDamage(damage, type, 0.5f);
+                    wizVictim = rhInfo.collider.gameObject.GetComponent<WizardController>();
+                    VictimUnit = "Wizard";
                 }
+                //not sure this workds (clicks on unit at get's  unit's cell)
+                index = grid.AttackCell(rhInfo.point);
+                if(SelectedCell != null){
+                    grid.DisableButton(currButtonCanvas);
+                }
+                currButtonCanvas = index.AttackCanvas;
+                SelectedCell = index; 
+                
             } else {
                 if(!movement) return; 
-                if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
-                    HexCell index = grid.TouchCell(rhInfo.point);
+                //if move unit, display button that if pressed runs "move unit"
+                if(Physics.Raycast(toMouse, out rhInfo, 1000.0f)){
+                    index = grid.MovementCell(rhInfo.point);
+                    if(SelectedCell != null){
+                        grid.DisableButton(currButtonCanvas);
+                    }
+                    currButtonCanvas = index.MoveCanvas;
                     SelectedCell = index; 
-                    print("slected cell "+ index);
                 }
             } 
         };
@@ -405,9 +394,6 @@ public class GameManager : MonoBehaviour {
     List<(double, double)> NullLocation = new List<(double, double)>(){ ( 0, 0),(1.5,3),(3.5,6),(5.5,9),(7,12),(8.5,15)};
 
 
-    public void DisableButton(Canvas canvas){
-        canvas.enabled = false;
-    }
 
     Vector3 GetMoveLocation(int x, int z) {
         var up = NullLocation[z];
@@ -417,7 +403,6 @@ public class GameManager : MonoBehaviour {
     }
 
     public void MoveUnit(){
-        print("1111111111111111111111111111111111111111111111111111111111111111111111111 " + SelectedCell);
         if(SelectedCell == null) return; 
         var index = SelectedCell;
         Vector3 destination = GetMoveLocation(index.coordinates.X, index.coordinates.Z);
@@ -434,6 +419,66 @@ public class GameManager : MonoBehaviour {
             bool move = script.StartMoving(destination, index );
             if(move) movement = false; 
         }
+    }
+    public void UnitAttack(){
+        int damage = 0;
+        string type = "";
+        bool InRange = false; 
+        if(currentUnit.tag.Contains("Knight")) {
+            var attackerScript = currentUnit.GetComponent<KnightController>();
+            damage = attackerScript.baseDamage;
+            type = attackerScript.type;
+            InRange = attackerScript.Attack(victimLocation);
+        } else if(currentUnit.tag.Contains("Archer")) {
+            var attackerScript = currentUnit.GetComponent<ArcherController>();
+            damage = attackerScript.baseDamage;
+            type = attackerScript.type;
+            InRange = attackerScript.Attack(victimLocation); 
+            
+        } else {
+            var attackerScript = currentUnit.GetComponent<WizardController>();
+            damage = attackerScript.baseDamage;
+            type = attackerScript.type;
+            InRange = attackerScript.Attack(victimLocation); 
+            
+        }
+        
+        if(InRange) {
+                action = false; 
+                movement = false;
+            } else{
+                action = true; 
+                return;
+            } 
+        if(VictimUnit == "Knight"){
+            knightVictim.TakeDamage(damage, type, 0.5f);
+        }else if (VictimUnit == "Archer"){
+            archVictim.TakeDamage(damage, type, 0.5f);
+        }else if(VictimUnit == "Wizard"){
+            wizVictim.TakeDamage(damage, type, 0.5f);
+        }  
+        
+    }
+
+    public void Defend(){
+        //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
+        if(currentUnit.tag.Contains("Knight")) {
+            var attackerScript = currentUnit.GetComponent<KnightController>();
+            attackerScript.Defend(); 
+            action = false;
+            movement = false; 
+        } else if(currentUnit.tag.Contains("Archer")) {
+            var attackerScript = currentUnit.GetComponent<ArcherController>();
+            attackerScript.Defend();  
+            action = false;
+            movement = false; 
+        } else {
+            var attackerScript = currentUnit.GetComponent<WizardController>();
+            attackerScript.Defend();  
+            action = false;
+            movement = false; 
+        }
+
     }
 
     void CheckForDeadUnits() {
