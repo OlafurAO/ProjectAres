@@ -53,8 +53,10 @@ public class HexGrid : MonoBehaviour {
 		Canvas temp = Instantiate<Canvas>(canvas1);
 		temp.transform.SetParent(cell.transform, false);
 		cell.canvas = temp;
-		Button butt = cell.canvas.transform.GetComponent<Button>();
-		butt.gameObject.SetActive(false); 
+		//Button butt = cell.canvas.transform.GetComponent<Button>();
+		//cell.buttControl = butt.GetComponent<ButtonController>();
+		//print(butt.gameObject);
+		cell.canvas.enabled = false;
 		
 		//code Stefan might re-use later on 
 		/*MeshRenderer meshRenderer = temp.GetComponent<MeshRenderer>();
@@ -77,10 +79,10 @@ public class HexGrid : MonoBehaviour {
 		HexCell cell = cells[index];
 		cell.color = touchedColor;
 		hexMesh.Triangulate(cells);
+		cell.canvas.enabled = true;
 		
 		//testing canvas so stefan can place button on top of canvas
-		Button butt = cell.canvas.transform.GetComponent<Button>();
-		butt.gameObject.SetActive(true); 
+		//cell.buttControl.EnableButton();
 		
 		//code Stefan might re-use later on 
 		/*MeshRenderer meshRenderer = temp.GetComponent<MeshRenderer>();
@@ -108,8 +110,5 @@ public class HexGrid : MonoBehaviour {
 
 	}*/
 
-	public void DisableButton(Button butt){
-		butt.gameObject.SetActive(false);
-	}
 }
 

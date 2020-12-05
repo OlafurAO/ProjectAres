@@ -519,7 +519,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 461.2, y: 116.3}
+  m_AnchoredPosition: {x: 389, y: 158.6}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &177581357
@@ -1110,7 +1110,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 334034933}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 13.93, y: 0, z: 11.84}
+  m_LocalPosition: {x: 13.93, y: 0, z: 11.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 736183295}
@@ -1408,7 +1408,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 468, y: -155.4}
+  m_AnchoredPosition: {x: 395.80005, y: -155.4}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &363598050
@@ -6274,7 +6274,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 468, y: 266.85}
+  m_AnchoredPosition: {x: 395.80005, y: 266.85}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1209003661
@@ -8286,7 +8286,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534589384}
   m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
-  m_LocalPosition: {x: 6.9799995, y: 0, z: 11.84}
+  m_LocalPosition: {x: 6.9799995, y: 0, z: 11.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 658726515}
@@ -8421,7 +8421,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 485.7, y: 184.3}
+  m_AnchoredPosition: {x: 413.50006, y: 224.1}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1559557305
@@ -8886,8 +8886,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 478.4, y: -67.6}
-  m_SizeDelta: {x: 160, y: 180}
+  m_AnchoredPosition: {x: 406.20004, y: -18.3}
+  m_SizeDelta: {x: 160, y: 231.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1745874500
 MonoBehaviour:
@@ -8933,7 +8933,16 @@ MonoBehaviour:
     Move: move unit
 
     Action:
-    attack or defend'
+    attack or defend
+
+
+    Movement range: 2 tiles
+
+
+    Attack range: Wizard/Archer:
+    2 tiles
+
+    Knight: 1 tile'
 --- !u!222 &1745874501
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9219,7 +9228,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1814070554}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 10.48, y: 0, z: 11.84}
+  m_LocalPosition: {x: 10.48, y: 0, z: 11.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 576508243}

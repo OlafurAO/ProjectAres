@@ -361,19 +361,22 @@ public class GameManager : MonoBehaviour {
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
                     InRange = attackerScript.Attack(victimLocation); 
+                    
                 } else {
                     var attackerScript = currentUnit.GetComponent<WizardController>();
                     damage = attackerScript.baseDamage;
                     type = attackerScript.type;
                     InRange = attackerScript.Attack(victimLocation); 
+                    
                 }
                 
                 if(InRange) {
-                    action = false; 
-                    movement = false;
-                }else{
-                    return;
-                } 
+                        action = false; 
+                        movement = false;
+                    } else{
+                        action = true; 
+                        return;
+                    } 
                 if(rhInfo.collider.gameObject.tag.Contains("Knight")) {
                     var victimScript = rhInfo.collider.gameObject.GetComponent<KnightController>();
                     victimScript.TakeDamage(damage, type, 0.5f);
@@ -401,9 +404,11 @@ public class GameManager : MonoBehaviour {
 
     List<(double, double)> NullLocation = new List<(double, double)>(){ ( 0, 0),(1.5,3),(3.5,6),(5.5,9),(7,12),(8.5,15)};
 
-	public void DisableButton(Button butt){
-		butt.gameObject.SetActive(false);
-	}
+
+    public void DisableButton(Canvas canvas){
+        canvas.enabled = false;
+    }
+
     Vector3 GetMoveLocation(int x, int z) {
         var up = NullLocation[z];
         var left = (float)up.Item1 + (3.5 * x);
