@@ -130,7 +130,8 @@ public class ArcherController : MonoBehaviour {
 
     public bool Attack(Vector3 victimPos) {
         float length = Vector3.Distance(transform.position, victimPos);
-        if(length >7){
+        if(length >7.5){
+            print(length);
             print("no way hosey");
         }else{
             isAttacking = true;   

@@ -382,10 +382,10 @@ public class GameManager : MonoBehaviour {
                     VictimUnit = "Wizard";
                 }
                 //not sure this workds (clicks on unit at get's  unit's cell)
-                index = grid.AttackCell(rhInfo.point);
                 if(SelectedCell != null){
                     grid.DisableButton(currButtonCanvas);
                 }
+                index = grid.AttackCell(rhInfo.point);
                 currButtonCanvas = index.AttackCanvas;
                 SelectedCell = index; 
                 
@@ -393,10 +393,10 @@ public class GameManager : MonoBehaviour {
                 if(!movement) return; 
                 //if move unit, display button that if pressed runs "move unit"
                 if(Physics.Raycast(toMouse, out rhInfo, 1000.0f)){
-                    index = grid.MovementCell(rhInfo.point);
                     if(SelectedCell != null){
                         grid.DisableButton(currButtonCanvas);
                     }
+                    index = grid.MovementCell(rhInfo.point);
                     currButtonCanvas = index.MoveCanvas;
                     SelectedCell = index; 
                 }

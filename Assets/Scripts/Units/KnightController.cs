@@ -102,7 +102,8 @@ public class KnightController : MonoBehaviour {
 
     public bool StartMoving(Vector3 dest, HexCell hex) {
         float length = Vector3.Distance(transform.position, dest);
-        if(length > 7){
+        if(length >= 7.5){
+            print(length);
             print("no way hosey");
             return false; 
         }else{
