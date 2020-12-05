@@ -14,7 +14,9 @@ public class HexGrid : MonoBehaviour {
 	public Text cellLabelPrefab;
 	HexMesh hexMesh;
 
-	public Canvas canvas1;
+	public Canvas MoveCanvas1;
+	public Canvas AttackCanvas1;
+	public Canvas DefenceCanvas1;
 
 	//Canvas gridCanvas;
 
@@ -50,18 +52,21 @@ public class HexGrid : MonoBehaviour {
 		cell.transform.localPosition = position;
 		cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
 		cell.color = defaultColor;
-		Canvas temp = Instantiate<Canvas>(canvas1);
+		Canvas temp = Instantiate<Canvas>(MoveCanvas1);
+		Canvas temp2 = Instantiate<Canvas>(AttackCanvas1);
+		Canvas temp3 = Instantiate<Canvas>(DefenceCanvas1);
 		temp.transform.SetParent(cell.transform, false);
-		cell.canvas = temp;
-		//Button butt = cell.canvas.transform.GetComponent<Button>();
-		//cell.buttControl = butt.GetComponent<ButtonController>();
-		//print(butt.gameObject);
-		cell.canvas.enabled = false;
+		temp2.transform.SetParent(cell.transform, false);
+		temp3.transform.SetParent(cell.transform, false);
 		
-		//code Stefan might re-use later on 
-		/*MeshRenderer meshRenderer = temp.GetComponent<MeshRenderer>();
-		meshRenderer.enabled = false;
-		*/
+		cell.MoveCanvas = temp;
+		cell.AttackCanvas = temp2;
+		cell.DefenceCanvas = temp3;
+		
+		cell.MoveCanvas.enabled = false;
+		cell.AttackCanvas.enabled = false;
+		cell.DefenceCanvas.enabled = false;
+		
 		
 		/*
 		Text label = Instantiate<Text>(cellLabelPrefab);
@@ -79,16 +84,43 @@ public class HexGrid : MonoBehaviour {
 		HexCell cell = cells[index];
 		cell.color = touchedColor;
 		hexMesh.Triangulate(cells);
-		cell.canvas.enabled = true;
 		
-		//testing canvas so stefan can place button on top of canvas
-		//cell.buttControl.EnableButton();
-		
-		//code Stefan might re-use later on 
-		/*MeshRenderer meshRenderer = temp.GetComponent<MeshRenderer>();
-		meshRenderer.enabled = false;
-		*/
 		return cell; 
+	}
+
+	public HexCell MovementCell(Vector3 position){
+		HexCell currCell = getCell(position);
+		currCell.MoveCanvas.enabled = true;
+		return currCell;
+	}
+
+
+	public HexCell AttackCell(Vector3 position){
+		HexCell currCell = getCell( position);
+		currCell.AttackCanvas.enabled = true;
+		return currCell;
+	}
+
+
+
+	public HexCell DefenceCell(Vector3 position){
+		HexCell currCell = getCell( position);
+		currCell.DefenceCanvas.enabled = true;
+		return currCell;
+	}
+
+
+	public HexCell getCell(Vector3 position){
+		//the same as "touchCell" but different name 
+		position = transform.InverseTransformPoint(position);
+		HexCoordinates coordinates = HexCoordinates.FromPosition(position);
+		int index = coordinates.X + coordinates.Z * width + coordinates.Z / 2;
+		HexCell cell = cells[index];
+		cell.color = touchedColor;
+		hexMesh.Triangulate(cells);
+		
+		return cell; 
+		
 	}
 
 	
@@ -104,6 +136,11 @@ public class HexGrid : MonoBehaviour {
 		cells[index].isOccupied = false;
 
 	}
+
+	//button calls this to disable the button in the game
+    public void DisableButton(Canvas canvas){
+        canvas.enabled = false;
+    }
 
 /*	public void canvasthingy(HexCell cell){
 		cell.canvas.RectTransform.PosX = cell.position.X; 
