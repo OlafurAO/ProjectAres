@@ -45,6 +45,9 @@ public class KnightController : MonoBehaviour {
 
     public Animator animator;
 
+    public Canvas HealthCanvas; 
+
+    public Camera camera; 
     // Start is called before the first frame update
     void Start() {
         destination = transform.position;    
@@ -186,5 +189,10 @@ public class KnightController : MonoBehaviour {
 
     public bool IsUnitDead() {
         return isDead;
+    }
+    
+    //moving healthbar to face the camera
+    public void MoveHealthBar(){
+        HealthCanvas.transform.LookAt(camera.transform.position);
     }
 }

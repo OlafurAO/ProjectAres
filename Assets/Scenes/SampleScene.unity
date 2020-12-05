@@ -1068,6 +1068,21 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1218903688067737923, guid: 2fe2b26fb86197341a6915aeae619de4,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1218903688067737923, guid: 2fe2b26fb86197341a6915aeae619de4,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1218903688067737923, guid: 2fe2b26fb86197341a6915aeae619de4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8594237501831212214, guid: 2fe2b26fb86197341a6915aeae619de4,
         type: 3}
       propertyPath: canvas1
@@ -1088,6 +1103,11 @@ PrefabInstance:
       propertyPath: DefenceCanvas1
       value: 
       objectReference: {fileID: 753628729}
+    - target: {fileID: 8594237501831212214, guid: 2fe2b26fb86197341a6915aeae619de4,
+        type: 3}
+      propertyPath: camera
+      value: 
+      objectReference: {fileID: 414001886}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2fe2b26fb86197341a6915aeae619de4, type: 3}
 --- !u!1 &303757399
@@ -8466,14 +8486,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1375188510}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children:
   - {fileID: 528428947}
   m_Father: {fileID: 795423848}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}

@@ -61,6 +61,8 @@ public class GameManager : MonoBehaviour {
     //stores a canvas of the newest button visable (so we can disable it if needed (click on 2 tiles at onece and 1 one dissapears))
     private Canvas currButtonCanvas;
 
+    public List<GameObject> AllUnits;
+
     void Awake() {
         instance = this;
         mainCamera = Camera.main;
@@ -296,11 +298,26 @@ public class GameManager : MonoBehaviour {
                 mainCamera.transform.Translate(new Vector3(0, -10f * Time.deltaTime, 0));
             }
         }
+        foreach (var unit in AllUnits)
+        {
+            if(unit.tag.Contains("Knight")){
+                unit.GetComponent<KnightController>().MoveHealthBar();
+            }else if(unit.tag.Contains("Archer")){
+                unit.GetComponent<ArcherController>().MoveHealthBar();
+            }else if(unit.tag.Contains("Wizard")){
+                unit.GetComponent<WizardController>().MoveHealthBar();
+            }
+            
+        }
     }
 
     // Update is called once per frame
     void Update() {
         MoveCamera();
+        if(currButtonCanvas != null){
+            grid.MoveButton(currButtonCanvas);
+        }
+
         if(gameOver) {
             return;
         }
