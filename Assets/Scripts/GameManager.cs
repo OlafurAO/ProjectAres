@@ -27,6 +27,8 @@ public class GameManager : MonoBehaviour {
 
     public TMPro.TextMeshProUGUI winnerLabel;
 
+    private HexCell SelectedCell; 
+
     // TODO: add different colored teams
     private string[] portraitTextureNames = {
         "KnightBlue", "ArcherBlue", "WizardBlue", 
@@ -385,21 +387,9 @@ public class GameManager : MonoBehaviour {
             } else {
                 if(!movement) return; 
                 if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
-                    var index = grid.TouchCell(rhInfo.point);
-                    Vector3 destination = GetMoveLocation(index.coordinates.X, index.coordinates.Z);
-                    if(currentUnit.tag.Contains("Knight")) {
-                        var script = currentUnit.GetComponent<KnightController>();
-                        bool move = script.StartMoving(destination, index);
-                        if(move) movement = false; 
-                    } else if(currentUnit.tag.Contains("Archer")) {
-                        var script = currentUnit.GetComponent<ArcherController>();  
-                        bool move = script.StartMoving(destination, index );
-                        if(move) movement = false; 
-                    } else {
-                        var script = currentUnit.GetComponent<WizardController>();
-                        bool move = script.StartMoving(destination, index );
-                        if(move) movement = false; 
-                    }
+                    HexCell index = grid.TouchCell(rhInfo.point);
+                    SelectedCell = index; 
+                    print("slected cell "+ index);
                 }
             } 
         };
@@ -411,11 +401,34 @@ public class GameManager : MonoBehaviour {
 
     List<(double, double)> NullLocation = new List<(double, double)>(){ ( 0, 0),(1.5,3),(3.5,6),(5.5,9),(7,12),(8.5,15)};
 
+	public void DisableButton(Button butt){
+		butt.gameObject.SetActive(false);
+	}
     Vector3 GetMoveLocation(int x, int z) {
         var up = NullLocation[z];
         var left = (float)up.Item1 + (3.5 * x);
         return new Vector3 ((float)left, 0, (float)up.Item2);
 
+    }
+
+    public void MoveUnit(){
+        print("1111111111111111111111111111111111111111111111111111111111111111111111111 " + SelectedCell);
+        if(SelectedCell == null) return; 
+        var index = SelectedCell;
+        Vector3 destination = GetMoveLocation(index.coordinates.X, index.coordinates.Z);
+        if(currentUnit.tag.Contains("Knight")) {
+            var script = currentUnit.GetComponent<KnightController>();
+            bool move = script.StartMoving(destination, index);
+            if(move) movement = false; 
+        } else if(currentUnit.tag.Contains("Archer")) {
+            var script = currentUnit.GetComponent<ArcherController>();  
+            bool move = script.StartMoving(destination, index );
+            if(move) movement = false; 
+        } else {
+            var script = currentUnit.GetComponent<WizardController>();
+            bool move = script.StartMoving(destination, index );
+            if(move) movement = false; 
+        }
     }
 
     void CheckForDeadUnits() {
