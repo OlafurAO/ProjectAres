@@ -370,7 +370,6 @@ public class GameManager : MonoBehaviour {
                     action = false; 
                     movement = false;
                 }else{
-                    action = true; 
                     return;
                 } 
                 if(rhInfo.collider.gameObject.tag.Contains("Knight")) {
