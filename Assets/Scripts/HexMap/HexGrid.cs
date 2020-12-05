@@ -18,6 +18,8 @@ public class HexGrid : MonoBehaviour {
 	public Canvas AttackCanvas1;
 	public Canvas DefenceCanvas1;
 
+	public Camera camera;
+
 	//Canvas gridCanvas;
 
 	HexCell[] cells;
@@ -90,6 +92,7 @@ public class HexGrid : MonoBehaviour {
 
 	public HexCell MovementCell(Vector3 position){
 		HexCell currCell = getCell(position);
+		currCell.MoveCanvas.transform.LookAt(camera.transform.position);
 		currCell.MoveCanvas.enabled = true;
 		return currCell;
 	}
@@ -97,6 +100,7 @@ public class HexGrid : MonoBehaviour {
 
 	public HexCell AttackCell(Vector3 position){
 		HexCell currCell = getCell( position);
+		currCell.AttackCanvas.transform.LookAt(camera.transform.position);
 		currCell.AttackCanvas.enabled = true;
 		return currCell;
 	}
@@ -105,6 +109,7 @@ public class HexGrid : MonoBehaviour {
 
 	public HexCell DefenceCell(Vector3 position){
 		HexCell currCell = getCell( position);
+		currCell.DefenceCanvas.transform.LookAt(camera.transform.position);
 		currCell.DefenceCanvas.enabled = true;
 		return currCell;
 	}
@@ -121,6 +126,10 @@ public class HexGrid : MonoBehaviour {
 		
 		return cell; 
 		
+	}
+//make button face camera 
+	public void MoveButton(Canvas ButtonCanvas){
+		ButtonCanvas.transform.LookAt(camera.transform.position);
 	}
 
 	

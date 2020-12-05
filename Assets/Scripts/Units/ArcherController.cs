@@ -45,6 +45,9 @@ public class ArcherController : MonoBehaviour {
     public Text armorDisplay;
     public HexCoordinates IndexedLocation;
 
+    public Canvas HealthCanvas; 
+    //main camera to make the health bar face
+    public Camera camera; 
     // Start is called before the first frame update
     void Start() {
         destination = transform.position;  
@@ -183,5 +186,9 @@ public class ArcherController : MonoBehaviour {
 
     public bool IsUnitDead() {
         return isDead;
+    }
+    //moving healthbar to face the camera
+    public void MoveHealthBar(){
+        HealthCanvas.transform.LookAt(camera.transform.position);
     }
 }
