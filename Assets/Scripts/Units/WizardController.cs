@@ -39,6 +39,8 @@ public class WizardController : MonoBehaviour
     
     public GameObject DefenceImage;
     public Image healthBar;
+    public Image healthBarPreview; // Shows a preview of the damage that will be done to the unit
+    private int healthBarAlphaModifier = 0; // Makes the health damage preview slowly fade in and out to compare current health to future health
     public Text armorDisplay;
     private Vector3 rotation; 
     //how fast the model should go from one space to the other 
@@ -48,10 +50,10 @@ public class WizardController : MonoBehaviour
     public HexGrid grid; 
 
     public Animator animator;
-    
 
     public Canvas HealthCanvas; 
     public Camera camera;
+
     // Start is called before the first frame update
     void Start() {
         destination = transform.position;  
@@ -77,7 +79,17 @@ public class WizardController : MonoBehaviour
                 UpdateDamageTakenText();
             }
 
-            //print(damageTakenText.transform.position);
+            if(healthBarAlphaModifier != 0) {
+                var newColor = healthBar.color;
+                newColor.a += healthBarAlphaModifier * 0.012f;
+                healthBar.color = newColor;
+                
+                if(newColor.a <= 0.1f) {
+                    healthBarAlphaModifier = 1;
+                } else if(newColor.a >= 1.0f) {
+                    healthBarAlphaModifier = -1;
+                }
+            }
 
             //if there is a new destination then move to it, else don't move
             if(destination != transform.position){
@@ -116,8 +128,15 @@ public class WizardController : MonoBehaviour
                     animator.Play("die1");
                 }
                 deathConfirmed = true;
+                StartCoroutine(DeactivateHealthBar());
             }    
         }
+    }
+
+    // Remove healthbar on unit death
+    IEnumerator DeactivateHealthBar() {
+        yield return new WaitForSeconds(1f);
+        HealthCanvas.gameObject.SetActive(false);
     }
 
     void UpdateDamageTakenText() {
@@ -163,6 +182,7 @@ public class WizardController : MonoBehaviour
     void Move() {
         transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime* speed);
         transform.LookAt(destination);
+        MoveHealthBar();
     }
 
     public bool Attack(Vector3 victimPos) {
@@ -174,6 +194,7 @@ public class WizardController : MonoBehaviour
             isAttacking = true;   
             isIdle = false;     
             transform.LookAt(victimPos);
+            MoveHealthBar();
             return true; 
         }
         return false; 
@@ -200,6 +221,7 @@ public class WizardController : MonoBehaviour
 
     IEnumerator TakeDamageAfterDelay(int damage, string attackerType, float time) {
         yield return new WaitForSeconds(time);
+        damageTakenText.text = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage).ToString();
         if(armor != 0) {
             health -= Mathf.FloorToInt(damage / 2);
             if(attackerType == weaknessType) {
@@ -210,12 +232,10 @@ public class WizardController : MonoBehaviour
         }
 
         healthBar.fillAmount = ((float)health / (float)maxHealth);
-
         armorDisplay.text = "Armor: " + armor;
-        healthText.text = health + "/" + maxHealth;
-
-        damageTakenText.text = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage).ToString();
+        healthText.text = (health < 0 ? 0.ToString() : health.ToString()) + "/" + maxHealth;
         damageTakenText.transform.localPosition = new Vector3(-43.0f, 55.0f, 0.0f);
+
         StartCoroutine(ClearDamageTakenText());
 
         isIdle = false;
@@ -238,5 +258,21 @@ public class WizardController : MonoBehaviour
     //moving healthbar to face the camera
     public void MoveHealthBar(){
         HealthCanvas.transform.LookAt(camera.transform.position);
+    }
+
+    public void ShowPreviewHealthBar(float damage) {
+        float totalDamage = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
+        healthBarPreview.fillAmount = (((float)health - totalDamage) / (float)maxHealth);
+        healthBarPreview.gameObject.SetActive(true);
+        healthBarAlphaModifier = -1;
+    }
+
+    public void DisablePreviewHealthBar() {
+        healthBarPreview.gameObject.SetActive(false);
+        var newColor = healthBar.color;
+        healthBarAlphaModifier = 0;
+
+        newColor.a = 1.0f;
+        healthBar.color = newColor;
     }
 }
