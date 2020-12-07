@@ -49,9 +49,20 @@ public class GameManager : MonoBehaviour {
     // TODO: fix harcoding
     private int blueUnitsRemaining = 3;
     private int redUnitsRemaining = 3;
-    bool gameOver = false;
+    public bool gameOver = false;
+    private bool startDisplayingUnitHealthPreview = false;
     bool movement; 
     bool action; 
+
+    private bool isMouseOverEnemyUnit = false;
+
+    // The current unit that the mouse is hovering over
+    private GameObject currentMouseHoveringUnit;
+
+    // Absolute degeneracy
+    private KnightController currentMouseHoveringUnitKnight;
+    private ArcherController currentMouseHoveringUnitArcher;
+    private WizardController currentMouseHoveringUnitWizard;
 
     public Vector3 victimLocation;
     //store conteroller of the victim  
@@ -64,6 +75,8 @@ public class GameManager : MonoBehaviour {
     private Canvas currButtonCanvas;
 
     public List<GameObject> AllUnits;
+
+    private float currentUnitDamage;
 
     void Awake() {
         instance = this;
@@ -126,6 +139,7 @@ public class GameManager : MonoBehaviour {
         
         // Set the current unit as the first unit in the list
         currentUnit = allUnits.ElementAt(currentUnitIndex);
+        currentUnitDamage = GetCurrentUnitDamage();
         EnableCurrentUnitCircle();
         SetInitiativePortraits();
         HighlightCurrentUnitsPortrait();
@@ -251,6 +265,7 @@ public class GameManager : MonoBehaviour {
             currentUnitIndex++;
             DisableCurrentUnitCircle();
             currentUnit = allUnits[currentUnitIndex];
+            currentUnitDamage = GetCurrentUnitDamage();
             EnableCurrentUnitCircle();
             HighlightCurrentUnitsPortrait();
 
@@ -327,10 +342,12 @@ public class GameManager : MonoBehaviour {
         if(Input.GetAxis("Mouse ScrollWheel") > 0f) {
             if(mainCamera.transform.position.y > 2) {
                 mainCamera.transform.Translate(new Vector3(0, 0, 50f * Time.deltaTime));
+                didCameraMove = true;
             }
         } else if(Input.GetAxis("Mouse ScrollWheel") < 0f) {
             if(mainCamera.transform.position.y < 10) {
                 mainCamera.transform.Translate(new Vector3(0, 0, -50f * Time.deltaTime));
+                didCameraMove = true;
             }
         }
 
@@ -338,17 +355,19 @@ public class GameManager : MonoBehaviour {
         if(Input.GetMouseButton(1)) {
             // The speed of the mouse movement
             float mouseDelta = Input.mousePosition.x - mousePos.x;
+            if(mouseDelta != 0) {
+                // Some black magic fuckery going on right here, quaternions are fucking hard
+                Quaternion rotation = mainCamera.transform.rotation;
+                Quaternion newRotation = Quaternion.Euler(0, rotation.eulerAngles.y + 15 * mouseDelta * Time.deltaTime, 0);
+                newRotation.eulerAngles = new Vector3(rotation.eulerAngles.x, newRotation.eulerAngles.y, rotation.eulerAngles.z);
 
-            // Some black magic fuckery going on right here, quaternions are fucking hard
-            Quaternion rotation = mainCamera.transform.rotation;
-            Quaternion newRotation = Quaternion.Euler(0, rotation.eulerAngles.y + 15 * mouseDelta * Time.deltaTime, 0);
-            newRotation.eulerAngles = new Vector3(rotation.eulerAngles.x, newRotation.eulerAngles.y, rotation.eulerAngles.z);
-
-            // I'm truly amazed that this works
-            mainCamera.transform.rotation = newRotation;
+                // I'm truly amazed that this works
+                mainCamera.transform.rotation = newRotation;   
+                didCameraMove = true;
+            }
         }    
 
-        // Don't waste processing power unless camera moves
+        // Don't waste precious processing power unless camera moves
         if(didCameraMove) {
             foreach (var unit in AllUnits) {
                 if(unit.tag.Contains("Knight")){
@@ -382,6 +401,18 @@ public class GameManager : MonoBehaviour {
             gameOver = true;
         }
 
+        // Is player hovering over an object?
+        Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit rhInfo;
+        bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
+        if(didHit) {
+            CheckForMouseHoveringOverUnit(rhInfo);
+        } 
+        
+        if(isMouseOverEnemyUnit && startDisplayingUnitHealthPreview) {
+            DisplayCurrentMouseHoverUnitPreviewHealthBar();
+            startDisplayingUnitHealthPreview = false;
+        } 
 
         // Check for left mouse button click
         if(Input.GetMouseButtonDown(0)) {    
@@ -391,10 +422,6 @@ public class GameManager : MonoBehaviour {
                 return;
             }
 
-            // Did player click on a unit?
-            Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit rhInfo;
-            bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
             HexCell index; 
 
             // Did player click on a unit?
@@ -459,6 +486,56 @@ public class GameManager : MonoBehaviour {
         CheckForDeadUnits();
     }
 
+    // Checks if the mouse is hovering of an enemy unit
+    void CheckForMouseHoveringOverUnit(RaycastHit rhInfo) {
+        // Is mouse hovering over an enemy unit?
+        if((rhInfo.collider.gameObject.tag.Contains("Knight") || rhInfo.collider.gameObject.tag.Contains("Archer") 
+          || rhInfo.collider.gameObject.tag.Contains("Wizard"))) {
+            if((currentUnit.tag.Contains("Red") && !rhInfo.collider.gameObject.tag.Contains("Red"))
+              || (currentUnit.tag.Contains("Blue") && !rhInfo.collider.gameObject.tag.Contains("Blue"))) {
+                if(currentMouseHoveringUnit == null) {
+                    currentMouseHoveringUnit = rhInfo.collider.gameObject;
+                    startDisplayingUnitHealthPreview = true;
+                    isMouseOverEnemyUnit = true;
+
+                    if(rhInfo.collider.gameObject.tag.Contains("Knight")) {
+                        currentMouseHoveringUnitKnight = rhInfo.collider.gameObject.GetComponent<KnightController>();
+                    } else if(rhInfo.collider.gameObject.tag.Contains("Archer")) {
+                        currentMouseHoveringUnitArcher = rhInfo.collider.gameObject.GetComponent<ArcherController>();
+                    } else {
+                        currentMouseHoveringUnitWizard = rhInfo.collider.gameObject.GetComponent<WizardController>();
+                    }
+                }    
+            }
+        } else {
+            if(isMouseOverEnemyUnit) {
+                if(currentMouseHoveringUnitKnight != null) {
+                    currentMouseHoveringUnitKnight.DisablePreviewHealthBar();
+                    currentMouseHoveringUnitKnight = null;
+                } else if(currentMouseHoveringUnitArcher != null) {
+                    currentMouseHoveringUnitArcher.DisablePreviewHealthBar();
+                    currentMouseHoveringUnitArcher = null;
+                } else if(currentMouseHoveringUnitWizard != null) {
+                    currentMouseHoveringUnitWizard.DisablePreviewHealthBar();
+                    currentMouseHoveringUnitWizard = null;
+                }
+
+                currentMouseHoveringUnit = null;
+                isMouseOverEnemyUnit = false;
+            }
+        }
+    }
+
+    // Displays the damage preview healthbar of the target unit
+    void DisplayCurrentMouseHoverUnitPreviewHealthBar() {
+        if(currentMouseHoveringUnitKnight != null) {
+            currentMouseHoveringUnitKnight.ShowPreviewHealthBar(currentUnitDamage);
+        } else if(currentMouseHoveringUnitArcher != null) {
+            currentMouseHoveringUnitArcher.ShowPreviewHealthBar(currentUnitDamage);
+        } else if(currentMouseHoveringUnitWizard != null) {
+            currentMouseHoveringUnitWizard.ShowPreviewHealthBar(currentUnitDamage);
+        }
+    }
 
     List<(double, double)> NullLocation = new List<(double, double)>(){ ( 0, 0),(1.5,3),(3.5,6),(5.5,9),(7,12),(8.5,15)};
 
@@ -598,5 +675,18 @@ public class GameManager : MonoBehaviour {
             SetInitiativePortraits();
             HighlightCurrentUnitsPortrait();
         }    
+    }
+
+    private float GetCurrentUnitDamage() {
+        if(currentUnit.tag.Contains("Knight")) {
+            var script = currentUnit.GetComponent<KnightController>();
+            return script.baseDamage;
+        } else if(currentUnit.tag.Contains("Archer")) {
+            var script = currentUnit.GetComponent<ArcherController>();
+            return script.baseDamage;
+        } else {
+            var script = currentUnit.GetComponent<WizardController>();
+            return script.baseDamage;
+        }
     }
 }

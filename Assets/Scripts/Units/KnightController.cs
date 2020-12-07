@@ -36,6 +36,8 @@ public class KnightController : MonoBehaviour {
     public HexCell CurrCell; 
     public GameObject DefenceImage;
     public Image healthBar;
+    public Image healthBarPreview; // Shows a preview of the damage that will be done to the unit
+    private int healthBarAlphaModifier = 0; // Makes the health damage preview slowly fade in and out to compare current health to future health
     public Text armorDisplay;
 
     //Where the unit should move next
@@ -73,6 +75,18 @@ public class KnightController : MonoBehaviour {
         if(!isDead) {
             if(damageTakenText.text != "") {
                 UpdateDamageTakenText();
+            }
+
+            if(healthBarAlphaModifier != 0) {
+                var newColor = healthBar.color;
+                newColor.a += healthBarAlphaModifier * 0.012f;
+                healthBar.color = newColor;
+                
+                if(newColor.a <= 0.1f) {
+                    healthBarAlphaModifier = 1;
+                } else if(newColor.a >= 1.0f) {
+                    healthBarAlphaModifier = -1;
+                }
             }
 
             //if there is a new destination then move to it, else don't move
@@ -113,8 +127,15 @@ public class KnightController : MonoBehaviour {
                 }
 
                 deathConfirmed = true;
+                StartCoroutine(DeactivateHealthBar());
             }    
         }
+    }
+
+    // Remove healthbar on unit death
+    IEnumerator DeactivateHealthBar() {
+        yield return new WaitForSeconds(1f);
+        HealthCanvas.gameObject.SetActive(false);
     }
 
     void UpdateDamageTakenText() {
@@ -160,6 +181,7 @@ public class KnightController : MonoBehaviour {
     void Move() {
         transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime* speed);
         transform.LookAt(destination);
+        MoveHealthBar();
     }
 
     // Enable attack animation and disable idle animation
@@ -171,6 +193,7 @@ public class KnightController : MonoBehaviour {
             isAttacking = true;   
             isIdle = false;     
             transform.LookAt(victimPos);
+            MoveHealthBar();
             return true; 
         }
         return false; 
@@ -194,6 +217,7 @@ public class KnightController : MonoBehaviour {
     // Delay taking damage to line up with the attack animation
     IEnumerator TakeDamageAfterDelay(int damage, string attackerType, float time) {
         yield return new WaitForSeconds(time);
+        damageTakenText.text = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage).ToString();
         if(armor != 0) {
             health -= Mathf.FloorToInt(damage / 2);
             if(attackerType == weaknessType) {
@@ -204,12 +228,10 @@ public class KnightController : MonoBehaviour {
         }
 
         healthBar.fillAmount = ((float)health / (float)maxHealth);
-
         armorDisplay.text = "Armor: " + armor;
-        healthText.text = health + "/" + maxHealth;
-
-        damageTakenText.text = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage).ToString();
+        healthText.text = (health < 0 ? 0.ToString() : health.ToString()) + "/" + maxHealth;
         damageTakenText.transform.localPosition = new Vector3(-43.0f, 55.0f, 0.0f);
+
         StartCoroutine(ClearDamageTakenText());
 
         isIdle = false;
@@ -232,5 +254,21 @@ public class KnightController : MonoBehaviour {
     //moving healthbar to face the camera
     public void MoveHealthBar(){
         HealthCanvas.transform.LookAt(camera.transform.position);
+    }
+
+    public void ShowPreviewHealthBar(float damage) {
+        float totalDamage = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
+        healthBarPreview.fillAmount = (((float)health - totalDamage) / (float)maxHealth);
+        healthBarPreview.gameObject.SetActive(true);
+        healthBarAlphaModifier = -1;
+    }
+
+    public void DisablePreviewHealthBar() {
+        healthBarPreview.gameObject.SetActive(false);
+        var newColor = healthBar.color;
+        healthBarAlphaModifier = 0;
+        
+        newColor.a = 1.0f;
+        healthBar.color = newColor;
     }
 }
