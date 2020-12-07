@@ -4,11 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class KnightController : MonoBehaviour {
+    public HexGrid grid; 
     public int health = 200;
+    public int maxHealth = 100;
     public HexCoordinates IndexedLocation;
     public int armor = 5;
     public int armorModifier = 0;
-    public int baseDamage = 10;
+    public int baseDamage = 15;
     public int damageModifier = 0;
     
     public string type = "knight";
@@ -16,6 +18,8 @@ public class KnightController : MonoBehaviour {
     public int goldCost = 50;
     public int movementRange = 5;
     public int attackRange = 1;
+    public TMPro.TextMeshProUGUI damageTakenText;
+    public TMPro.TextMeshProUGUI healthText;
     public Vector3 location;
     
     private bool isAttacking = false;
@@ -29,7 +33,11 @@ public class KnightController : MonoBehaviour {
     private bool startPlayingMoveAnimation = false;
     private bool startPlayingIdleAnimation = true;
 
+    public HexCell CurrCell; 
     public GameObject DefenceImage;
+    public Image healthBar;
+    public Text armorDisplay;
+
     //Where the unit should move next
     public Vector3 destination;
     private Vector3 rotation; 
@@ -39,15 +47,34 @@ public class KnightController : MonoBehaviour {
 
     public Animator animator;
 
+    public Canvas HealthCanvas; 
+
+    public Camera camera; 
     // Start is called before the first frame update
     void Start() {
         destination = transform.position;    
         location = transform.position;
+
+        armorDisplay.text = "Armor: " + armor;
+        healthText.text = health + "/" + maxHealth;
+        healthText.fontSize = 20;
+        healthText.transform.localPosition = new Vector3(-25.0f, -10.0f, 0.0f);
+
+        damageTakenText.fontWeight = TMPro.FontWeight.Bold;
+        damageTakenText.transform.localPosition = new Vector3(-43.0f, 150.0f, 0.0f);
+        damageTakenText.fontSize = 26;
+
+        // Make healthbar face camera as soon as game starts
+        MoveHealthBar();
     }
 
     // Update is called once per frame
     void Update() {
         if(!isDead) {
+            if(damageTakenText.text != "") {
+                UpdateDamageTakenText();
+            }
+
             //if there is a new destination then move to it, else don't move
             if(destination != transform.position){
                 Move();
@@ -90,17 +117,43 @@ public class KnightController : MonoBehaviour {
         }
     }
 
-    public void StartMoving(Vector3 dest, HexCoordinates hex) {
+    void UpdateDamageTakenText() {
+        damageTakenText.transform.Translate(new Vector3(0, 0.005f, 0));
+    }
+
+    IEnumerator ClearDamageTakenText() {
+        yield return new WaitForSeconds(0.8f);
+        ResetDamageTakenText();
+    }
+
+    void ResetDamageTakenText() {
+        damageTakenText.text = "";
+        damageTakenText.transform.localPosition = new Vector3(-39.0f, 35.0f, 0.0f);
+    }
+
+    public bool StartMoving(Vector3 dest, HexCell hex) {
         float length = Vector3.Distance(transform.position, dest);
-        if(length > 7){
+        if(length >= 7.5){
+            print(length);
             print("no way hosey");
+            return false; 
         }else{
+            if(hex.isOccupied){
+                print("nowayer hoseyer");
+                return false; 
+            }
             destination = dest;
             startPlayingIdleAnimation = true;
             startPlayingMoveAnimation = true;
             isMoving = true;
             isIdle = false;
-            IndexedLocation = hex; 
+            IndexedLocation = hex.coordinates; 
+            grid.OccupyCell(hex);
+            if(CurrCell != null){
+                grid.UnOccupyCell(CurrCell);
+            } 
+            CurrCell = hex; 
+            return true; 
         }
     }
 
@@ -150,6 +203,15 @@ public class KnightController : MonoBehaviour {
             health -= damage;
         }
 
+        healthBar.fillAmount = ((float)health / (float)maxHealth);
+
+        armorDisplay.text = "Armor: " + armor;
+        healthText.text = health + "/" + maxHealth;
+
+        damageTakenText.text = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage).ToString();
+        damageTakenText.transform.localPosition = new Vector3(-43.0f, 55.0f, 0.0f);
+        StartCoroutine(ClearDamageTakenText());
+
         isIdle = false;
         if(health <= 0) {
             isDead = true;
@@ -165,5 +227,10 @@ public class KnightController : MonoBehaviour {
 
     public bool IsUnitDead() {
         return isDead;
+    }
+    
+    //moving healthbar to face the camera
+    public void MoveHealthBar(){
+        HealthCanvas.transform.LookAt(camera.transform.position);
     }
 }

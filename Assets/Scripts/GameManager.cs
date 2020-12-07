@@ -8,7 +8,10 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
+    public static Camera mainCamera;
     public GameObject canvas;
+
+    private Vector3 mousePos = Vector3.zero;
 
     public List<GameObject> allUnits = new List<GameObject>();
     public GameObject currentUnit;
@@ -25,6 +28,8 @@ public class GameManager : MonoBehaviour {
     public HexGrid grid; 
 
     public TMPro.TextMeshProUGUI winnerLabel;
+
+    private HexCell SelectedCell; 
 
     // TODO: add different colored teams
     private string[] portraitTextureNames = {
@@ -48,8 +53,22 @@ public class GameManager : MonoBehaviour {
     bool movement; 
     bool action; 
 
+    public Vector3 victimLocation;
+    //store conteroller of the victim  
+    public WizardController wizVictim;
+    public KnightController knightVictim; 
+    public ArcherController archVictim; 
+    //store what type the victim is (wiz, knight, arch)
+    public string VictimUnit; 
+    //stores a canvas of the newest button visable (so we can disable it if needed (click on 2 tiles at onece and 1 one dissapears))
+    private Canvas currButtonCanvas;
+
+    public List<GameObject> AllUnits;
+
     void Awake() {
         instance = this;
+        mainCamera = Camera.main;
+        mainCamera.enabled = true;
         canvas = GameObject.Find("Canvas");
         LoadPortraitTextures();
         LoadAudioClips();
@@ -254,8 +273,107 @@ public class GameManager : MonoBehaviour {
         movement = true; 
     }
 
+    void MoveCamera() {
+        // Speed of camera movement, if shift is held down, go faster
+        float cameraSpeed = Input.GetKey(KeyCode.LeftShift) ? 18f : 10f;
+        bool didCameraMove = false;
+
+        // Left, right
+        if(Input.GetKey(KeyCode.A)) {
+            if(mainCamera.transform.position.x > -5) {
+                mainCamera.transform.Translate(new Vector3(-cameraSpeed * Time.deltaTime, 0, 0));
+                didCameraMove = true;
+            }    
+        } else if(Input.GetKey(KeyCode.D)) {
+            if(mainCamera.transform.position.x < 25) {
+                mainCamera.transform.Translate(new Vector3(cameraSpeed * Time.deltaTime, 0, 0));
+                didCameraMove = true;
+            }    
+        } 
+        
+        // Back, forth
+        if(Input.GetKey(KeyCode.W)) { 
+            if(mainCamera.transform.position.z < 20) {
+                var rotation = mainCamera.transform.rotation;
+                mainCamera.transform.rotation = Quaternion.Euler(0, mainCamera.transform.eulerAngles.y, 0);
+                mainCamera.transform.Translate(new Vector3(0, 0, cameraSpeed * Time.deltaTime));
+                mainCamera.transform.rotation = rotation;
+                didCameraMove = true;
+            }    
+        } else if(Input.GetKey(KeyCode.S)) {
+            if(mainCamera.transform.position.z > -10) {
+                var rotation = mainCamera.transform.rotation;
+                mainCamera.transform.rotation = Quaternion.Euler(0, mainCamera.transform.eulerAngles.y, 0);
+                mainCamera.transform.Translate(new Vector3(0, 0, -cameraSpeed * Time.deltaTime));
+                mainCamera.transform.rotation = rotation;
+                didCameraMove = true;
+            }    
+        } 
+        
+        // Up, down
+        if(Input.GetKey(KeyCode.E)) { 
+            if(mainCamera.transform.position.y < 10) {
+                mainCamera.transform.Translate(new Vector3(0, cameraSpeed * Time.deltaTime, 0));
+                didCameraMove = true;
+            }    
+        } else if(Input.GetKey(KeyCode.Q)) {
+            if(mainCamera.transform.position.y > 2) {
+                mainCamera.transform.Translate(new Vector3(0, -cameraSpeed * Time.deltaTime, 0));
+                didCameraMove = true; 
+            }
+        }
+
+        // Scroll wheel zoom
+        if(Input.GetAxis("Mouse ScrollWheel") > 0f) {
+            if(mainCamera.transform.position.y > 2) {
+                mainCamera.transform.Translate(new Vector3(0, 0, 50f * Time.deltaTime));
+                didCameraMove = true;
+            }
+        } else if(Input.GetAxis("Mouse ScrollWheel") < 0f) {
+            if(mainCamera.transform.position.y < 10) {
+                mainCamera.transform.Translate(new Vector3(0, 0, -50f * Time.deltaTime));
+                didCameraMove = true;
+            }
+        }
+
+        // Rotate
+        if(Input.GetMouseButton(1)) {
+            // The speed of the mouse movement
+            float mouseDelta = Input.mousePosition.x - mousePos.x;
+            if(mouseDelta != 0) {
+                // Some black magic fuckery going on right here, quaternions are fucking hard
+                Quaternion rotation = mainCamera.transform.rotation;
+                Quaternion newRotation = Quaternion.Euler(0, rotation.eulerAngles.y + 15 * mouseDelta * Time.deltaTime, 0);
+                newRotation.eulerAngles = new Vector3(rotation.eulerAngles.x, newRotation.eulerAngles.y, rotation.eulerAngles.z);
+
+                // I'm truly amazed that this works
+                mainCamera.transform.rotation = newRotation;   
+                didCameraMove = true;
+            }
+        }    
+
+        // Don't waste precious processing power unless camera moves
+        if(didCameraMove) {
+            foreach (var unit in AllUnits) {
+                if(unit.tag.Contains("Knight")){
+                    unit.GetComponent<KnightController>().MoveHealthBar();
+                } else if(unit.tag.Contains("Archer")){
+                    unit.GetComponent<ArcherController>().MoveHealthBar();
+                } else if(unit.tag.Contains("Wizard")){
+                    unit.GetComponent<WizardController>().MoveHealthBar();
+                }   
+            }
+        }    
+    }
+
     // Update is called once per frame
     void Update() {
+        MoveCamera();
+        mousePos = Input.mousePosition;
+        if(currButtonCanvas != null){
+            grid.MoveButton(currButtonCanvas);
+        }
+
         if(gameOver) {
             return;
         }
@@ -264,7 +382,7 @@ public class GameManager : MonoBehaviour {
             winnerLabel.text = "Red wins!";
             gameOver = true;
         } else if(redUnitsRemaining == 0) {
-            winnerLabel.text = "Red wins!";
+            winnerLabel.text = "Blue wins!";
             gameOver = true;
         }
 
@@ -273,6 +391,7 @@ public class GameManager : MonoBehaviour {
         if(Input.GetMouseButtonDown(0)) {    
             // Did player click on a UI button? if so, don't do anything else
             if(EventSystem.current.IsPointerOverGameObject()) {
+                print("thingy");
                 return;
             }
 
@@ -280,92 +399,62 @@ public class GameManager : MonoBehaviour {
             Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit rhInfo;
             bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
+            HexCell index; 
 
             // Did player click on a unit?
             if(didHit && (rhInfo.collider.gameObject.tag.Contains("Knight") || rhInfo.collider.gameObject.tag.Contains("Archer") 
               || rhInfo.collider.gameObject.tag.Contains("Wizard") || rhInfo.collider.gameObject.tag.Contains("Defeated"))){
                 if(rhInfo.collider.gameObject.tag.Contains("Defeated")) return;
                 if(!action) return; 
-                // No friendly fire!
                 if(rhInfo.collider.gameObject == currentUnit){
-                    //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
-                    if(currentUnit.tag.Contains("Knight")) {
-                        var attackerScript = currentUnit.GetComponent<KnightController>();
-                        attackerScript.Defend(); 
-                        action = false;
-                        movement = false; 
-                    } else if(currentUnit.tag.Contains("Archer")) {
-                        var attackerScript = currentUnit.GetComponent<ArcherController>();
-                        attackerScript.Defend();  
-                        action = false;
-                        movement = false; 
-                    } else {
-                        var attackerScript = currentUnit.GetComponent<WizardController>();
-                        attackerScript.Defend();  
-                        action = false;
-                        movement = false; 
+                    //if "defence" then display button and if pressed run "defend" command/ function below
+                    if(SelectedCell != null){
+                        grid.DisableButton(currButtonCanvas);
                     }
+                    index = grid.DefenceCell(rhInfo.point);
+                    currButtonCanvas = index.DefenceCanvas;
+                    SelectedCell = index;
+                    
+                    return; 
+                // No friendly fire!
                 } else if((currentUnit.tag.Contains("Red") && rhInfo.collider.gameObject.tag.Contains("Red"))
                   || (currentUnit.tag.Contains("Blue") && rhInfo.collider.gameObject.tag.Contains("Blue"))) {
                     return;  
                 }
 
-                int damage = 0;
-                string type = "";
-                bool InRange = false; 
-                Vector3 victimLocation= rhInfo.collider.gameObject.GetComponent<Transform>().position;
-                if(currentUnit.tag.Contains("Knight")) {
-                    var attackerScript = currentUnit.GetComponent<KnightController>();
-                    damage = attackerScript.baseDamage;
-                    type = attackerScript.type;
-                    InRange = attackerScript.Attack(victimLocation);
-                    action = false; 
-                    movement = false; 
-                } else if(currentUnit.tag.Contains("Archer")) {
-                    var attackerScript = currentUnit.GetComponent<ArcherController>();
-                    damage = attackerScript.baseDamage;
-                    type = attackerScript.type;
-                    InRange = attackerScript.Attack(victimLocation); 
-                    action = false; 
-                    movement = false; 
-                } else {
-                    var attackerScript = currentUnit.GetComponent<WizardController>();
-                    damage = attackerScript.baseDamage;
-                    type = attackerScript.type;
-                    InRange = attackerScript.Attack(victimLocation); 
-                    action = false; 
-                    movement = false; 
-                }
-                
-                if(!InRange) return; 
+                print("attack");
+
+                //attack 
+                //victim stuff put in global so that the other method doesn't need to get it (þarf script og þannig frá rhInfo.Colider stuff)
+                victimLocation= rhInfo.collider.gameObject.GetComponent<Transform>().position;
                 if(rhInfo.collider.gameObject.tag.Contains("Knight")) {
-                    var victimScript = rhInfo.collider.gameObject.GetComponent<KnightController>();
-                    victimScript.TakeDamage(damage, type, 0.5f);
+                    knightVictim = rhInfo.collider.gameObject.GetComponent<KnightController>();
+                    VictimUnit = "Knight";
                 } else if(rhInfo.collider.gameObject.tag.Contains("Archer")) {
-                    var victimScript = rhInfo.collider.gameObject.GetComponent<ArcherController>();
-                    victimScript.TakeDamage(damage, type, 0.5f);
+                    archVictim = rhInfo.collider.gameObject.GetComponent<ArcherController>();
+                    VictimUnit = "Archer";
                 } else {
-                    var victimScript = rhInfo.collider.gameObject.GetComponent<WizardController>();
-                    victimScript.TakeDamage(damage, type, 0.5f);
+                    wizVictim = rhInfo.collider.gameObject.GetComponent<WizardController>();
+                    VictimUnit = "Wizard";
                 }
+                //not sure this workds (clicks on unit at get's  unit's cell)
+                if(SelectedCell != null){
+                    grid.DisableButton(currButtonCanvas);
+                }
+                index = grid.AttackCell(rhInfo.point);
+                currButtonCanvas = index.AttackCanvas;
+                SelectedCell = index; 
+                
             } else {
                 if(!movement) return; 
-                if(Physics.Raycast(toMouse, out rhInfo, 500.0f)){
-                    var index = grid.TouchCell(rhInfo.point);
-                    Vector3 destination = GetMoveLocation(index.coordinates.X, index.coordinates.Z);
-                    if(currentUnit.tag.Contains("Knight")) {
-                        var script = currentUnit.GetComponent<KnightController>();
-                        script.StartMoving(destination, index.coordinates);
-                        movement = false; 
-                    } else if(currentUnit.tag.Contains("Archer")) {
-                        var script = currentUnit.GetComponent<ArcherController>();  
-                        script.StartMoving(destination, index.coordinates );
-                        movement = false; 
-                    } else {
-                        var script = currentUnit.GetComponent<WizardController>();
-                        script.StartMoving(destination, index.coordinates );
-                        movement = false; 
+                //if move unit, display button that if pressed runs "move unit"
+                if(Physics.Raycast(toMouse, out rhInfo, 1000.0f)){
+                    if(SelectedCell != null){
+                        grid.DisableButton(currButtonCanvas);
                     }
+                    index = grid.MovementCell(rhInfo.point);
+                    currButtonCanvas = index.MoveCanvas;
+                    SelectedCell = index; 
                 }
             } 
         };
@@ -381,6 +470,85 @@ public class GameManager : MonoBehaviour {
         var up = NullLocation[z];
         var left = (float)up.Item1 + (3.5 * x);
         return new Vector3 ((float)left, 0, (float)up.Item2);
+
+    }
+
+    public void MoveUnit(){
+        if(SelectedCell == null) return; 
+        var index = SelectedCell;
+        Vector3 destination = GetMoveLocation(index.coordinates.X, index.coordinates.Z);
+        if(currentUnit.tag.Contains("Knight")) {
+            var script = currentUnit.GetComponent<KnightController>();
+            bool move = script.StartMoving(destination, index);
+            if(move) movement = false; 
+        } else if(currentUnit.tag.Contains("Archer")) {
+            var script = currentUnit.GetComponent<ArcherController>();  
+            bool move = script.StartMoving(destination, index );
+            if(move) movement = false; 
+        } else {
+            var script = currentUnit.GetComponent<WizardController>();
+            bool move = script.StartMoving(destination, index );
+            if(move) movement = false; 
+        }
+    }
+    public void UnitAttack(){
+        int damage = 0;
+        string type = "";
+        bool InRange = false; 
+        if(currentUnit.tag.Contains("Knight")) {
+            var attackerScript = currentUnit.GetComponent<KnightController>();
+            damage = attackerScript.baseDamage;
+            type = attackerScript.type;
+            InRange = attackerScript.Attack(victimLocation);
+        } else if(currentUnit.tag.Contains("Archer")) {
+            var attackerScript = currentUnit.GetComponent<ArcherController>();
+            damage = attackerScript.baseDamage;
+            type = attackerScript.type;
+            InRange = attackerScript.Attack(victimLocation); 
+            
+        } else {
+            var attackerScript = currentUnit.GetComponent<WizardController>();
+            damage = attackerScript.baseDamage;
+            type = attackerScript.type;
+            InRange = attackerScript.Attack(victimLocation); 
+            
+        }
+        
+        if(InRange) {
+                action = false; 
+                movement = false;
+            } else{
+                action = true; 
+                return;
+            } 
+        if(VictimUnit == "Knight"){
+            knightVictim.TakeDamage(damage, type, 0.5f);
+        }else if (VictimUnit == "Archer"){
+            archVictim.TakeDamage(damage, type, 0.5f);
+        }else if(VictimUnit == "Wizard"){
+            wizVictim.TakeDamage(damage, type, 0.5f);
+        }  
+        
+    }
+
+    public void Defend(){
+        //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
+        if(currentUnit.tag.Contains("Knight")) {
+            var attackerScript = currentUnit.GetComponent<KnightController>();
+            attackerScript.Defend(); 
+            action = false;
+            movement = false; 
+        } else if(currentUnit.tag.Contains("Archer")) {
+            var attackerScript = currentUnit.GetComponent<ArcherController>();
+            attackerScript.Defend();  
+            action = false;
+            movement = false; 
+        } else {
+            var attackerScript = currentUnit.GetComponent<WizardController>();
+            attackerScript.Defend();  
+            action = false;
+            movement = false; 
+        }
 
     }
 
