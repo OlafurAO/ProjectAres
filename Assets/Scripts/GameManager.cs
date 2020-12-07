@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour {
     public static Camera mainCamera;
     public GameObject canvas;
 
+    private Vector3 mousePos = Vector3.zero;
+
     public List<GameObject> allUnits = new List<GameObject>();
     public GameObject currentUnit;
     public int currentUnitIndex;
@@ -272,48 +274,98 @@ public class GameManager : MonoBehaviour {
     }
 
     void MoveCamera() {
-        // Move camera
+        // Speed of camera movement, if shift is held down, go faster
+        float cameraSpeed = Input.GetKey(KeyCode.LeftShift) ? 18f : 10f;
+        bool didCameraMove = false;
+
+        // Left, right
         if(Input.GetKey(KeyCode.A)) {
-            if(mainCamera.transform.position.x > 5) {
-                mainCamera.transform.Translate(new Vector3(-10f * Time.deltaTime, 0, 0));
+            if(mainCamera.transform.position.x > -5) {
+                mainCamera.transform.Translate(new Vector3(-cameraSpeed * Time.deltaTime, 0, 0));
+                didCameraMove = true;
             }    
         } else if(Input.GetKey(KeyCode.D)) {
             if(mainCamera.transform.position.x < 25) {
-                mainCamera.transform.Translate(new Vector3(10f * Time.deltaTime, 0, 0));
+                mainCamera.transform.Translate(new Vector3(cameraSpeed * Time.deltaTime, 0, 0));
+                didCameraMove = true;
             }    
-        } else if(Input.GetKey(KeyCode.W)) { 
-            if(mainCamera.transform.position.y > 2) {
-                mainCamera.transform.Translate(new Vector3(0, 0, 10f * Time.deltaTime));
+        } 
+        
+        // Back, forth
+        if(Input.GetKey(KeyCode.W)) { 
+            if(mainCamera.transform.position.z < 20) {
+                var rotation = mainCamera.transform.rotation;
+                mainCamera.transform.rotation = Quaternion.Euler(0, mainCamera.transform.eulerAngles.y, 0);
+                mainCamera.transform.Translate(new Vector3(0, 0, cameraSpeed * Time.deltaTime));
+                mainCamera.transform.rotation = rotation;
+                didCameraMove = true;
             }    
         } else if(Input.GetKey(KeyCode.S)) {
-            if(mainCamera.transform.position.y < 10) {
-                mainCamera.transform.Translate(new Vector3(0, 0, -10f * Time.deltaTime));
+            if(mainCamera.transform.position.z > -10) {
+                var rotation = mainCamera.transform.rotation;
+                mainCamera.transform.rotation = Quaternion.Euler(0, mainCamera.transform.eulerAngles.y, 0);
+                mainCamera.transform.Translate(new Vector3(0, 0, -cameraSpeed * Time.deltaTime));
+                mainCamera.transform.rotation = rotation;
+                didCameraMove = true;
             }    
-        } else if(Input.GetKey(KeyCode.E)) { 
+        } 
+        
+        // Up, down
+        if(Input.GetKey(KeyCode.E)) { 
             if(mainCamera.transform.position.y < 10) {
-                mainCamera.transform.Translate(new Vector3(0, 10f * Time.deltaTime, 0));
+                mainCamera.transform.Translate(new Vector3(0, cameraSpeed * Time.deltaTime, 0));
+                didCameraMove = true;
             }    
         } else if(Input.GetKey(KeyCode.Q)) {
             if(mainCamera.transform.position.y > 2) {
-                mainCamera.transform.Translate(new Vector3(0, -10f * Time.deltaTime, 0));
+                mainCamera.transform.Translate(new Vector3(0, -cameraSpeed * Time.deltaTime, 0));
+                didCameraMove = true; 
             }
         }
-        foreach (var unit in AllUnits)
-        {
-            if(unit.tag.Contains("Knight")){
-                unit.GetComponent<KnightController>().MoveHealthBar();
-            }else if(unit.tag.Contains("Archer")){
-                unit.GetComponent<ArcherController>().MoveHealthBar();
-            }else if(unit.tag.Contains("Wizard")){
-                unit.GetComponent<WizardController>().MoveHealthBar();
+
+        // Scroll wheel zoom
+        if(Input.GetAxis("Mouse ScrollWheel") > 0f) {
+            if(mainCamera.transform.position.y > 2) {
+                mainCamera.transform.Translate(new Vector3(0, 0, 50f * Time.deltaTime));
             }
-            
+        } else if(Input.GetAxis("Mouse ScrollWheel") < 0f) {
+            if(mainCamera.transform.position.y < 10) {
+                mainCamera.transform.Translate(new Vector3(0, 0, -50f * Time.deltaTime));
+            }
         }
+
+        // Rotate
+        if(Input.GetMouseButton(1)) {
+            // The speed of the mouse movement
+            float mouseDelta = Input.mousePosition.x - mousePos.x;
+
+            // Some black magic fuckery going on right here, quaternions are fucking hard
+            Quaternion rotation = mainCamera.transform.rotation;
+            Quaternion newRotation = Quaternion.Euler(0, rotation.eulerAngles.y + 15 * mouseDelta * Time.deltaTime, 0);
+            newRotation.eulerAngles = new Vector3(rotation.eulerAngles.x, newRotation.eulerAngles.y, rotation.eulerAngles.z);
+
+            // I'm truly amazed that this works
+            mainCamera.transform.rotation = newRotation;
+        }    
+
+        // Don't waste processing power unless camera moves
+        if(didCameraMove) {
+            foreach (var unit in AllUnits) {
+                if(unit.tag.Contains("Knight")){
+                    unit.GetComponent<KnightController>().MoveHealthBar();
+                } else if(unit.tag.Contains("Archer")){
+                    unit.GetComponent<ArcherController>().MoveHealthBar();
+                } else if(unit.tag.Contains("Wizard")){
+                    unit.GetComponent<WizardController>().MoveHealthBar();
+                }   
+            }
+        }    
     }
 
     // Update is called once per frame
     void Update() {
         MoveCamera();
+        mousePos = Input.mousePosition;
         if(currButtonCanvas != null){
             grid.MoveButton(currButtonCanvas);
         }
@@ -326,7 +378,7 @@ public class GameManager : MonoBehaviour {
             winnerLabel.text = "Red wins!";
             gameOver = true;
         } else if(redUnitsRemaining == 0) {
-            winnerLabel.text = "Red wins!";
+            winnerLabel.text = "Blue wins!";
             gameOver = true;
         }
 
@@ -409,8 +461,6 @@ public class GameManager : MonoBehaviour {
 
 
     List<(double, double)> NullLocation = new List<(double, double)>(){ ( 0, 0),(1.5,3),(3.5,6),(5.5,9),(7,12),(8.5,15)};
-
-
 
     Vector3 GetMoveLocation(int x, int z) {
         var up = NullLocation[z];
