@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour {
     public TMPro.TextMeshProUGUI winnerLabel;
 
     private HexCell SelectedCell; 
+    //temporary list of all units and color ("knihtObject", "blue")
+    public List<GameObject> tempUnits;
 
     // TODO: add different colored teams
     private string[] portraitTextureNames = {
@@ -62,8 +64,9 @@ public class GameManager : MonoBehaviour {
     public string VictimUnit; 
     //stores a canvas of the newest button visable (so we can disable it if needed (click on 2 tiles at onece and 1 one dissapears))
     private Canvas currButtonCanvas;
+    //stores the location clicked where you want to create a unit
+    private Vector3 CreatedLocation;
 
-    public List<GameObject> AllUnits;
 
     void Awake() {
         instance = this;
@@ -350,7 +353,7 @@ public class GameManager : MonoBehaviour {
 
         // Don't waste processing power unless camera moves
         if(didCameraMove) {
-            foreach (var unit in AllUnits) {
+            foreach (var unit in allUnits) {
                 if(unit.tag.Contains("Knight")){
                     unit.GetComponent<KnightController>().MoveHealthBar();
                 } else if(unit.tag.Contains("Archer")){
@@ -381,7 +384,6 @@ public class GameManager : MonoBehaviour {
             winnerLabel.text = "Blue wins!";
             gameOver = true;
         }
-
 
         // Check for left mouse button click
         if(Input.GetMouseButtonDown(0)) {    
@@ -457,6 +459,23 @@ public class GameManager : MonoBehaviour {
 
         //TODO: Remove dead bois from initiative animation
         CheckForDeadUnits();
+
+        
+        if(Input.GetMouseButtonDown(1)) {
+            Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit rhInfo;
+            bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
+            HexCell index; 
+            if(Physics.Raycast(toMouse, out rhInfo, 1000.0f)){
+                if(SelectedCell != null){
+                    grid.DisableButton(currButtonCanvas);
+                }
+                index = grid.CreateUnitCell(rhInfo.point);
+                currButtonCanvas = index.CreateCanvas;
+                SelectedCell = index; 
+                CreatedLocation = index.transform.position;
+            }
+        }
     }
 
 
@@ -486,6 +505,37 @@ public class GameManager : MonoBehaviour {
             bool move = script.StartMoving(destination, index );
             if(move) movement = false; 
         }
+    }
+    public void CreateUnit(string type){
+        //check each unit in "tempunit" if their tag is equal to "type" (ex. redKnight)
+        foreach(GameObject units in tempUnits) {
+            if(units.tag.Contains(type)){ 
+                GameObject FinalUnit = Instantiate<GameObject>(units);
+                FinalUnit.transform.position = CreatedLocation; 
+                FinalUnit.SetActive(true); 
+                if(type == "BlueKnightCopy"){
+                    FinalUnit.tag = "KnightBlue";
+                    return;
+                }else if(type == "BlueArcherCopy"){
+                    FinalUnit.tag = "ArcherBlue";
+                    return;
+                }else if(type == "BlueWizardCopy"){
+                    FinalUnit.tag = "WizardBlue";
+                    return;
+                }else if(type == "RedKnightCopy"){
+                    FinalUnit.tag = "KnightRed";
+                    return;
+                }else if(type == "RedArcherCopy"){
+                    FinalUnit.tag = "ArcherRed";
+                    return;
+                }else if (type == "RedWizardCopy"){
+                    FinalUnit.tag = "WizardRed";
+                    return;
+                }
+                return; 
+            }
+        }
+
     }
     public void UnitAttack(){
         int damage = 0;
@@ -547,6 +597,8 @@ public class GameManager : MonoBehaviour {
         }
 
     }
+
+
 
     void CheckForDeadUnits() {
         // Check for any dead units and remove them from the list.
