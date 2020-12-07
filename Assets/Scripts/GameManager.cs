@@ -327,10 +327,12 @@ public class GameManager : MonoBehaviour {
         if(Input.GetAxis("Mouse ScrollWheel") > 0f) {
             if(mainCamera.transform.position.y > 2) {
                 mainCamera.transform.Translate(new Vector3(0, 0, 50f * Time.deltaTime));
+                didCameraMove = true;
             }
         } else if(Input.GetAxis("Mouse ScrollWheel") < 0f) {
             if(mainCamera.transform.position.y < 10) {
                 mainCamera.transform.Translate(new Vector3(0, 0, -50f * Time.deltaTime));
+                didCameraMove = true;
             }
         }
 
@@ -338,17 +340,19 @@ public class GameManager : MonoBehaviour {
         if(Input.GetMouseButton(1)) {
             // The speed of the mouse movement
             float mouseDelta = Input.mousePosition.x - mousePos.x;
+            if(mouseDelta != 0) {
+                // Some black magic fuckery going on right here, quaternions are fucking hard
+                Quaternion rotation = mainCamera.transform.rotation;
+                Quaternion newRotation = Quaternion.Euler(0, rotation.eulerAngles.y + 15 * mouseDelta * Time.deltaTime, 0);
+                newRotation.eulerAngles = new Vector3(rotation.eulerAngles.x, newRotation.eulerAngles.y, rotation.eulerAngles.z);
 
-            // Some black magic fuckery going on right here, quaternions are fucking hard
-            Quaternion rotation = mainCamera.transform.rotation;
-            Quaternion newRotation = Quaternion.Euler(0, rotation.eulerAngles.y + 15 * mouseDelta * Time.deltaTime, 0);
-            newRotation.eulerAngles = new Vector3(rotation.eulerAngles.x, newRotation.eulerAngles.y, rotation.eulerAngles.z);
-
-            // I'm truly amazed that this works
-            mainCamera.transform.rotation = newRotation;
+                // I'm truly amazed that this works
+                mainCamera.transform.rotation = newRotation;   
+                didCameraMove = true;
+            }
         }    
 
-        // Don't waste processing power unless camera moves
+        // Don't waste precious processing power unless camera moves
         if(didCameraMove) {
             foreach (var unit in AllUnits) {
                 if(unit.tag.Contains("Knight")){
