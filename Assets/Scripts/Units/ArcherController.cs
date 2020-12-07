@@ -17,6 +17,8 @@ public class ArcherController : MonoBehaviour {
     public int goldCost = 20;
     public int movementRange = 10;
     public int attackRange = 2;
+    public TMPro.TextMeshProUGUI damageTakenText;
+    public TMPro.TextMeshProUGUI healthText;
     public Vector3 location;
 
     private bool isAttacking = false;
@@ -53,11 +55,26 @@ public class ArcherController : MonoBehaviour {
         destination = transform.position;  
         location = transform.position;
         armorDisplay.text = "Armor: " + armor;
+        
+        healthText.text = health + "/" + maxHealth;
+        healthText.fontSize = 20;
+        healthText.transform.localPosition = new Vector3(-25.0f, -10.0f, 0.0f);
+
+
+        damageTakenText.fontWeight = TMPro.FontWeight.Bold;
+        damageTakenText.transform.localPosition = new Vector3(-43.0f, 150.0f, 0.0f);
+        damageTakenText.fontSize = 26;
+        
+        // Make healthbar face camera as soon as game starts
+        MoveHealthBar();
     }
 
     // Update is called once per frame
     void Update() {
         if(!isDead) {
+            if(damageTakenText.text != "") {
+                UpdateDamageTakenText();
+            }
             if(destination != transform.position){
                 Move();
             } else {
@@ -96,6 +113,20 @@ public class ArcherController : MonoBehaviour {
                 deathConfirmed = true;
             }    
         }
+    }
+
+    void UpdateDamageTakenText() {
+        damageTakenText.transform.Translate(new Vector3(0, 0.005f, 0));
+    }
+
+    IEnumerator ClearDamageTakenText() {
+        yield return new WaitForSeconds(0.8f);
+        ResetDamageTakenText();
+    }
+
+    void ResetDamageTakenText() {
+        damageTakenText.text = "";
+        damageTakenText.transform.localPosition = new Vector3(-39.0f, 35.0f, 0.0f);
     }
 
     public bool StartMoving(Vector3 dest, HexCell hex) {
@@ -170,7 +201,13 @@ public class ArcherController : MonoBehaviour {
         }
 
         healthBar.fillAmount = ((float)health / (float)maxHealth);
+
         armorDisplay.text = "Armor: " + armor;
+        healthText.text = health + "/" + maxHealth;
+
+        damageTakenText.text = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage).ToString();
+        damageTakenText.transform.localPosition = new Vector3(-43.0f, 55.0f, 0.0f);
+        StartCoroutine(ClearDamageTakenText());
 
         isIdle = false;
         if(health <= 0) {

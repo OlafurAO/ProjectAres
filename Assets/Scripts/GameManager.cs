@@ -336,7 +336,7 @@ public class GameManager : MonoBehaviour {
 
         // Rotate
         if(Input.GetMouseButton(1)) {
-            // The speed of the mopuse movement
+            // The speed of the mouse movement
             float mouseDelta = Input.mousePosition.x - mousePos.x;
 
             // Some black magic fuckery going on right here, quaternions are fucking hard
