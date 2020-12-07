@@ -153,6 +153,7 @@ public class WizardController : MonoBehaviour
         damageTakenText.transform.localPosition = new Vector3(-39.0f, 35.0f, 0.0f);        
     }
 
+
     public bool StartMoving(Vector3 dest, HexCell hex) {
         float length = Vector3.Distance(transform.position, dest);
         if(length > 7){

@@ -11,5 +11,6 @@ public class HexCell : MonoBehaviour
     public Canvas MoveCanvas; 
     public Canvas AttackCanvas;
     public Canvas DefenceCanvas;
+    public Canvas CreateCanvas;
 
 }

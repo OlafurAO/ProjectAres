@@ -18,6 +18,12 @@ TagManager:
   - KnightBlue
   - ArcherBlue
   - WizardBlue
+  - RedKnightCopy
+  - RedArcherCopy
+  - RedWizardCopy
+  - BlueKnightCopy
+  - BlueArcherCopy
+  - BlueWizardCopy
   layers:
   - Default
   - TransparentFX
