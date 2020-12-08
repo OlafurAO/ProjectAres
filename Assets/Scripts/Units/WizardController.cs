@@ -37,6 +37,7 @@ public class WizardController : MonoBehaviour
     
     private bool startPlayingMoveAnimation = false;
     private bool startPlayingIdleAnimation = true;
+    private bool showHealthBarDropOff = false;
 
     //Where the unit should move next
     public Vector3 destination;
@@ -44,6 +45,7 @@ public class WizardController : MonoBehaviour
     public GameObject DefenceImage;
     public Image healthBar;
     public Image healthBarPreview; // Shows a preview of the damage that will be done to the unit
+    public Image healthBarFallOff; // Animation where a chunk falls off the health bar
     private int healthBarAlphaModifier = 0; // Makes the health damage preview slowly fade in and out to compare current health to future health
     public Image armorBar;
     public Image armorBarPreview;
@@ -116,6 +118,17 @@ public class WizardController : MonoBehaviour
                 }
             }
 
+            if(showHealthBarDropOff) {
+                Vector3 currPosition = healthBarFallOff.transform.localPosition;
+                healthBarFallOff.transform.localPosition = new Vector3(currPosition.x, currPosition.y - 0.006f, currPosition.z);
+                /*
+                if(currPosition.x >= 0.05) {
+                    healthBarFallOff.transform.localPosition = new Vector3(currPosition.x + 0.004f, currPosition.y - 0.01f, currPosition.z);
+                } else {
+                    healthBarFallOff.transform.localPosition = new Vector3(currPosition.x + 0.01f, currPosition.y + 0.005f, currPosition.z);
+                }*/
+            }
+
             //if there is a new destination then move to it, else don't move
             if(destination != transform.position){
                 Move();
@@ -172,6 +185,13 @@ public class WizardController : MonoBehaviour
     IEnumerator ClearDamageTakenText() {
         yield return new WaitForSeconds(0.8f);
         ResetDamageTakenText();
+    }
+
+    IEnumerator ResetHealthBarFallOff() {
+        yield return new WaitForSeconds(0.5f);
+        healthBarFallOff.gameObject.SetActive(false);
+        healthBarFallOff.transform.localPosition = new Vector3((- (1 - (float)health / (float)maxHealth)), 0f, 0f);
+        showHealthBarDropOff = false;
     }
 
     void ResetDamageTakenText() {
@@ -268,7 +288,17 @@ public class WizardController : MonoBehaviour
         healthText.text = (health < 0 ? 0.ToString() : health.ToString()) + "/" + maxHealth;
         damageTakenText.transform.localPosition = new Vector3(-43.0f, 55.0f, 0.0f);
 
+        healthBarFallOff.gameObject.SetActive(true);
+        healthBarFallOff.fillAmount = (armor != 0 ? ((float)Mathf.FloorToInt(damage / 2) / (float)maxHealth)
+            : (float)damage / (float)maxHealth);
+        
+        showHealthBarDropOff = true;
+        if(health == 0) {
+            healthBarFallOff.fillAmount = 0f;
+        }
+
         StartCoroutine(ClearDamageTakenText());
+        StartCoroutine(ResetHealthBarFallOff());
 
         isIdle = false;
         if(health <= 0) {
