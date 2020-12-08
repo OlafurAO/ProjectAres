@@ -6,10 +6,13 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
+
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
     public static Camera mainCamera;
     public GameObject canvas;
+
+    public PlacingUnits placingUnits;
 
     private Vector3 mousePos = Vector3.zero;
 
@@ -30,8 +33,6 @@ public class GameManager : MonoBehaviour {
     public TMPro.TextMeshProUGUI winnerLabel;
 
     private HexCell SelectedCell; 
-    //temporary list of all units and color ("knihtObject", "blue")
-    public List<GameObject> tempUnits;
 
     // TODO: add different colored teams
     private string[] portraitTextureNames = {
@@ -53,8 +54,11 @@ public class GameManager : MonoBehaviour {
     private int redUnitsRemaining = 3;
     public bool gameOver = false;
     private bool startDisplayingUnitHealthPreview = false;
+    //if player has finished dooing what he can do 
     bool movement; 
     bool action; 
+    //when is player is finished placing units then this can stop
+    bool isPlacingUnits = true ; 
 
     private bool isMouseOverEnemyUnit = false;
 
@@ -75,8 +79,6 @@ public class GameManager : MonoBehaviour {
     public string VictimUnit; 
     //stores a canvas of the newest button visable (so we can disable it if needed (click on 2 tiles at onece and 1 one dissapears))
     private Canvas currButtonCanvas;
-    //stores the location clicked where you want to create a unit
-    private Vector3 CreatedLocation;
 
 
     private float currentUnitDamage;
@@ -87,6 +89,7 @@ public class GameManager : MonoBehaviour {
         mainCamera = Camera.main;
         mainCamera.enabled = true;
         canvas = GameObject.Find("Canvas");
+        canvas.SetActive(false);
         LoadPortraitTextures();
         LoadAudioClips();
     }
@@ -98,7 +101,10 @@ public class GameManager : MonoBehaviour {
         // animator, Selector (set to inactive at first, Mesh Renderer: Cast shadows = off), 
         // layer = "Unit" (for both object and model)
         // Use GameObject.AddComponent function
-        RollInitiative();
+
+
+        
+        //RollInitiative();
     }
 
     public void Restart() {
@@ -411,6 +417,11 @@ public class GameManager : MonoBehaviour {
     void Update() {
         MoveCamera();
         mousePos = Input.mousePosition;
+
+        if(isPlacingUnits == true){
+            return;
+        }
+
         if(currButtonCanvas != null){
             grid.MoveButton(currButtonCanvas);
         }
@@ -512,20 +523,6 @@ public class GameManager : MonoBehaviour {
 
         //TODO: Remove dead bois from initiative animation
         CheckForDeadUnits();
-
-        
-        if(Input.GetMouseButtonDown(1)) {
-            HexCell index; 
-            if(Physics.Raycast(toMouse, out rhInfo, 1000.0f)){
-                if(SelectedCell != null){
-                    grid.DisableButton(currButtonCanvas);
-                }
-                index = grid.CreateUnitCell(rhInfo.point);
-                currButtonCanvas = index.CreateCanvas;
-                SelectedCell = index; 
-                CreatedLocation = index.transform.position;
-            }
-        }
     }
 
     // Checks if the mouse is hovering of an enemy unit
@@ -606,37 +603,11 @@ public class GameManager : MonoBehaviour {
             if(move) movement = false; 
         }
     }
+    //run's the "creatUnit" Functionin the class "placingUnits
     public void CreateUnit(string type){
-        //check each unit in "tempunit" if their tag is equal to "type" (ex. redKnight)
-        foreach(GameObject units in tempUnits) {
-            if(units.tag.Contains(type)){ 
-                GameObject FinalUnit = Instantiate<GameObject>(units);
-                FinalUnit.transform.position = CreatedLocation; 
-                FinalUnit.SetActive(true); 
-                if(type == "BlueKnightCopy"){
-                    FinalUnit.tag = "KnightBlue";
-                    return;
-                }else if(type == "BlueArcherCopy"){
-                    FinalUnit.tag = "ArcherBlue";
-                    return;
-                }else if(type == "BlueWizardCopy"){
-                    FinalUnit.tag = "WizardBlue";
-                    return;
-                }else if(type == "RedKnightCopy"){
-                    FinalUnit.tag = "KnightRed";
-                    return;
-                }else if(type == "RedArcherCopy"){
-                    FinalUnit.tag = "ArcherRed";
-                    return;
-                }else if (type == "RedWizardCopy"){
-                    FinalUnit.tag = "WizardRed";
-                    return;
-                }
-                return; 
-            }
-        }
-
+        placingUnits.CreateUnit(type);
     }
+
     public void UnitAttack(){
         int damage = 0;
         string type = "";
@@ -766,5 +737,12 @@ public class GameManager : MonoBehaviour {
             currentUnitDamage = script.baseDamage;
             currentUnitType = script.type;
         }
+    }
+
+    public void FinishedPlacingUnits(){
+        isPlacingUnits = false; 
+        RollInitiative();
+        placingUnits.enabled = false;
+        canvas.SetActive(true);
     }
 }
