@@ -414,8 +414,10 @@ public class GameManager : MonoBehaviour {
         } 
         
         if(isMouseOverEnemyUnit && startDisplayingUnitHealthPreview) {
-            DisplayCurrentMouseHoverUnitPreviewHealthBar();
-            startDisplayingUnitHealthPreview = false;
+            if(action) {
+                DisplayCurrentMouseHoverUnitPreviewHealthBar();
+                startDisplayingUnitHealthPreview = false;
+            }    
         } 
 
         // Check for left mouse button click
@@ -453,7 +455,7 @@ public class GameManager : MonoBehaviour {
 
                 //attack 
                 //victim stuff put in global so that the other method doesn't need to get it (þarf script og þannig frá rhInfo.Colider stuff)
-                victimLocation= rhInfo.collider.gameObject.GetComponent<Transform>().position;
+                victimLocation = rhInfo.collider.gameObject.GetComponent<Transform>().position;
                 if(rhInfo.collider.gameObject.tag.Contains("Knight")) {
                     knightVictim = rhInfo.collider.gameObject.GetComponent<KnightController>();
                     VictimUnit = "Knight";

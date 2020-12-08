@@ -279,15 +279,13 @@ public class ArcherController : MonoBehaviour {
             : (float)damage / (float)maxHealth);
             
         showHealthBarDropOff = true;
-        if(health == 0) {
-            healthBarFallOff.fillAmount = 0f;
-        }
         
         StartCoroutine(ClearDamageTakenText());
         StartCoroutine(ResetHealthBarFallOff());
 
         isIdle = false;
         if(health <= 0) {
+            healthBarFallOff.fillAmount = 0f;
             isDead = true;
         } else {
             isTakingDamage = true;
