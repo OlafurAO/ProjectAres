@@ -77,6 +77,7 @@ public class GameManager : MonoBehaviour {
     public List<GameObject> AllUnits;
 
     private float currentUnitDamage;
+    private string currentUnitType;
 
     void Awake() {
         instance = this;
@@ -139,7 +140,7 @@ public class GameManager : MonoBehaviour {
         
         // Set the current unit as the first unit in the list
         currentUnit = allUnits.ElementAt(currentUnitIndex);
-        currentUnitDamage = GetCurrentUnitDamage();
+        GetCurrentUnitDamageAndType();        
         EnableCurrentUnitCircle();
         SetInitiativePortraits();
         HighlightCurrentUnitsPortrait();
@@ -265,7 +266,7 @@ public class GameManager : MonoBehaviour {
             currentUnitIndex++;
             DisableCurrentUnitCircle();
             currentUnit = allUnits[currentUnitIndex];
-            currentUnitDamage = GetCurrentUnitDamage();
+            GetCurrentUnitDamageAndType();
             EnableCurrentUnitCircle();
             HighlightCurrentUnitsPortrait();
 
@@ -529,11 +530,11 @@ public class GameManager : MonoBehaviour {
     // Displays the damage preview healthbar of the target unit
     void DisplayCurrentMouseHoverUnitPreviewHealthBar() {
         if(currentMouseHoveringUnitKnight != null) {
-            currentMouseHoveringUnitKnight.ShowPreviewHealthBar(currentUnitDamage);
+            currentMouseHoveringUnitKnight.ShowPreviewHealthBar(currentUnitDamage, currentUnitType);
         } else if(currentMouseHoveringUnitArcher != null) {
-            currentMouseHoveringUnitArcher.ShowPreviewHealthBar(currentUnitDamage);
+            currentMouseHoveringUnitArcher.ShowPreviewHealthBar(currentUnitDamage, currentUnitType);
         } else if(currentMouseHoveringUnitWizard != null) {
-            currentMouseHoveringUnitWizard.ShowPreviewHealthBar(currentUnitDamage);
+            currentMouseHoveringUnitWizard.ShowPreviewHealthBar(currentUnitDamage, currentUnitType);
         }
     }
 
@@ -677,16 +678,19 @@ public class GameManager : MonoBehaviour {
         }    
     }
 
-    private float GetCurrentUnitDamage() {
+    private void GetCurrentUnitDamageAndType() {
         if(currentUnit.tag.Contains("Knight")) {
             var script = currentUnit.GetComponent<KnightController>();
-            return script.baseDamage;
+            currentUnitDamage = script.baseDamage;
+            currentUnitType = script.type;
         } else if(currentUnit.tag.Contains("Archer")) {
             var script = currentUnit.GetComponent<ArcherController>();
-            return script.baseDamage;
+            currentUnitDamage = script.baseDamage;
+            currentUnitType = script.type;
         } else {
             var script = currentUnit.GetComponent<WizardController>();
-            return script.baseDamage;
+            currentUnitDamage = script.baseDamage;
+            currentUnitType = script.type;
         }
     }
 }

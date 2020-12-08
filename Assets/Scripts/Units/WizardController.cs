@@ -10,6 +10,7 @@ public class WizardController : MonoBehaviour
     public HexCoordinates IndexedLocation;
     public HexCell CurrCell; 
     public int armor = 1;
+    private int maxArmor = 1;
     public int armorModifier = 0;
     public int baseDamage = 20;
     public int damageModifier = 0;
@@ -21,6 +22,9 @@ public class WizardController : MonoBehaviour
     public int attackRange = 2;
     public TMPro.TextMeshProUGUI damageTakenText;
     public TMPro.TextMeshProUGUI healthText;
+    public TMPro.TextMeshProUGUI armorText;
+    public TMPro.TextMeshProUGUI armorDamageText;
+    public TMPro.TextMeshProUGUI armorAbsorbtionText; // Notifies the player that damage will get absorbed due to armor
     public Vector3 location;
 
     private bool isAttacking = false;
@@ -41,7 +45,9 @@ public class WizardController : MonoBehaviour
     public Image healthBar;
     public Image healthBarPreview; // Shows a preview of the damage that will be done to the unit
     private int healthBarAlphaModifier = 0; // Makes the health damage preview slowly fade in and out to compare current health to future health
-    public Text armorDisplay;
+    public Image armorBar;
+    public Image armorBarPreview;
+
     private Vector3 rotation; 
     //how fast the model should go from one space to the other 
     public int speed = 5; 
@@ -59,14 +65,27 @@ public class WizardController : MonoBehaviour
         destination = transform.position;  
         location = transform.position;
 
-        armorDisplay.text = "Armor: " + armor;
         healthText.text = health + "/" + maxHealth;
         healthText.fontSize = 20;
         healthText.transform.localPosition = new Vector3(-25.0f, -10.0f, 0.0f);
 
+        armorText.text = armor + "/" + maxArmor;
+        armorText.fontSize = 20;
+        armorText.transform.localPosition = new Vector3(-36.0f, 35.0f, 0.0f);
+
         damageTakenText.fontWeight = TMPro.FontWeight.Bold;
         damageTakenText.transform.localPosition = new Vector3(-43.0f, 150.0f, 0.0f);
         damageTakenText.fontSize = 26;
+
+        armorDamageText.fontWeight = TMPro.FontWeight.Bold;
+        armorDamageText.transform.localPosition = new Vector3(-80.0f, 150.0f, 0.0f);
+        armorDamageText.color = new Vector4(253f/255f, 231f/255f, 76f/255f, 1f);
+        armorDamageText.fontSize = 26;
+
+        armorBarPreview.color = new Vector4(253f/255f, 231f/255f, 76f/255f, 1f);
+        armorBarPreview.fillAmount = 1f;
+
+        armorAbsorbtionText.text = "";
 
         // Make healthbar face camera as soon as game starts
         MoveHealthBar();
@@ -83,6 +102,10 @@ public class WizardController : MonoBehaviour
                 var newColor = healthBar.color;
                 newColor.a += healthBarAlphaModifier * 0.012f;
                 healthBar.color = newColor;
+
+                newColor = armorBar.color;
+                newColor.a += healthBarAlphaModifier * 0.012f;
+                armorBar.color = newColor;
                 
                 if(newColor.a <= 0.1f) {
                     healthBarAlphaModifier = 1;
@@ -141,6 +164,7 @@ public class WizardController : MonoBehaviour
 
     void UpdateDamageTakenText() {
         damageTakenText.transform.Translate(new Vector3(0, 0.005f, 0));
+        armorDamageText.transform.Translate(new Vector3(0, 0.005f, 0));
     }
 
     IEnumerator ClearDamageTakenText() {
@@ -150,7 +174,10 @@ public class WizardController : MonoBehaviour
 
     void ResetDamageTakenText() {
         damageTakenText.text = "";
-        damageTakenText.transform.localPosition = new Vector3(-39.0f, 35.0f, 0.0f);        
+        armorDamageText.text = "";
+
+        damageTakenText.transform.localPosition = new Vector3(-39.0f, 35.0f, 0.0f);
+        armorDamageText.transform.localPosition = new Vector3(-80.0f, 35.0f, 0.0f);
     }
 
     public bool StartMoving(Vector3 dest, HexCell hex) {
@@ -225,13 +252,16 @@ public class WizardController : MonoBehaviour
             health -= Mathf.FloorToInt(damage / 2);
             if(attackerType == weaknessType) {
                 armor--;
+                armorBar.fillAmount = ((float)armor / (float)maxArmor);
+                armorText.text = armor + "/" + maxArmor;
+                armorDamageText.transform.localPosition = new Vector3(-80.0f, 55.0f, 0.0f);
+                armorDamageText.text = "1";
             }
         } else {
             health -= damage;
         }
 
         healthBar.fillAmount = ((float)health / (float)maxHealth);
-        armorDisplay.text = "Armor: " + armor;
         healthText.text = (health < 0 ? 0.ToString() : health.ToString()) + "/" + maxHealth;
         damageTakenText.transform.localPosition = new Vector3(-43.0f, 55.0f, 0.0f);
 
@@ -259,19 +289,35 @@ public class WizardController : MonoBehaviour
         HealthCanvas.transform.LookAt(camera.transform.position);
     }
 
-    public void ShowPreviewHealthBar(float damage) {
+    public void ShowPreviewHealthBar(float damage, string attackerType) {
         float totalDamage = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
         healthBarPreview.fillAmount = (((float)health - totalDamage) / (float)maxHealth);
         healthBarPreview.gameObject.SetActive(true);
+
+        armorBarPreview.fillAmount = attackerType == weaknessType ? (((float)armor - 1f) / (float)maxArmor) 
+            : armorBarPreview.fillAmount;
+        armorBarPreview.gameObject.SetActive(true);
+        
+        if(armor != 0) {
+            armorAbsorbtionText.text = "Armor absorbs\n50'/, damage";
+        }
+        
         healthBarAlphaModifier = -1;
     }
 
     public void DisablePreviewHealthBar() {
         healthBarPreview.gameObject.SetActive(false);
+        armorBarPreview.gameObject.SetActive(false);
+        armorAbsorbtionText.text = "";
+
         var newColor = healthBar.color;
         healthBarAlphaModifier = 0;
-
+        
         newColor.a = 1.0f;
         healthBar.color = newColor;
+
+        newColor = armorBar.color;
+        newColor.a = 1.0f;
+        armorBar.color = newColor;
     }
 }
