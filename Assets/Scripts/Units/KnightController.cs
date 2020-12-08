@@ -100,9 +100,11 @@ public class KnightController : MonoBehaviour {
                 newColor.a += healthBarAlphaModifier * 0.012f;
                 healthBar.color = newColor;
 
-                newColor = armorBar.color;
-                newColor.a += healthBarAlphaModifier * 0.012f;
-                armorBar.color = newColor;
+                if(armorBarPreview.gameObject.activeSelf) {
+                    newColor = armorBar.color;
+                    newColor.a += healthBarAlphaModifier * 0.012f;
+                    armorBar.color = newColor;
+                }
                 
                 if(newColor.a <= 0.1f) {
                     healthBarAlphaModifier = 1;
@@ -289,12 +291,12 @@ public class KnightController : MonoBehaviour {
         float totalDamage = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
         healthBarPreview.fillAmount = (((float)health - totalDamage) / (float)maxHealth);
         healthBarPreview.gameObject.SetActive(true);
-
-        armorBarPreview.fillAmount = attackerType == weaknessType ? (((float)armor - 1f) / (float)maxArmor) 
-            : armorBarPreview.fillAmount;
-        armorBarPreview.gameObject.SetActive(true);
         
         if(armor != 0) {
+            if(attackerType == weaknessType) {
+                armorBarPreview.fillAmount = (((float)armor - 1f) / (float)maxArmor); 
+                armorBarPreview.gameObject.SetActive(true);
+            }
             armorAbsorbtionText.text = "Armor absorbs\n50'/, damage";
         }
         
