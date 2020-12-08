@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour {
     public TMPro.TextMeshProUGUI winnerLabel;
 
     private HexCell SelectedCell; 
+    //temporary list of all units and color ("knihtObject", "blue")
+    public List<GameObject> tempUnits;
 
     // TODO: add different colored teams
     private string[] portraitTextureNames = {
@@ -49,9 +51,20 @@ public class GameManager : MonoBehaviour {
     // TODO: fix harcoding
     private int blueUnitsRemaining = 3;
     private int redUnitsRemaining = 3;
-    bool gameOver = false;
+    public bool gameOver = false;
+    private bool startDisplayingUnitHealthPreview = false;
     bool movement; 
     bool action; 
+
+    private bool isMouseOverEnemyUnit = false;
+
+    // The current unit that the mouse is hovering over
+    private GameObject currentMouseHoveringUnit;
+
+    // Absolute degeneracy
+    private KnightController currentMouseHoveringUnitKnight;
+    private ArcherController currentMouseHoveringUnitArcher;
+    private WizardController currentMouseHoveringUnitWizard;
 
     public Vector3 victimLocation;
     //store conteroller of the victim  
@@ -62,8 +75,12 @@ public class GameManager : MonoBehaviour {
     public string VictimUnit; 
     //stores a canvas of the newest button visable (so we can disable it if needed (click on 2 tiles at onece and 1 one dissapears))
     private Canvas currButtonCanvas;
+    //stores the location clicked where you want to create a unit
+    private Vector3 CreatedLocation;
 
-    public List<GameObject> AllUnits;
+
+    private float currentUnitDamage;
+    private string currentUnitType;
 
     void Awake() {
         instance = this;
@@ -126,6 +143,7 @@ public class GameManager : MonoBehaviour {
         
         // Set the current unit as the first unit in the list
         currentUnit = allUnits.ElementAt(currentUnitIndex);
+        GetCurrentUnitDamageAndType();        
         EnableCurrentUnitCircle();
         SetInitiativePortraits();
         HighlightCurrentUnitsPortrait();
@@ -251,6 +269,7 @@ public class GameManager : MonoBehaviour {
             currentUnitIndex++;
             DisableCurrentUnitCircle();
             currentUnit = allUnits[currentUnitIndex];
+            GetCurrentUnitDamageAndType();
             EnableCurrentUnitCircle();
             HighlightCurrentUnitsPortrait();
 
@@ -354,7 +373,7 @@ public class GameManager : MonoBehaviour {
 
         // Don't waste precious processing power unless camera moves
         if(didCameraMove) {
-            foreach (var unit in AllUnits) {
+            foreach (var unit in allUnits) {
                 if(unit.tag.Contains("Knight")){
                     unit.GetComponent<KnightController>().MoveHealthBar();
                 } else if(unit.tag.Contains("Archer")){
@@ -386,6 +405,18 @@ public class GameManager : MonoBehaviour {
             gameOver = true;
         }
 
+        // Is player hovering over an object?
+        Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit rhInfo;
+        bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
+        if(didHit) {
+            CheckForMouseHoveringOverUnit(rhInfo);
+        } 
+        
+        if(isMouseOverEnemyUnit && startDisplayingUnitHealthPreview) {
+            DisplayCurrentMouseHoverUnitPreviewHealthBar();
+            startDisplayingUnitHealthPreview = false;
+        } 
 
         // Check for left mouse button click
         if(Input.GetMouseButtonDown(0)) {    
@@ -395,10 +426,6 @@ public class GameManager : MonoBehaviour {
                 return;
             }
 
-            // Did player click on a unit?
-            Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit rhInfo;
-            bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
             HexCell index; 
 
             // Did player click on a unit?
@@ -461,8 +488,72 @@ public class GameManager : MonoBehaviour {
 
         //TODO: Remove dead bois from initiative animation
         CheckForDeadUnits();
+
+        
+        if(Input.GetMouseButtonDown(1)) {
+            HexCell index; 
+            if(Physics.Raycast(toMouse, out rhInfo, 1000.0f)){
+                if(SelectedCell != null){
+                    grid.DisableButton(currButtonCanvas);
+                }
+                index = grid.CreateUnitCell(rhInfo.point);
+                currButtonCanvas = index.CreateCanvas;
+                SelectedCell = index; 
+                CreatedLocation = index.transform.position;
+            }
+        }
     }
 
+    // Checks if the mouse is hovering of an enemy unit
+    void CheckForMouseHoveringOverUnit(RaycastHit rhInfo) {
+        // Is mouse hovering over an enemy unit?
+        if((rhInfo.collider.gameObject.tag.Contains("Knight") || rhInfo.collider.gameObject.tag.Contains("Archer") 
+          || rhInfo.collider.gameObject.tag.Contains("Wizard"))) {
+            if((currentUnit.tag.Contains("Red") && !rhInfo.collider.gameObject.tag.Contains("Red"))
+              || (currentUnit.tag.Contains("Blue") && !rhInfo.collider.gameObject.tag.Contains("Blue"))) {
+                if(currentMouseHoveringUnit == null) {
+                    currentMouseHoveringUnit = rhInfo.collider.gameObject;
+                    startDisplayingUnitHealthPreview = true;
+                    isMouseOverEnemyUnit = true;
+
+                    if(rhInfo.collider.gameObject.tag.Contains("Knight")) {
+                        currentMouseHoveringUnitKnight = rhInfo.collider.gameObject.GetComponent<KnightController>();
+                    } else if(rhInfo.collider.gameObject.tag.Contains("Archer")) {
+                        currentMouseHoveringUnitArcher = rhInfo.collider.gameObject.GetComponent<ArcherController>();
+                    } else {
+                        currentMouseHoveringUnitWizard = rhInfo.collider.gameObject.GetComponent<WizardController>();
+                    }
+                }    
+            }
+        } else {
+            if(isMouseOverEnemyUnit) {
+                if(currentMouseHoveringUnitKnight != null) {
+                    currentMouseHoveringUnitKnight.DisablePreviewHealthBar();
+                    currentMouseHoveringUnitKnight = null;
+                } else if(currentMouseHoveringUnitArcher != null) {
+                    currentMouseHoveringUnitArcher.DisablePreviewHealthBar();
+                    currentMouseHoveringUnitArcher = null;
+                } else if(currentMouseHoveringUnitWizard != null) {
+                    currentMouseHoveringUnitWizard.DisablePreviewHealthBar();
+                    currentMouseHoveringUnitWizard = null;
+                }
+
+                currentMouseHoveringUnit = null;
+                isMouseOverEnemyUnit = false;
+            }
+        }
+    }
+
+    // Displays the damage preview healthbar of the target unit
+    void DisplayCurrentMouseHoverUnitPreviewHealthBar() {
+        if(currentMouseHoveringUnitKnight != null) {
+            currentMouseHoveringUnitKnight.ShowPreviewHealthBar(currentUnitDamage, currentUnitType);
+        } else if(currentMouseHoveringUnitArcher != null) {
+            currentMouseHoveringUnitArcher.ShowPreviewHealthBar(currentUnitDamage, currentUnitType);
+        } else if(currentMouseHoveringUnitWizard != null) {
+            currentMouseHoveringUnitWizard.ShowPreviewHealthBar(currentUnitDamage, currentUnitType);
+        }
+    }
 
     List<(double, double)> NullLocation = new List<(double, double)>(){ ( 0, 0),(1.5,3),(3.5,6),(5.5,9),(7,12),(8.5,15)};
 
@@ -490,6 +581,37 @@ public class GameManager : MonoBehaviour {
             bool move = script.StartMoving(destination, index );
             if(move) movement = false; 
         }
+    }
+    public void CreateUnit(string type){
+        //check each unit in "tempunit" if their tag is equal to "type" (ex. redKnight)
+        foreach(GameObject units in tempUnits) {
+            if(units.tag.Contains(type)){ 
+                GameObject FinalUnit = Instantiate<GameObject>(units);
+                FinalUnit.transform.position = CreatedLocation; 
+                FinalUnit.SetActive(true); 
+                if(type == "BlueKnightCopy"){
+                    FinalUnit.tag = "KnightBlue";
+                    return;
+                }else if(type == "BlueArcherCopy"){
+                    FinalUnit.tag = "ArcherBlue";
+                    return;
+                }else if(type == "BlueWizardCopy"){
+                    FinalUnit.tag = "WizardBlue";
+                    return;
+                }else if(type == "RedKnightCopy"){
+                    FinalUnit.tag = "KnightRed";
+                    return;
+                }else if(type == "RedArcherCopy"){
+                    FinalUnit.tag = "ArcherRed";
+                    return;
+                }else if (type == "RedWizardCopy"){
+                    FinalUnit.tag = "WizardRed";
+                    return;
+                }
+                return; 
+            }
+        }
+
     }
     public void UnitAttack(){
         int damage = 0;
@@ -552,6 +674,8 @@ public class GameManager : MonoBehaviour {
 
     }
 
+
+
     void CheckForDeadUnits() {
         // Check for any dead units and remove them from the list.
         // We need to store the units to remove in a list and remove them manually
@@ -602,5 +726,21 @@ public class GameManager : MonoBehaviour {
             SetInitiativePortraits();
             HighlightCurrentUnitsPortrait();
         }    
+    }
+
+    private void GetCurrentUnitDamageAndType() {
+        if(currentUnit.tag.Contains("Knight")) {
+            var script = currentUnit.GetComponent<KnightController>();
+            currentUnitDamage = script.baseDamage;
+            currentUnitType = script.type;
+        } else if(currentUnit.tag.Contains("Archer")) {
+            var script = currentUnit.GetComponent<ArcherController>();
+            currentUnitDamage = script.baseDamage;
+            currentUnitType = script.type;
+        } else {
+            var script = currentUnit.GetComponent<WizardController>();
+            currentUnitDamage = script.baseDamage;
+            currentUnitType = script.type;
+        }
     }
 }
