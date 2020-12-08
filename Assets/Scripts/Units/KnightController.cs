@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 public class KnightController : MonoBehaviour {
     public HexGrid grid; 
-    public int health = 200;
+    public int health = 100;
     public int maxHealth = 100;
     public HexCoordinates IndexedLocation;
     public int armor = 5;
+    private int maxArmor = 5;
     public int armorModifier = 0;
     public int baseDamage = 15;
     public int damageModifier = 0;
@@ -20,6 +21,9 @@ public class KnightController : MonoBehaviour {
     public int attackRange = 1;
     public TMPro.TextMeshProUGUI damageTakenText;
     public TMPro.TextMeshProUGUI healthText;
+    public TMPro.TextMeshProUGUI armorText;
+    public TMPro.TextMeshProUGUI armorDamageText;
+    public TMPro.TextMeshProUGUI armorAbsorbtionText; // Notifies the player that damage will get absorbed due to armor
     public Vector3 location;
     
     private bool isAttacking = false;
@@ -32,14 +36,17 @@ public class KnightController : MonoBehaviour {
 
     private bool startPlayingMoveAnimation = false;
     private bool startPlayingIdleAnimation = true;
+    private bool showHealthBarDropOff = false;
 
     public HexCell CurrCell; 
     public GameObject DefenceImage;
     public Image healthBar;
     public Image healthBarPreview; // Shows a preview of the damage that will be done to the unit
+    public Image healthBarFallOff; // Animation where a chunk falls off the health bar
     private int healthBarAlphaModifier = 0; // Makes the health damage preview slowly fade in and out to compare current health to future health
-    public Text armorDisplay;
-
+    public Image armorBar;
+    public Image armorBarPreview;
+    
     //Where the unit should move next
     public Vector3 destination;
     private Vector3 rotation; 
@@ -57,14 +64,27 @@ public class KnightController : MonoBehaviour {
         destination = transform.position;    
         location = transform.position;
 
-        armorDisplay.text = "Armor: " + armor;
         healthText.text = health + "/" + maxHealth;
         healthText.fontSize = 20;
         healthText.transform.localPosition = new Vector3(-25.0f, -10.0f, 0.0f);
 
+        armorText.text = armor + "/" + maxArmor;
+        armorText.fontSize = 20;
+        armorText.transform.localPosition = new Vector3(-36.0f, 35.0f, 0.0f);
+
         damageTakenText.fontWeight = TMPro.FontWeight.Bold;
         damageTakenText.transform.localPosition = new Vector3(-43.0f, 150.0f, 0.0f);
         damageTakenText.fontSize = 26;
+
+        armorDamageText.fontWeight = TMPro.FontWeight.Bold;
+        armorDamageText.transform.localPosition = new Vector3(-80.0f, 150.0f, 0.0f);
+        armorDamageText.color = new Vector4(253f/255f, 231f/255f, 76f/255f, 1f);
+        armorDamageText.fontSize = 26;
+
+        armorBarPreview.color = new Vector4(253f/255f, 231f/255f, 76f/255f, 1f);
+        armorBarPreview.fillAmount = 1f;
+
+        armorAbsorbtionText.text = "";
 
         // Make healthbar face camera as soon as game starts
         MoveHealthBar();
@@ -81,12 +101,29 @@ public class KnightController : MonoBehaviour {
                 var newColor = healthBar.color;
                 newColor.a += healthBarAlphaModifier * 0.012f;
                 healthBar.color = newColor;
+
+                if(armorBarPreview.gameObject.activeSelf) {
+                    newColor = armorBar.color;
+                    newColor.a += healthBarAlphaModifier * 0.012f;
+                    armorBar.color = newColor;
+                }
                 
                 if(newColor.a <= 0.1f) {
                     healthBarAlphaModifier = 1;
                 } else if(newColor.a >= 1.0f) {
                     healthBarAlphaModifier = -1;
                 }
+            }
+
+            if(showHealthBarDropOff) {
+                Vector3 currPosition = healthBarFallOff.transform.localPosition;
+                healthBarFallOff.transform.localPosition = new Vector3(currPosition.x, currPosition.y - 0.006f, currPosition.z);
+                /*
+                if(currPosition.x >= 0.05) {
+                    healthBarFallOff.transform.localPosition = new Vector3(currPosition.x + 0.004f, currPosition.y - 0.01f, currPosition.z);
+                } else {
+                    healthBarFallOff.transform.localPosition = new Vector3(currPosition.x + 0.01f, currPosition.y + 0.005f, currPosition.z);
+                }*/
             }
 
             //if there is a new destination then move to it, else don't move
@@ -140,6 +177,7 @@ public class KnightController : MonoBehaviour {
 
     void UpdateDamageTakenText() {
         damageTakenText.transform.Translate(new Vector3(0, 0.005f, 0));
+        armorDamageText.transform.Translate(new Vector3(0, 0.005f, 0));
     }
 
     IEnumerator ClearDamageTakenText() {
@@ -147,9 +185,19 @@ public class KnightController : MonoBehaviour {
         ResetDamageTakenText();
     }
 
+    IEnumerator ResetHealthBarFallOff() {
+        yield return new WaitForSeconds(0.5f);
+        healthBarFallOff.gameObject.SetActive(false);
+        healthBarFallOff.transform.localPosition = new Vector3((- (1 - (float)health / (float)maxHealth)), 0f, 0f);
+        showHealthBarDropOff = false;
+    }
+
     void ResetDamageTakenText() {
         damageTakenText.text = "";
+        armorDamageText.text = "";
+
         damageTakenText.transform.localPosition = new Vector3(-39.0f, 35.0f, 0.0f);
+        armorDamageText.transform.localPosition = new Vector3(-80.0f,  35.0f, 0.0f);
     }
 
     public bool StartMoving(Vector3 dest, HexCell hex) {
@@ -222,17 +270,30 @@ public class KnightController : MonoBehaviour {
             health -= Mathf.FloorToInt(damage / 2);
             if(attackerType == weaknessType) {
                 armor--;
+                armorBar.fillAmount = ((float)armor / (float)maxArmor);
+                armorText.text = armor + "/" + maxArmor;
+                armorDamageText.transform.localPosition = new Vector3(-80.0f, 55.0f, 0.0f);
+                armorDamageText.text = "1";
             }
         } else {
             health -= damage;
         }
 
         healthBar.fillAmount = ((float)health / (float)maxHealth);
-        armorDisplay.text = "Armor: " + armor;
         healthText.text = (health < 0 ? 0.ToString() : health.ToString()) + "/" + maxHealth;
         damageTakenText.transform.localPosition = new Vector3(-43.0f, 55.0f, 0.0f);
 
+        healthBarFallOff.gameObject.SetActive(true);
+        healthBarFallOff.fillAmount = (armor != 0 ? ((float)Mathf.FloorToInt(damage / 2) / (float)maxHealth)
+            : (float)damage / (float)maxHealth);
+        
+        showHealthBarDropOff = true;
+        if(health == 0) {
+            healthBarFallOff.fillAmount = 0f;
+        }
+
         StartCoroutine(ClearDamageTakenText());
+        StartCoroutine(ResetHealthBarFallOff());
 
         isIdle = false;
         if(health <= 0) {
@@ -256,19 +317,35 @@ public class KnightController : MonoBehaviour {
         HealthCanvas.transform.LookAt(camera.transform.position);
     }
 
-    public void ShowPreviewHealthBar(float damage) {
+    public void ShowPreviewHealthBar(float damage, string attackerType) {
         float totalDamage = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
         healthBarPreview.fillAmount = (((float)health - totalDamage) / (float)maxHealth);
         healthBarPreview.gameObject.SetActive(true);
+        
+        if(armor != 0) {
+            if(attackerType == weaknessType) {
+                armorBarPreview.fillAmount = (((float)armor - 1f) / (float)maxArmor); 
+                armorBarPreview.gameObject.SetActive(true);
+            }
+            armorAbsorbtionText.text = "Armor absorbs\n50'/, damage";
+        }
+        
         healthBarAlphaModifier = -1;
     }
 
     public void DisablePreviewHealthBar() {
         healthBarPreview.gameObject.SetActive(false);
+        armorBarPreview.gameObject.SetActive(false);
+        armorAbsorbtionText.text = "";
+
         var newColor = healthBar.color;
         healthBarAlphaModifier = 0;
         
         newColor.a = 1.0f;
         healthBar.color = newColor;
+
+        newColor = armorBar.color;
+        newColor.a = 1.0f;
+        armorBar.color = newColor;
     }
 }
