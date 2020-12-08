@@ -328,7 +328,26 @@ public class GameManager : MonoBehaviour {
                 didCameraMove = true;
             }    
         } 
+
+        if(Input.GetKey(KeyCode.E)) {
+            // Some black magic fuckery going on right here, quaternions are fucking hard
+            Quaternion rotation = mainCamera.transform.rotation;
+            Quaternion newRotation = Quaternion.Euler(0, rotation.eulerAngles.y + 60 * Time.deltaTime, 0);
+            newRotation.eulerAngles = new Vector3(rotation.eulerAngles.x, newRotation.eulerAngles.y, rotation.eulerAngles.z);
+
+            // I'm truly amazed that this works
+            mainCamera.transform.rotation = newRotation;  
+        } else if(Input.GetKey(KeyCode.Q)) {
+            // Some black magic fuckery going on right here, quaternions are fucking hard
+            Quaternion rotation = mainCamera.transform.rotation;
+            Quaternion newRotation = Quaternion.Euler(0, rotation.eulerAngles.y + -60 * Time.deltaTime, 0);
+            newRotation.eulerAngles = new Vector3(rotation.eulerAngles.x, newRotation.eulerAngles.y, rotation.eulerAngles.z);
+
+            // I'm truly amazed that this works
+            mainCamera.transform.rotation = newRotation;  
+        }
         
+        /*
         // Up, down
         if(Input.GetKey(KeyCode.E)) { 
             if(mainCamera.transform.position.y < 10) {
@@ -341,6 +360,7 @@ public class GameManager : MonoBehaviour {
                 didCameraMove = true; 
             }
         }
+        */
 
         // Scroll wheel zoom
         if(Input.GetAxis("Mouse ScrollWheel") > 0f) {
@@ -354,7 +374,8 @@ public class GameManager : MonoBehaviour {
                 didCameraMove = true;
             }
         }
-
+        
+        /*
         // Rotate
         if(Input.GetMouseButton(1)) {
             // The speed of the mouse movement
@@ -369,7 +390,8 @@ public class GameManager : MonoBehaviour {
                 mainCamera.transform.rotation = newRotation;   
                 didCameraMove = true;
             }
-        }    
+        }
+        */    
 
         // Don't waste precious processing power unless camera moves
         if(didCameraMove) {
