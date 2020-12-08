@@ -18,6 +18,8 @@ public class HexGrid : MonoBehaviour {
 	public Canvas AttackCanvas1;
 	public Canvas DefenceCanvas1;
 	public Canvas CreateUnitCanvas1;
+	public Canvas DeleteUnitCanvas1;
+
 
 	public Camera camera;
 
@@ -59,20 +61,24 @@ public class HexGrid : MonoBehaviour {
 		Canvas temp2 = Instantiate<Canvas>(AttackCanvas1);
 		Canvas temp3 = Instantiate<Canvas>(DefenceCanvas1);
 		Canvas temp4 = Instantiate<Canvas>(CreateUnitCanvas1);
+		Canvas temp5 = Instantiate<Canvas>(DeleteUnitCanvas1);
 		temp.transform.SetParent(cell.transform, false);
 		temp2.transform.SetParent(cell.transform, false);
 		temp3.transform.SetParent(cell.transform, false);
 		temp4.transform.SetParent(cell.transform, false);
+		temp5.transform.SetParent(cell.transform, false);
 		
 		cell.MoveCanvas = temp;
 		cell.AttackCanvas = temp2;
 		cell.DefenceCanvas = temp3;
 		cell.CreateCanvas = temp4;
+		cell.DeleteCanvas = temp5;
 		
 		cell.MoveCanvas.enabled = false;
 		cell.AttackCanvas.enabled = false;
 		cell.DefenceCanvas.enabled = false;
 		cell.CreateCanvas.enabled = false;
+		cell.DeleteCanvas.enabled = false;
 		
 		
 		/*
@@ -106,7 +112,9 @@ public class HexGrid : MonoBehaviour {
 	public HexCell CreateUnitCell(Vector3 position){
 		HexCell currCell = getCell(position);
 		currCell.CreateCanvas.transform.LookAt(camera.transform.position);
-		currCell.CreateCanvas.enabled = true;
+		if(currCell.isOccupied == false){
+			currCell.CreateCanvas.enabled = true;
+		}
 		return currCell;
 	}
 
@@ -125,6 +133,14 @@ public class HexGrid : MonoBehaviour {
 		currCell.DefenceCanvas.enabled = true;
 		return currCell;
 	}
+
+	public HexCell DeleteCell(Vector3 position){
+		HexCell currCell = getCell( position);
+		currCell.DeleteCanvas.transform.LookAt(camera.transform.position);
+		currCell.DeleteCanvas.enabled = true;
+		return currCell;
+
+		}
 
 
 	public HexCell getCell(Vector3 position){
@@ -162,6 +178,7 @@ public class HexGrid : MonoBehaviour {
     public void DisableButton(Canvas canvas){
         canvas.enabled = false;
     }
+
 
 /*	public void canvasthingy(HexCell cell){
 		cell.canvas.RectTransform.PosX = cell.position.X; 
