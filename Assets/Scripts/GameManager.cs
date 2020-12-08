@@ -12,6 +12,10 @@ public class GameManager : MonoBehaviour {
     public static Camera mainCamera;
     public GameObject canvas;
 
+    // The bounds of the map that the camera can't travel beyond. Modify this if the map gets bigger
+    List<int> xBounds = new List<int>{-5, 25};
+    List<int> zBounds = new List<int>{-10, 20};
+
     public PlacingUnits placingUnits;
 
     private Vector3 mousePos = Vector3.zero;
@@ -34,7 +38,6 @@ public class GameManager : MonoBehaviour {
 
     private HexCell SelectedCell; 
 
-    // TODO: add different colored teams
     private string[] portraitTextureNames = {
         "KnightBlue", "ArcherBlue", "WizardBlue", 
         "KnightRed", "ArcherRed", "WizardRed"
@@ -305,34 +308,73 @@ public class GameManager : MonoBehaviour {
 
         // Left, right
         if(Input.GetKey(KeyCode.A)) {
-            if(mainCamera.transform.position.x > -5) {
+            // Make a temp variable to check what the camera's next position will be
+            Transform nextPos = mainCamera.transform;
+            nextPos.Translate(new Vector3(-cameraSpeed * Time.deltaTime, 0, 0));
+
+            // If next position is not out of bounds, move the camera
+            if(nextPos.position.z > zBounds[0] && nextPos.position.z < zBounds[1] && nextPos.position.x > xBounds[0] && nextPos.position.x < xBounds[1]) {
                 mainCamera.transform.Translate(new Vector3(-cameraSpeed * Time.deltaTime, 0, 0));
                 didCameraMove = true;
-            }    
+            }
+            // Cancel out the nextPos translation or everything gets fucked up for some reason
+            nextPos.Translate(new Vector3(cameraSpeed * Time.deltaTime, 0, 0));
+
         } else if(Input.GetKey(KeyCode.D)) {
-            if(mainCamera.transform.position.x < 25) {
+            // Make a temp variable to check what the camera's next position will be
+            Transform nextPos = mainCamera.transform;
+            nextPos.Translate(new Vector3(cameraSpeed * Time.deltaTime, 0, 0));
+
+            // If next position is not out of bounds, move the camera
+            if(nextPos.position.z > zBounds[0] && nextPos.position.z < zBounds[1] && nextPos.position.x > xBounds[0] && nextPos.position.x < xBounds[1]) {
                 mainCamera.transform.Translate(new Vector3(cameraSpeed * Time.deltaTime, 0, 0));
                 didCameraMove = true;
-            }    
+            }
+            // Cancel out the nextPos translation or everything gets fucked up for some reason
+            nextPos.Translate(new Vector3(-cameraSpeed * Time.deltaTime, 0, 0));   
         } 
         
         // Back, forth
         if(Input.GetKey(KeyCode.W)) { 
-            if(mainCamera.transform.position.z < 20) {
-                var rotation = mainCamera.transform.rotation;
-                mainCamera.transform.rotation = Quaternion.Euler(0, mainCamera.transform.eulerAngles.y, 0);
+            var rotation = mainCamera.transform.rotation;
+            // Disable x and z rotation to prevent rolling around the z axis when rotating the camera
+            mainCamera.transform.rotation = Quaternion.Euler(0, mainCamera.transform.eulerAngles.y, 0);
+
+            // Make a temp variable to check what the camera's next position will be
+            Transform nextPos = mainCamera.transform;
+            nextPos.Translate(new Vector3(0, 0, cameraSpeed * Time.deltaTime));
+
+            // If next position is not out of bounds, move the camera
+            if(nextPos.position.z > zBounds[0] && nextPos.position.z < zBounds[1] && nextPos.position.x > xBounds[0] && nextPos.position.x < xBounds[1]) {
                 mainCamera.transform.Translate(new Vector3(0, 0, cameraSpeed * Time.deltaTime));
-                mainCamera.transform.rotation = rotation;
                 didCameraMove = true;
-            }    
-        } else if(Input.GetKey(KeyCode.S)) {
-            if(mainCamera.transform.position.z > -10) {
-                var rotation = mainCamera.transform.rotation;
-                mainCamera.transform.rotation = Quaternion.Euler(0, mainCamera.transform.eulerAngles.y, 0);
-                mainCamera.transform.Translate(new Vector3(0, 0, -cameraSpeed * Time.deltaTime));
-                mainCamera.transform.rotation = rotation;
+            } 
+
+            // Cancel out the nextPos translation or everything gets fucked up for some reason
+            nextPos.Translate(new Vector3(0, 0, -cameraSpeed * Time.deltaTime));
+            // Reapply the rotation
+            mainCamera.transform.rotation = rotation;
+
+        } else if(Input.GetKey(KeyCode.S)) {        
+            var rotation = mainCamera.transform.rotation;
+            // Disable x and z rotation to prevent rolling around the z axis when rotating the camera
+            mainCamera.transform.rotation = Quaternion.Euler(0, mainCamera.transform.eulerAngles.y, 0);
+            
+            // Make a temp variable to check what the camera's next position will be
+            Transform nextPos = mainCamera.transform;
+            nextPos.Translate(new Vector3(0, 0, -cameraSpeed * Time.deltaTime));
+            
+            // If next position is not out of bounds, move the camera
+            if(nextPos.position.z > zBounds[0] && nextPos.position.z < zBounds[1] && nextPos.position.x > xBounds[0] && nextPos.position.x < xBounds[1]) {
+                mainCamera.transform.Translate(new Vector3(0, 0, -cameraSpeed * Time.deltaTime));    
                 didCameraMove = true;
-            }    
+            }   
+
+            // Cancel out the nextPos translation or everything gets fucked up for some reason
+            nextPos.Translate(new Vector3(0, 0, cameraSpeed * Time.deltaTime)); 
+            // Reapply the rotation
+            mainCamera.transform.rotation = rotation;
+            
         } 
 
         if(Input.GetKey(KeyCode.E)) {
@@ -521,7 +563,6 @@ public class GameManager : MonoBehaviour {
             } 
         };
 
-        //TODO: Remove dead bois from initiative animation
         CheckForDeadUnits();
     }
 
