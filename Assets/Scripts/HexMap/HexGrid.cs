@@ -17,6 +17,7 @@ public class HexGrid : MonoBehaviour {
 	public Canvas MoveCanvas1;
 	public Canvas AttackCanvas1;
 	public Canvas DefenceCanvas1;
+	public Canvas CreateUnitCanvas1;
 
 	public Camera camera;
 
@@ -57,17 +58,21 @@ public class HexGrid : MonoBehaviour {
 		Canvas temp = Instantiate<Canvas>(MoveCanvas1);
 		Canvas temp2 = Instantiate<Canvas>(AttackCanvas1);
 		Canvas temp3 = Instantiate<Canvas>(DefenceCanvas1);
+		Canvas temp4 = Instantiate<Canvas>(CreateUnitCanvas1);
 		temp.transform.SetParent(cell.transform, false);
 		temp2.transform.SetParent(cell.transform, false);
 		temp3.transform.SetParent(cell.transform, false);
+		temp4.transform.SetParent(cell.transform, false);
 		
 		cell.MoveCanvas = temp;
 		cell.AttackCanvas = temp2;
 		cell.DefenceCanvas = temp3;
+		cell.CreateCanvas = temp4;
 		
 		cell.MoveCanvas.enabled = false;
 		cell.AttackCanvas.enabled = false;
 		cell.DefenceCanvas.enabled = false;
+		cell.CreateCanvas.enabled = false;
 		
 		
 		/*
@@ -97,6 +102,13 @@ public class HexGrid : MonoBehaviour {
 		return currCell;
 	}
 
+
+	public HexCell CreateUnitCell(Vector3 position){
+		HexCell currCell = getCell(position);
+		currCell.CreateCanvas.transform.LookAt(camera.transform.position);
+		currCell.CreateCanvas.enabled = true;
+		return currCell;
+	}
 
 	public HexCell AttackCell(Vector3 position){
 		HexCell currCell = getCell( position);
