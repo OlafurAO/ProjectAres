@@ -25,6 +25,8 @@ public class WizardController : MonoBehaviour
     public TMPro.TextMeshProUGUI armorText;
     public TMPro.TextMeshProUGUI armorDamageText;
     public TMPro.TextMeshProUGUI armorAbsorbtionText; // Notifies the player that damage will get absorbed due to armor
+    public TMPro.TextMeshProUGUI healthDamageTextPreview; // Text preview of the damage the player will deal
+    public TMPro.TextMeshProUGUI armorDamageTextPreview; // Text preview of the damage the player will deal to armor
     public Vector3 location;
 
     private bool isAttacking = false;
@@ -67,6 +69,9 @@ public class WizardController : MonoBehaviour
     private GameObject projectile;
     private bool projectileGoUp = true; 
 
+    //portrait of the unit 
+    public Image portrait;
+
     // Start is called before the first frame update
     void Start() {
         destination = transform.position;  
@@ -91,6 +96,13 @@ public class WizardController : MonoBehaviour
 
         armorBarPreview.color = new Vector4(253f/255f, 231f/255f, 76f/255f, 1f);
         armorBarPreview.fillAmount = 1f;
+
+        armorDamageTextPreview.transform.localPosition = new Vector3(-36.0f, 35.0f, 0.0f);
+        healthDamageTextPreview.transform.localPosition = new Vector3(-25.0f, -10.0f, 0.0f);
+        armorDamageTextPreview.fontSize = 20;
+        healthDamageTextPreview.fontSize = 20;
+        armorDamageTextPreview.text = "";
+        healthDamageTextPreview.text = "";
 
         armorAbsorbtionText.text = "";
 
@@ -376,6 +388,10 @@ public class WizardController : MonoBehaviour
                 armor--;
                 armorBar.fillAmount = ((float)armor / (float)maxArmor);
                 armorText.text = armor + "/" + maxArmor;
+                if(armor < 10) {
+                    armorText.text = "0" + armorText.text;
+                }
+
                 armorDamageText.transform.localPosition = new Vector3(-80.0f, 55.0f, 0.0f);
                 armorDamageText.text = "1";
             }
@@ -385,6 +401,10 @@ public class WizardController : MonoBehaviour
 
         healthBar.fillAmount = ((float)health / (float)maxHealth);
         healthText.text = (health < 0 ? 0.ToString() : health.ToString()) + "/" + maxHealth;
+        if(health < 10) {
+            healthText.text = "0" + healthText.text;
+        }
+
         damageTakenText.transform.localPosition = new Vector3(-43.0f, 55.0f, 0.0f);
 
         healthBarFallOff.gameObject.SetActive(true);
@@ -423,13 +443,52 @@ public class WizardController : MonoBehaviour
         float totalDamage = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
         healthBarPreview.fillAmount = (((float)health - totalDamage) / (float)maxHealth);
         healthBarPreview.gameObject.SetActive(true);
+        healthDamageTextPreview.gameObject.SetActive(true);
         
         if(armor != 0) {
             if(attackerType == weaknessType) {
                 armorBarPreview.fillAmount = (((float)armor - 1f) / (float)maxArmor); 
+                
+                int newArmor = armor - 1;
+                armorDamageTextPreview.text = newArmor.ToString();
+
+                armorDamageTextPreview.gameObject.SetActive(true);
                 armorBarPreview.gameObject.SetActive(true);
+
+                if(newArmor < 20) {
+                    if(newArmor < 0) {
+                        armorDamageTextPreview.text = "00";
+                        armorText.text = "    /" + maxArmor.ToString();
+                    } else if(newArmor == 1) {
+                        armorDamageTextPreview.text = "0" + armorDamageTextPreview.text;
+                        armorText.text = "    /" + maxArmor.ToString();
+                    }else if(newArmor < 10) {
+                        armorDamageTextPreview.text = "0" + armorDamageTextPreview.text;
+                        armorText.text = "     /" + maxArmor.ToString();
+                    } else {
+                        armorText.text = "    /" + maxArmor.ToString();
+                    }
+                } else {
+                    armorText.text = "     /" + maxArmor.ToString();
+                }
             }
             armorAbsorbtionText.text = "Armor absorbs\n50'/, damage";
+        }
+
+        int newHealth = health - (int)(armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
+        healthDamageTextPreview.text = newHealth.ToString();
+        if(newHealth < 20) {
+           if(newHealth < 0) {
+                healthDamageTextPreview.text = "00";
+                healthText.text = "    /" + maxHealth.ToString();
+            } else if(newHealth < 10) {
+                healthDamageTextPreview.text = "0" + healthDamageTextPreview.text;
+                healthText.text = "     /" + maxHealth.ToString();
+            } else {
+                healthText.text = "    /" + maxHealth.ToString();
+            }
+        } else {
+            healthText.text = "     /" + maxHealth.ToString();
         }
         
         healthBarAlphaModifier = -1;
@@ -438,6 +497,8 @@ public class WizardController : MonoBehaviour
     public void DisablePreviewHealthBar() {
         healthBarPreview.gameObject.SetActive(false);
         armorBarPreview.gameObject.SetActive(false);
+        healthDamageTextPreview.gameObject.SetActive(false);
+        armorDamageTextPreview.gameObject.SetActive(false);
         armorAbsorbtionText.text = "";
 
         var newColor = healthBar.color;
@@ -449,5 +510,15 @@ public class WizardController : MonoBehaviour
         newColor = armorBar.color;
         newColor.a = 1.0f;
         armorBar.color = newColor;
+
+        armorText.text = armor + "/" + maxArmor;
+        if(armor < 10) {
+            armorText.text = "0" + armorText.text;
+        }
+
+        healthText.text = (health < 0 ? 0.ToString() : health.ToString()) + "/" + maxHealth;
+        if(health < 10) {
+            healthText.text = "0" + healthText.text;
+        }
     }
 }
