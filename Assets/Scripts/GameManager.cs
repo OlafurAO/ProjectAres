@@ -27,8 +27,6 @@ public class GameManager : MonoBehaviour {
     public List<RawImage> initiativePortraits = new List<RawImage>();
     public List<Texture2D> portraitTextures = new List<Texture2D>();
 
-    public List<AudioClip> audioClips = new List<AudioClip>();
-
     // To keep track of the portrait's location for the initiative highlighter
     public List<Vector2> portraitLocations = new List<Vector2>();
 
@@ -113,7 +111,6 @@ public class GameManager : MonoBehaviour {
         canvas = GameObject.Find("Canvas");
         canvas.SetActive(false);
         LoadPortraitTextures();
-        LoadAudioClips();
     }
 
     // Start is called before the first frame update
@@ -136,21 +133,8 @@ public class GameManager : MonoBehaviour {
     void LoadPortraitTextures() {
         foreach(string name in portraitTextureNames) {
             string filePath = "Images/UnitPortraits/" + name;
-            print(filePath);
             Texture2D texture = Resources.Load<Texture2D>(filePath);
             portraitTextures.Add(texture);
-        }
-    }
-
-    void LoadAudioClips() {
-        // TODO: load audio clips
-        // var audioClip = Resources.Load<AudioClip>("Audio/audioClip01");
-        foreach(string name in sfxNames) {
-            string filePath = "SFX/" + name;
-            print(filePath);
-            AudioClip audioClip = Resources.Load<AudioClip>(filePath);
-            audioClips.Add(audioClip);
-            //print(audioClip.name);
         }
     }
 
@@ -714,7 +698,7 @@ public class GameManager : MonoBehaviour {
             damage = attackerScript.baseDamage;
             type = attackerScript.type;
             InRange = attackerScript.Attack(victimLocation); 
-            victimTakeDamageDelay = 0.6f;
+            victimTakeDamageDelay = 0.57f;
             
         }
         

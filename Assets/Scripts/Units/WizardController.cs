@@ -270,7 +270,7 @@ public class WizardController : MonoBehaviour
 
     public bool Attack(Vector3 victimPos) {
         float length = Vector3.Distance(transform.position, victimPos);
-        if(length >7.5){
+        if(length > 7.5){
             print(length);
             print("no way hosey");
         }else{
@@ -278,6 +278,8 @@ public class WizardController : MonoBehaviour
             isIdle = false;     
             transform.LookAt(victimPos);
             MoveHealthBar();
+
+            FindObjectOfType<AudioManager>().Play("wizard_attack", 0.2f);
 
             currentVictimPos = victimPos + new Vector3(0f, 1f, 0f);
             projectile = new GameObject("Projectile");
