@@ -55,10 +55,15 @@ public class ArcherController : MonoBehaviour {
     public Image armorBar;
     public Image armorBarPreview;
     public HexCoordinates IndexedLocation;
-
     public Canvas HealthCanvas; 
     //main camera to make the health bar face
     public Camera camera; 
+
+    // Stores the location of the current victim for the arrow trail effect to travel towards
+    private Vector3 currentVictimPos;
+    private GameObject arrow;
+    private bool arrowGoUp = true; // Controls the trajectory of the arrow
+
     // Start is called before the first frame update
     void Start() {
         destination = transform.position;  
@@ -95,6 +100,26 @@ public class ArcherController : MonoBehaviour {
         if(!isDead) {
             if(damageTakenText.text != "") {
                 UpdateDamageTakenText();
+            }
+
+            if(arrow != null) {
+                // If the "arrow" has reached the enemy, destroy the object
+                if(arrow.transform.position.x >= currentVictimPos.x - 0.5f && arrow.transform.position.x <= currentVictimPos.x + 0.5f 
+                  && arrow.transform.position.z >= currentVictimPos.z - 0.5f && arrow.transform.position.z <= currentVictimPos.z + 0.5f) {
+                    StartCoroutine(DestroyArrow());
+                } else {
+                    // Move the "arrow" towards its victim
+                    arrow.transform.position = Vector3.MoveTowards(arrow.transform.position, currentVictimPos, 0.3f);
+                    if(arrowGoUp) {
+                        arrow.transform.Translate(0f, 0.1f, 0f);
+                    } else {
+                        arrow.transform.Translate(0f, -0.1f, 0f);
+                    }
+
+                    if(arrow.transform.position.y == 3f) {
+                        arrowGoUp = false;
+                    }
+                }
             }
 
             if(healthBarAlphaModifier != 0) {
@@ -184,6 +209,13 @@ public class ArcherController : MonoBehaviour {
         showHealthBarDropOff = false;
     }
 
+    IEnumerator DestroyArrow() {
+        yield return new WaitForSeconds(1f);
+        currentVictimPos = new Vector3(0f, 0f, 0f);
+        Destroy(arrow);
+        arrow = null;
+    }
+
     void ResetDamageTakenText() {
         damageTakenText.text = "";
         armorDamageText.text = "";
@@ -233,9 +265,49 @@ public class ArcherController : MonoBehaviour {
             isIdle = false;     
             transform.LookAt(victimPos);
             MoveHealthBar();
+
+            currentVictimPos = victimPos + new Vector3(0f, 1f, 0f);
+            arrow = new GameObject("Arrow");
+            arrow.transform.parent = this.gameObject.transform;
+            arrow.transform.localScale = new Vector3(0.5f, 0.3f, 0.5f);
+            arrow.transform.LookAt(currentVictimPos);
+            StartCoroutine(CreateArrowParticleSystem());
+
             return true; 
         }
         return false; 
+    }
+
+    IEnumerator CreateArrowParticleSystem() {
+        yield return new WaitForSeconds(0.3f);
+
+        arrow.transform.position = this.gameObject.transform.position;
+        Vector3 local = arrow.transform.localPosition;
+        arrow.transform.localPosition = new Vector3(local.x, local.y + 1, local.z + 1);
+        
+        //arrow.transform.Translate(-1f, 1f, 1f);
+        arrow.AddComponent<ParticleSystem>();
+
+        ParticleSystem ps = arrow.GetComponent<ParticleSystem>();
+        var renderer = ps.GetComponent<ParticleSystemRenderer>();
+        var emission = ps.emission;
+        var shape = ps.shape;
+
+        renderer.material = Resources.Load<Material>("Materials/Glow_A");
+            
+        ps.startSpeed = 0;
+        ps.startLifetime = 1;
+        ps.simulationSpace = ParticleSystemSimulationSpace.World;
+        ps.maxParticles = 3000;
+
+        emission.rateOverTime = 0;
+        emission.rateOverDistance = 8;
+
+        shape.shapeType = ParticleSystemShapeType.Sphere;
+        shape.radius = 0.01f;
+        shape.radiusThickness = 0.01f;
+
+        arrowGoUp = true;
     }
 
     public void Defend() {

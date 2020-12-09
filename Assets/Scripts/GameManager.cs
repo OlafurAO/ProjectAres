@@ -653,6 +653,10 @@ public class GameManager : MonoBehaviour {
         int damage = 0;
         string type = "";
         bool InRange = false; 
+
+        // Line attack animation up with take damage animation
+        float victimTakeDamageDelay = 0.5f;
+
         if(currentUnit.tag.Contains("Knight")) {
             var attackerScript = currentUnit.GetComponent<KnightController>();
             damage = attackerScript.baseDamage;
@@ -662,13 +666,13 @@ public class GameManager : MonoBehaviour {
             var attackerScript = currentUnit.GetComponent<ArcherController>();
             damage = attackerScript.baseDamage;
             type = attackerScript.type;
-            InRange = attackerScript.Attack(victimLocation); 
-            
+            InRange = attackerScript.Attack(victimLocation);             
         } else {
             var attackerScript = currentUnit.GetComponent<WizardController>();
             damage = attackerScript.baseDamage;
             type = attackerScript.type;
             InRange = attackerScript.Attack(victimLocation); 
+            victimTakeDamageDelay = 0.6f;
             
         }
         
@@ -680,11 +684,11 @@ public class GameManager : MonoBehaviour {
                 return;
             } 
         if(VictimUnit == "Knight"){
-            knightVictim.TakeDamage(damage, type, 0.5f);
+            knightVictim.TakeDamage(damage, type, victimTakeDamageDelay);
         }else if (VictimUnit == "Archer"){
-            archVictim.TakeDamage(damage, type, 0.5f);
+            archVictim.TakeDamage(damage, type, victimTakeDamageDelay);
         }else if(VictimUnit == "Wizard"){
-            wizVictim.TakeDamage(damage, type, 0.5f);
+            wizVictim.TakeDamage(damage, type, victimTakeDamageDelay);
         }  
         
     }
@@ -709,8 +713,6 @@ public class GameManager : MonoBehaviour {
         }
 
     }
-
-
 
     void CheckForDeadUnits() {
         // Check for any dead units and remove them from the list.
