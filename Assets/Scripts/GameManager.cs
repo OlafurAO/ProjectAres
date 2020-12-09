@@ -131,7 +131,7 @@ public class GameManager : MonoBehaviour {
             print(filePath);
             AudioClip audioClip = Resources.Load<AudioClip>(filePath);
             audioClips.Add(audioClip);
-            //print(audioClip.name);
+            print(audioClip.name);
         }
     }
 
