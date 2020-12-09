@@ -67,6 +67,9 @@ public class WizardController : MonoBehaviour
     private GameObject projectile;
     private bool projectileGoUp = true; 
 
+    //portrait of the unit 
+    public Image portrait;
+
     // Start is called before the first frame update
     void Start() {
         destination = transform.position;  
