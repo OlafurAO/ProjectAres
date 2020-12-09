@@ -5002,7 +5002,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce9749dfd95dc9545a1ba6dcc05a224d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid: {fileID: 0}
+  grid: {fileID: 531630220}
   health: 100
   maxHealth: 100
   IndexedLocation:
@@ -5040,7 +5040,7 @@ MonoBehaviour:
   team: 
   animator: {fileID: 1097178234}
   HealthCanvas: {fileID: 841452805}
-  camera: {fileID: 0}
+  camera: {fileID: 414001886}
   portrait: {fileID: 0}
 --- !u!65 &295782839
 BoxCollider:
@@ -8159,7 +8159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1632b7344e230a241943eb7e7ff92bb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid: {fileID: 0}
+  grid: {fileID: 531630220}
   health: 60
   maxHealth: 60
   armor: 2
@@ -8198,7 +8198,7 @@ MonoBehaviour:
     x: 0
     z: 0
   HealthCanvas: {fileID: 1428215147}
-  camera: {fileID: 0}
+  camera: {fileID: 414001886}
   portrait: {fileID: 0}
 --- !u!65 &445856539
 BoxCollider:
@@ -11230,7 +11230,7 @@ MonoBehaviour:
     x: 0
     z: 0
   HealthCanvas: {fileID: 479615995}
-  camera: {fileID: 0}
+  camera: {fileID: 414001886}
   portrait: {fileID: 0}
 --- !u!224 &653082843
 RectTransform:
@@ -15689,10 +15689,10 @@ MonoBehaviour:
   armorBarPreview: {fileID: 570366529}
   speed: 5
   team: 
-  grid: {fileID: 0}
+  grid: {fileID: 531630220}
   animator: {fileID: 1460520248}
   HealthCanvas: {fileID: 1281890007}
-  camera: {fileID: 0}
+  camera: {fileID: 414001886}
   portrait: {fileID: 0}
 --- !u!65 &779965774
 BoxCollider:
@@ -24354,10 +24354,10 @@ MonoBehaviour:
   armorBarPreview: {fileID: 1785946251}
   speed: 5
   team: blue
-  grid: {fileID: 0}
+  grid: {fileID: 531630220}
   animator: {fileID: 2075821262}
   HealthCanvas: {fileID: 697513185}
-  camera: {fileID: 0}
+  camera: {fileID: 414001886}
   portrait: {fileID: 0}
 --- !u!65 &1217178870
 BoxCollider:
@@ -44693,7 +44693,7 @@ MonoBehaviour:
   team: blue
   animator: {fileID: 1056039016}
   HealthCanvas: {fileID: 1108970503}
-  camera: {fileID: 0}
+  camera: {fileID: 414001886}
   portrait: {fileID: 0}
 --- !u!65 &2145122291
 BoxCollider:
