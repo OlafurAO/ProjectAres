@@ -6725,7 +6725,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 1
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 83.59961, w: 0}
+  m_margin: {x: 0, y: 0, z: 18.721037, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -10380,7 +10380,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: -10000, y: -2499.5}
   m_SizeDelta: {x: 301.59216, y: 137.83124}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &626090272
@@ -23558,7 +23558,6 @@ GameObject:
   - component: {fileID: 1285948867}
   - component: {fileID: 1285948870}
   - component: {fileID: 1285948869}
-  - component: {fileID: 1285948868}
   m_Layer: 0
   m_Name: KnightArmor
   m_TagString: Untagged
@@ -23585,24 +23584,6 @@ RectTransform:
   m_AnchoredPosition: {x: -217, y: -143}
   m_SizeDelta: {x: 108.2919, y: 24.202202}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1285948868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1285948866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86b65b65cea55ed4fb967bbe906497ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlayerOneCanvas: {fileID: 0}
-  PlayerTwoCanvas: {fileID: 0}
-  BackgroundImage: {fileID: 0}
-  tempUnits: []
-  grid: {fileID: 0}
-  units: []
 --- !u!114 &1285948869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28533,6 +28514,20 @@ MonoBehaviour:
   - {fileID: 2036156357}
   grid: {fileID: 531630220}
   units: []
+  KnightHealth: {fileID: 1757478976}
+  KnightArmor: {fileID: 1285948869}
+  KnightGold: {fileID: 617000413}
+  KnightAttack: {fileID: 1508487142}
+  WizardHealth: {fileID: 1845143895}
+  WizardArmor: {fileID: 1973569161}
+  WizardGold: {fileID: 1006313670}
+  WizardAttack: {fileID: 1590798275}
+  ArcherHealth: {fileID: 904739233}
+  ArcherArmor: {fileID: 25676191}
+  ArcherGold: {fileID: 1640237921}
+  ArcherAttack: {fileID: 2133883894}
+  goldText1: {fileID: 45442993}
+  goldText2: {fileID: 359913131}
 --- !u!4 &1508964302
 Transform:
   m_ObjectHideFlags: 0
@@ -32896,7 +32891,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 60
+  m_text: 20
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -32959,7 +32954,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 1
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 81.43944, w: 0}
+  m_margin: {x: 0, y: 0, z: 54.910587, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
