@@ -188,7 +188,7 @@ public class KnightController : MonoBehaviour {
     IEnumerator ResetHealthBarFallOff() {
         yield return new WaitForSeconds(0.5f);
         healthBarFallOff.gameObject.SetActive(false);
-        healthBarFallOff.transform.localPosition = new Vector3((- (1 - (float)health / (float)maxHealth)), 0f, 0f);
+        healthBarFallOff.transform.localPosition = new Vector3(- (1 - healthBar.fillAmount), 0f, 0f);
         showHealthBarDropOff = false;
     }
 
@@ -288,15 +288,13 @@ public class KnightController : MonoBehaviour {
             : (float)damage / (float)maxHealth);
         
         showHealthBarDropOff = true;
-        if(health == 0) {
-            healthBarFallOff.fillAmount = 0f;
-        }
 
         StartCoroutine(ClearDamageTakenText());
         StartCoroutine(ResetHealthBarFallOff());
 
         isIdle = false;
         if(health <= 0) {
+            healthBarFallOff.fillAmount = 0f;
             isDead = true;
         } else {
             isTakingDamage = true;
