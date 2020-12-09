@@ -63,6 +63,8 @@ public class ArcherController : MonoBehaviour {
     private Vector3 currentVictimPos;
     private GameObject arrow;
     private bool arrowGoUp = true; // Controls the trajectory of the arrow
+    //portrait of the unit 
+    public Image portrait;
 
     // Start is called before the first frame update
     void Start() {

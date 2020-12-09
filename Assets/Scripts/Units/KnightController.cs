@@ -59,6 +59,8 @@ public class KnightController : MonoBehaviour {
     public Canvas HealthCanvas; 
 
     public Camera camera; 
+    //portrait of the unit 
+    public Image portrait;
     // Start is called before the first frame update
     void Start() {
         destination = transform.position;    

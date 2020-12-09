@@ -84,6 +84,25 @@ public class GameManager : MonoBehaviour {
 
     private float currentUnitDamage;
     private string currentUnitType;
+    //unit profile of current unit
+    public GameObject currentUnitProfile;
+    //enemy profile of victim unit
+    public GameObject EnemyUnitProfile;
+
+    //current unit stats
+    public TMPro.TextMeshProUGUI CurrentHealth;
+    public TMPro.TextMeshProUGUI CurrentArmor;
+    public TMPro.TextMeshProUGUI CurrentAttack;
+
+    //enemy unit stats
+    public TMPro.TextMeshProUGUI EnemyHealth;
+    public TMPro.TextMeshProUGUI EnemyArmor;
+    public TMPro.TextMeshProUGUI EnemyAttack;
+
+    //enemy units stats after attack 
+    public TMPro.TextMeshProUGUI EnemyHealthAfter;
+    public TMPro.TextMeshProUGUI EnemyArmorAfter;
+    public TMPro.TextMeshProUGUI EnemyAttackAfter;
 
     void Awake() {
         instance = this;
@@ -136,6 +155,7 @@ public class GameManager : MonoBehaviour {
         
         // Set the current unit as the first unit in the list
         currentUnit = allUnits.ElementAt(currentUnitIndex);
+        currentUnitProfile.GetComponent<Image>().sprite = currentUnit.GetComponent<Image>().sprite;
         GetCurrentUnitDamageAndType();        
         EnableCurrentUnitCircle();
         SetInitiativePortraits();
@@ -265,17 +285,27 @@ public class GameManager : MonoBehaviour {
             GetCurrentUnitDamageAndType();
             EnableCurrentUnitCircle();
             HighlightCurrentUnitsPortrait();
+            currentUnitProfile.GetComponent<Image>().sprite = currentUnit.GetComponent<Image>().sprite;
 
             //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
             if(currentUnit.tag.Contains("Knight")) {
                 var attackerScript = currentUnit.GetComponent<KnightController>();
                 attackerScript.UnDefend(); 
+                CurrentHealth.text = currentUnit.GetComponent<KnightController>().health.ToString();
+                CurrentArmor.text = currentUnit.GetComponent<KnightController>().armor.ToString();
+                CurrentAttack.text = currentUnit.GetComponent<KnightController>().baseDamage.ToString();
             } else if(currentUnit.tag.Contains("Archer")) {
                 var attackerScript = currentUnit.GetComponent<ArcherController>();
                 attackerScript.UnDefend(); 
+                CurrentHealth.text = currentUnit.GetComponent<ArcherController>().health.ToString();
+                CurrentArmor.text = currentUnit.GetComponent<ArcherController>().armor.ToString();
+                CurrentAttack.text = currentUnit.GetComponent<ArcherController>().baseDamage.ToString();
             } else {
                 var attackerScript = currentUnit.GetComponent<WizardController>();
                 attackerScript.UnDefend(); 
+                CurrentHealth.text = currentUnit.GetComponent<WizardController>().health.ToString();
+                CurrentArmor.text = currentUnit.GetComponent<WizardController>().armor.ToString();
+                CurrentAttack.text = currentUnit.GetComponent<WizardController>().baseDamage.ToString();
             }
         } else {
             DisableAllUnitCircles();
@@ -518,12 +548,24 @@ public class GameManager : MonoBehaviour {
                 if(rhInfo.collider.gameObject.tag.Contains("Knight")) {
                     knightVictim = rhInfo.collider.gameObject.GetComponent<KnightController>();
                     VictimUnit = "Knight";
+                    EnemyUnitProfile.GetComponent<Image>().sprite = knightVictim.GetComponent<Image>().sprite;
+                    EnemyHealth.text = knightVictim.health.ToString();
+                    EnemyArmor.text = knightVictim.armor.ToString();
+                    EnemyAttack.text = knightVictim.baseDamage.ToString();
                 } else if(rhInfo.collider.gameObject.tag.Contains("Archer")) {
                     archVictim = rhInfo.collider.gameObject.GetComponent<ArcherController>();
                     VictimUnit = "Archer";
+                    EnemyUnitProfile.GetComponent<Image>().sprite = archVictim.GetComponent<Image>().sprite;
+                    EnemyHealth.text = archVictim.health.ToString();
+                    EnemyArmor.text = archVictim.armor.ToString();
+                    EnemyAttack.text = archVictim.baseDamage.ToString();
                 } else {
                     wizVictim = rhInfo.collider.gameObject.GetComponent<WizardController>();
                     VictimUnit = "Wizard";
+                    EnemyUnitProfile.GetComponent<Image>().sprite = wizVictim.GetComponent<Image>().sprite;
+                    EnemyHealth.text = wizVictim.health.ToString();
+                    EnemyArmor.text = wizVictim.armor.ToString();
+                    EnemyAttack.text = wizVictim.baseDamage.ToString();
                 }
                 //not sure this workds (clicks on unit at get's  unit's cell)
                 if(SelectedCell != null){
@@ -755,14 +797,23 @@ public class GameManager : MonoBehaviour {
             var script = currentUnit.GetComponent<KnightController>();
             currentUnitDamage = script.baseDamage;
             currentUnitType = script.type;
+            CurrentAttack.text = script.baseDamage.ToString();
+            CurrentHealth.text = script.health.ToString();
+            CurrentArmor.text = script.armor.ToString();
         } else if(currentUnit.tag.Contains("Archer")) {
             var script = currentUnit.GetComponent<ArcherController>();
             currentUnitDamage = script.baseDamage;
             currentUnitType = script.type;
+            CurrentAttack.text = script.baseDamage.ToString();
+            CurrentHealth.text = script.health.ToString();
+            CurrentArmor.text = script.armor.ToString();
         } else {
             var script = currentUnit.GetComponent<WizardController>();
             currentUnitDamage = script.baseDamage;
             currentUnitType = script.type;
+            CurrentAttack.text = script.baseDamage.ToString();
+            CurrentHealth.text = script.health.ToString();
+            CurrentArmor.text = script.armor.ToString();
         }
     }
 
