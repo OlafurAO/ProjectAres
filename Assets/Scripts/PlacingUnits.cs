@@ -26,6 +26,8 @@ public class PlacingUnits : MonoBehaviour {
     private int player = 1;
     public List<GameObject> units;
 
+    bool placing = true;
+
     //health, armor, gold and such connected to the knight, wizard, archer controller (atleast the ones in "tempUnit")
   /* //náði ekki að láta það virka svo ætla bara að hard kóða allavona núna 
     public TMPro.TextMeshProGUI KnightHealth;
@@ -62,6 +64,10 @@ public class PlacingUnits : MonoBehaviour {
         */
     }
     void Update() {
+        if(!placing) {
+            print("e");
+            return;
+        }
 
         if(currButtonCanvas != null){
             grid.MoveButton(currButtonCanvas);
@@ -98,10 +104,10 @@ public class PlacingUnits : MonoBehaviour {
                 if(SelectedCell != null){
                     grid.DisableButton(currButtonCanvas);
                 }
+                
                 index = grid.CreateUnitCell(rhInfo.point);
                 currButtonCanvas = index.CreateCanvas;
                 SelectedCell = index;
-
             }
         };
 
@@ -171,8 +177,11 @@ public class PlacingUnits : MonoBehaviour {
         BackgroundImage.color = UnityEngine.Color.red;
     }
     public void PlayerTwoFinished(){
+        print(placing);
         PlayerTwoCanvas.enabled = false;
         BackgroundImage.enabled = (false);
+        placing = false;
+        print(placing);
     }
 
     public void DeleteUnit(){

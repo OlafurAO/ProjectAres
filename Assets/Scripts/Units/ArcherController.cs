@@ -266,6 +266,8 @@ public class ArcherController : MonoBehaviour {
             transform.LookAt(victimPos);
             MoveHealthBar();
 
+            FindObjectOfType<AudioManager>().Play("archer_attack", 0.0f);
+
             currentVictimPos = victimPos + new Vector3(0f, 1f, 0f);
             arrow = new GameObject("Arrow");
             arrow.transform.parent = this.gameObject.transform;

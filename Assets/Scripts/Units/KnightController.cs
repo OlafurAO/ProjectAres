@@ -235,13 +235,17 @@ public class KnightController : MonoBehaviour {
     // Enable attack animation and disable idle animation
     public bool Attack(Vector3 victimPos) {
         float length = Vector3.Distance(transform.position, victimPos);
-        if(length >4){
+        if(length > 4){
             print("no way hosey");
         }else{
             isAttacking = true;   
             isIdle = false;     
             transform.LookAt(victimPos);
             MoveHealthBar();
+
+            // Play attack sfx
+            FindObjectOfType<AudioManager>().Play("knight_attack", 0.15f);
+
             return true; 
         }
         return false; 
