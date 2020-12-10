@@ -25,10 +25,12 @@ public class WizardController : MonoBehaviour
     public TMPro.TextMeshProUGUI armorText;
     public TMPro.TextMeshProUGUI armorDamageText;
     public TMPro.TextMeshProUGUI armorAbsorbtionText; // Notifies the player that damage will get absorbed due to armor
+    public TMPro.TextMeshProUGUI healthDamageTextPreview; // Text preview of the damage the player will deal
+    public TMPro.TextMeshProUGUI armorDamageTextPreview; // Text preview of the damage the player will deal to armor
     public Vector3 location;
 
-    private bool isAttacking = false;
-    private bool isMoving = false;
+    public bool isAttacking = false;
+    public bool isMoving = false;
     private bool isDefending = false;
     public bool isDead = false;
     public bool deathConfirmed = false;
@@ -62,6 +64,14 @@ public class WizardController : MonoBehaviour
     public Canvas HealthCanvas; 
     public Camera camera;
 
+    // Stores the location of the current victim for the arrow trail effect to travel towards
+    private Vector3 currentVictimPos;
+    private GameObject projectile;
+    private bool projectileGoUp = true; 
+
+    //portrait of the unit 
+    public Image portrait;
+
     // Start is called before the first frame update
     void Start() {
         destination = transform.position;  
@@ -87,7 +97,17 @@ public class WizardController : MonoBehaviour
         armorBarPreview.color = new Vector4(253f/255f, 231f/255f, 76f/255f, 1f);
         armorBarPreview.fillAmount = 1f;
 
+        armorDamageTextPreview.transform.localPosition = new Vector3(-36.0f, 35.0f, 0.0f);
+        healthDamageTextPreview.transform.localPosition = new Vector3(-25.0f, -10.0f, 0.0f);
+        armorDamageTextPreview.fontSize = 20;
+        healthDamageTextPreview.fontSize = 20;
+        armorDamageTextPreview.text = "";
+        healthDamageTextPreview.text = "";
+
         armorAbsorbtionText.text = "";
+        armorAbsorbtionText.transform.localPosition = new Vector3(-115f, 19f, 0f);
+        armorAbsorbtionText.color = Color.red;
+        armorAbsorbtionText.fontSize = 30;
 
         // Make healthbar face camera as soon as game starts
         MoveHealthBar();
@@ -98,6 +118,26 @@ public class WizardController : MonoBehaviour
         if(!isDead) {
             if(damageTakenText.text != "") {
                 UpdateDamageTakenText();
+            }
+
+            if(projectile != null) {
+                // If the "arrow" has reached the enemy, destroy the object
+                if(projectile.transform.position.x >= currentVictimPos.x - 0.5f && projectile.transform.position.x <= currentVictimPos.x + 0.5f 
+                  && projectile.transform.position.z >= currentVictimPos.z - 0.5f && projectile.transform.position.z <= currentVictimPos.z + 0.5f) {
+                    StartCoroutine(DestroyProjectile());
+                } else {
+                    // Move the "arrow" towards its victim
+                    projectile.transform.position = Vector3.MoveTowards(projectile.transform.position, currentVictimPos, 0.3f);
+                    if(projectileGoUp) {
+                        projectile.transform.Translate(0f, 0.1f, 0f);
+                    } else {
+                        projectile.transform.Translate(0f, -0.1f, 0f);
+                    }
+
+                    if(projectile.transform.position.y == 3f) {
+                        projectileGoUp = false;
+                    }
+                }
             }
 
             if(healthBarAlphaModifier != 0) {
@@ -190,8 +230,15 @@ public class WizardController : MonoBehaviour
     IEnumerator ResetHealthBarFallOff() {
         yield return new WaitForSeconds(0.5f);
         healthBarFallOff.gameObject.SetActive(false);
-        healthBarFallOff.transform.localPosition = new Vector3((- (1 - (float)health / (float)maxHealth)), 0f, 0f);
+        healthBarFallOff.transform.localPosition = new Vector3(- (1 - healthBar.fillAmount), 0f, 0f);
         showHealthBarDropOff = false;
+    }
+
+    IEnumerator DestroyProjectile() {
+        yield return new WaitForSeconds(2f);
+        currentVictimPos = new Vector3(0f, 0f, 0f);
+        Destroy(projectile);
+        projectile = null;
     }
 
     void ResetDamageTakenText() {
@@ -201,7 +248,6 @@ public class WizardController : MonoBehaviour
         damageTakenText.transform.localPosition = new Vector3(-39.0f, 35.0f, 0.0f);
         armorDamageText.transform.localPosition = new Vector3(-80.0f, 35.0f, 0.0f);
     }
-
 
     public bool StartMoving(Vector3 dest, HexCell hex) {
         float length = Vector3.Distance(transform.position, dest);
@@ -236,7 +282,7 @@ public class WizardController : MonoBehaviour
 
     public bool Attack(Vector3 victimPos) {
         float length = Vector3.Distance(transform.position, victimPos);
-        if(length >7.5){
+        if(length > 7.5){
             print(length);
             print("no way hosey");
         }else{
@@ -244,9 +290,77 @@ public class WizardController : MonoBehaviour
             isIdle = false;     
             transform.LookAt(victimPos);
             MoveHealthBar();
+
+            FindObjectOfType<AudioManager>().Play("wizard_attack", 0.2f);
+
+            currentVictimPos = victimPos + new Vector3(0f, 1f, 0f);
+            projectile = new GameObject("Projectile");
+
+            projectile.transform.parent = this.gameObject.transform;
+            projectile.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            projectile.transform.LookAt(currentVictimPos);
+
+            StartCoroutine(CreateArrowParticleSystem());
             return true; 
         }
         return false; 
+    }
+
+    IEnumerator CreateArrowParticleSystem() {
+        yield return new WaitForSeconds(0.5f);
+
+        projectile.transform.position = this.gameObject.transform.position;
+        Vector3 local = projectile.transform.localPosition;
+        projectile.transform.localPosition = new Vector3(local.x - 0.3f, local.y + 1.2f, local.z + 1.4f);
+        
+        //arrow.transform.Translate(-1f, 1f, 1f);
+        projectile.AddComponent<ParticleSystem>();
+
+        ParticleSystem ps = projectile.GetComponent<ParticleSystem>();
+        var renderer = ps.GetComponent<ParticleSystemRenderer>();
+        var lifetimeSize = ps.sizeOverLifetime;
+        var lifetimeColor = ps.colorOverLifetime;
+        var emission = ps.emission;
+        var noise = ps.noise;
+        var shape = ps.shape;
+
+        renderer.material = Resources.Load<Material>("Materials/Glow_A");
+        ps.simulationSpace = ParticleSystemSimulationSpace.World;
+        ps.startColor = new Color(25, 200, 100, 100);
+        ps.startSpeed = 0;
+        ps.startLifetime = 1;
+        ps.maxParticles = 5000;
+
+        emission.rateOverTime = 0;
+        emission.rateOverDistance = 10;
+
+        noise.enabled = true;
+        noise.strength = 1f;
+        noise.frequency = 0.5f;
+        noise.damping = true;
+
+        AnimationCurve curve = new AnimationCurve();
+        curve.AddKey(5f, 1f);
+        curve.AddKey(0.5f, 0.5f);
+        lifetimeSize.enabled = true;
+        lifetimeSize.size = new ParticleSystem.MinMaxCurve(2.5f, curve);
+
+        Gradient grad = new Gradient();
+        grad.SetKeys(new GradientColorKey[] {
+            new GradientColorKey(Color.white, 0.9f),
+            new GradientColorKey(team == "blue" ? new Color(0f, 184f, 255f) : new Color(184f, 0f, 255f), 0.0f)
+        }, new GradientAlphaKey[] {
+            new GradientAlphaKey(1.0f, 1.0f)
+        });
+        lifetimeColor.enabled = true;
+        lifetimeColor.color = grad;
+
+        
+        shape.shapeType = ParticleSystemShapeType.Sphere;
+        shape.radius = 0.01f;
+        shape.radiusThickness = 0.01f;
+
+        projectileGoUp = true;
     }
 
     public void Defend() {
@@ -277,6 +391,10 @@ public class WizardController : MonoBehaviour
                 armor--;
                 armorBar.fillAmount = ((float)armor / (float)maxArmor);
                 armorText.text = armor + "/" + maxArmor;
+                if(armor < 10) {
+                    armorText.text = "0" + armorText.text;
+                }
+
                 armorDamageText.transform.localPosition = new Vector3(-80.0f, 55.0f, 0.0f);
                 armorDamageText.text = "1";
             }
@@ -286,6 +404,10 @@ public class WizardController : MonoBehaviour
 
         healthBar.fillAmount = ((float)health / (float)maxHealth);
         healthText.text = (health < 0 ? 0.ToString() : health.ToString()) + "/" + maxHealth;
+        if(health < 10) {
+            healthText.text = "0" + healthText.text;
+        }
+
         damageTakenText.transform.localPosition = new Vector3(-43.0f, 55.0f, 0.0f);
 
         healthBarFallOff.gameObject.SetActive(true);
@@ -293,15 +415,13 @@ public class WizardController : MonoBehaviour
             : (float)damage / (float)maxHealth);
         
         showHealthBarDropOff = true;
-        if(health == 0) {
-            healthBarFallOff.fillAmount = 0f;
-        }
 
         StartCoroutine(ClearDamageTakenText());
         StartCoroutine(ResetHealthBarFallOff());
 
         isIdle = false;
         if(health <= 0) {
+            healthBarFallOff.fillAmount = 0f;
             isDead = true;
         } else {
             isTakingDamage = true;
@@ -326,13 +446,52 @@ public class WizardController : MonoBehaviour
         float totalDamage = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
         healthBarPreview.fillAmount = (((float)health - totalDamage) / (float)maxHealth);
         healthBarPreview.gameObject.SetActive(true);
+        healthDamageTextPreview.gameObject.SetActive(true);
         
         if(armor != 0) {
             if(attackerType == weaknessType) {
                 armorBarPreview.fillAmount = (((float)armor - 1f) / (float)maxArmor); 
+                armorAbsorbtionText.text = "WEAK";
+                
+                int newArmor = armor - 1;
+                armorDamageTextPreview.text = newArmor.ToString();
+
+                armorDamageTextPreview.gameObject.SetActive(true);
                 armorBarPreview.gameObject.SetActive(true);
+
+                if(newArmor < 20) {
+                    if(newArmor < 0) {
+                        armorDamageTextPreview.text = "00";
+                        armorText.text = "    /" + maxArmor.ToString();
+                    } else if(newArmor == 1) {
+                        armorDamageTextPreview.text = "0" + armorDamageTextPreview.text;
+                        armorText.text = "    /" + maxArmor.ToString();
+                    }else if(newArmor < 10) {
+                        armorDamageTextPreview.text = "0" + armorDamageTextPreview.text;
+                        armorText.text = "     /" + maxArmor.ToString();
+                    } else {
+                        armorText.text = "    /" + maxArmor.ToString();
+                    }
+                } else {
+                    armorText.text = "     /" + maxArmor.ToString();
+                }
             }
-            armorAbsorbtionText.text = "Armor absorbs\n50'/, damage";
+        }
+
+        int newHealth = health - (int)(armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
+        healthDamageTextPreview.text = newHealth.ToString();
+        if(newHealth < 20) {
+           if(newHealth < 0) {
+                healthDamageTextPreview.text = "00";
+                healthText.text = "    /" + maxHealth.ToString();
+            } else if(newHealth < 10) {
+                healthDamageTextPreview.text = "0" + healthDamageTextPreview.text;
+                healthText.text = "     /" + maxHealth.ToString();
+            } else {
+                healthText.text = "    /" + maxHealth.ToString();
+            }
+        } else {
+            healthText.text = "     /" + maxHealth.ToString();
         }
         
         healthBarAlphaModifier = -1;
@@ -341,6 +500,8 @@ public class WizardController : MonoBehaviour
     public void DisablePreviewHealthBar() {
         healthBarPreview.gameObject.SetActive(false);
         armorBarPreview.gameObject.SetActive(false);
+        healthDamageTextPreview.gameObject.SetActive(false);
+        armorDamageTextPreview.gameObject.SetActive(false);
         armorAbsorbtionText.text = "";
 
         var newColor = healthBar.color;
@@ -352,5 +513,32 @@ public class WizardController : MonoBehaviour
         newColor = armorBar.color;
         newColor.a = 1.0f;
         armorBar.color = newColor;
+
+        armorText.text = armor + "/" + maxArmor;
+        if(armor < 10) {
+            armorText.text = "0" + armorText.text;
+        }
+
+        healthText.text = (health < 0 ? 0.ToString() : health.ToString()) + "/" + maxHealth;
+        if(health < 10) {
+            healthText.text = "0" + healthText.text;
+        }
+    }
+    
+    //get's remaning health and armor of the current 
+    public List<(float, int, int)> getDamage(float damage, string type){
+        int returnhealth; 
+        int returnarmor;
+        if(armor <= 0){
+            returnarmor = 0;
+            returnhealth =(int)(health - damage);
+        }else if(weaknessType == type){
+            returnarmor = armor-1;
+            returnhealth = (int)(health - Mathf.FloorToInt(damage / 2));
+        }else{
+            returnarmor = armor;
+            returnhealth = (int)(health - Mathf.FloorToInt(damage / 2));
+        }
+        return new List<(float,int,int)>(){(returnarmor,returnhealth,baseDamage)};
     }
 }

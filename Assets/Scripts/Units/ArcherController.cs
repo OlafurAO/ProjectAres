@@ -23,10 +23,12 @@ public class ArcherController : MonoBehaviour {
     public TMPro.TextMeshProUGUI armorText;
     public TMPro.TextMeshProUGUI armorDamageText;
     public TMPro.TextMeshProUGUI armorAbsorbtionText; // Notifies the player that damage will get absorbed due to armor
+    public TMPro.TextMeshProUGUI healthDamageTextPreview; // Text preview of the damage the player will deal
+    public TMPro.TextMeshProUGUI armorDamageTextPreview; // Text preview of the damage the player will deal to armor
     public Vector3 location;
 
-    private bool isAttacking = false;
-    private bool isMoving = false;
+    public bool isAttacking = false;
+    public bool isMoving = false;
     private bool isDefending = false;
     public bool isDead = false;
     public bool deathConfirmed = false;
@@ -55,10 +57,17 @@ public class ArcherController : MonoBehaviour {
     public Image armorBar;
     public Image armorBarPreview;
     public HexCoordinates IndexedLocation;
-
     public Canvas HealthCanvas; 
     //main camera to make the health bar face
     public Camera camera; 
+
+    // Stores the location of the current victim for the arrow trail effect to travel towards
+    private Vector3 currentVictimPos;
+    private GameObject arrow;
+    private bool arrowGoUp = true; // Controls the trajectory of the arrow
+    //portrait of the unit 
+    public Image portrait;
+
     // Start is called before the first frame update
     void Start() {
         destination = transform.position;  
@@ -84,7 +93,17 @@ public class ArcherController : MonoBehaviour {
         armorBarPreview.color = new Vector4(253f/255f, 231f/255f, 76f/255f, 1f);
         armorBarPreview.fillAmount = 1f;
 
+        armorDamageTextPreview.transform.localPosition = new Vector3(-36.0f, 35.0f, 0.0f);
+        healthDamageTextPreview.transform.localPosition = new Vector3(-25.0f, -10.0f, 0.0f);
+        armorDamageTextPreview.fontSize = 20;
+        healthDamageTextPreview.fontSize = 20;
+        armorDamageTextPreview.text = "";
+        healthDamageTextPreview.text = "";
+
         armorAbsorbtionText.text = "";
+        armorAbsorbtionText.transform.localPosition = new Vector3(-115f, 19f, 0f);
+        armorAbsorbtionText.color = Color.red;
+        armorAbsorbtionText.fontSize = 30;
         
         // Make healthbar face camera as soon as game starts
         MoveHealthBar();
@@ -95,6 +114,26 @@ public class ArcherController : MonoBehaviour {
         if(!isDead) {
             if(damageTakenText.text != "") {
                 UpdateDamageTakenText();
+            }
+
+            if(arrow != null) {
+                // If the "arrow" has reached the enemy, destroy the object
+                if(arrow.transform.position.x >= currentVictimPos.x - 0.5f && arrow.transform.position.x <= currentVictimPos.x + 0.5f 
+                  && arrow.transform.position.z >= currentVictimPos.z - 0.5f && arrow.transform.position.z <= currentVictimPos.z + 0.5f) {
+                    StartCoroutine(DestroyArrow());
+                } else {
+                    // Move the "arrow" towards its victim
+                    arrow.transform.position = Vector3.MoveTowards(arrow.transform.position, currentVictimPos, 0.3f);
+                    if(arrowGoUp) {
+                        arrow.transform.Translate(0f, 0.1f, 0f);
+                    } else {
+                        arrow.transform.Translate(0f, -0.1f, 0f);
+                    }
+
+                    if(arrow.transform.position.y == 3f) {
+                        arrowGoUp = false;
+                    }
+                }
             }
 
             if(healthBarAlphaModifier != 0) {
@@ -184,6 +223,13 @@ public class ArcherController : MonoBehaviour {
         showHealthBarDropOff = false;
     }
 
+    IEnumerator DestroyArrow() {
+        yield return new WaitForSeconds(1f);
+        currentVictimPos = new Vector3(0f, 0f, 0f);
+        Destroy(arrow);
+        arrow = null;
+    }
+
     void ResetDamageTakenText() {
         damageTakenText.text = "";
         armorDamageText.text = "";
@@ -233,9 +279,51 @@ public class ArcherController : MonoBehaviour {
             isIdle = false;     
             transform.LookAt(victimPos);
             MoveHealthBar();
+
+            FindObjectOfType<AudioManager>().Play("archer_attack", 0.0f);
+
+            currentVictimPos = victimPos + new Vector3(0f, 1f, 0f);
+            arrow = new GameObject("Arrow");
+            arrow.transform.parent = this.gameObject.transform;
+            arrow.transform.localScale = new Vector3(0.5f, 0.3f, 0.5f);
+            arrow.transform.LookAt(currentVictimPos);
+            StartCoroutine(CreateArrowParticleSystem());
+
             return true; 
         }
         return false; 
+    }
+
+    IEnumerator CreateArrowParticleSystem() {
+        yield return new WaitForSeconds(0.3f);
+
+        arrow.transform.position = this.gameObject.transform.position;
+        Vector3 local = arrow.transform.localPosition;
+        arrow.transform.localPosition = new Vector3(local.x, local.y + 1, local.z + 1);
+        
+        //arrow.transform.Translate(-1f, 1f, 1f);
+        arrow.AddComponent<ParticleSystem>();
+
+        ParticleSystem ps = arrow.GetComponent<ParticleSystem>();
+        var renderer = ps.GetComponent<ParticleSystemRenderer>();
+        var emission = ps.emission;
+        var shape = ps.shape;
+
+        renderer.material = Resources.Load<Material>("Materials/Glow_A");
+            
+        ps.startSpeed = 0;
+        ps.startLifetime = 1;
+        ps.simulationSpace = ParticleSystemSimulationSpace.World;
+        ps.maxParticles = 3000;
+
+        emission.rateOverTime = 0;
+        emission.rateOverDistance = 8;
+
+        shape.shapeType = ParticleSystemShapeType.Sphere;
+        shape.radius = 0.01f;
+        shape.radiusThickness = 0.01f;
+
+        arrowGoUp = true;
     }
 
     public void Defend() {
@@ -263,6 +351,10 @@ public class ArcherController : MonoBehaviour {
                 armor--;
                 armorBar.fillAmount = ((float)armor / (float)maxArmor);
                 armorText.text = armor + "/" + maxArmor;
+                if(armor < 10) {
+                    armorText.text = "0" + armorText.text;
+                }
+
                 armorDamageText.transform.localPosition = new Vector3(-80.0f, 55.0f, 0.0f);
                 armorDamageText.text = "1";
             }
@@ -272,6 +364,10 @@ public class ArcherController : MonoBehaviour {
         
         healthBar.fillAmount = ((float)health / (float)maxHealth);
         healthText.text = (health < 0 ? 0.ToString() : health.ToString()) + "/" + maxHealth;
+        if(health < 10) {
+            healthText.text = "0" + healthText.text;
+        }
+
         damageTakenText.transform.localPosition = new Vector3(-43.0f, 55.0f, 0.0f);
 
         healthBarFallOff.gameObject.SetActive(true);
@@ -279,15 +375,13 @@ public class ArcherController : MonoBehaviour {
             : (float)damage / (float)maxHealth);
             
         showHealthBarDropOff = true;
-        if(health == 0) {
-            healthBarFallOff.fillAmount = 0f;
-        }
         
         StartCoroutine(ClearDamageTakenText());
         StartCoroutine(ResetHealthBarFallOff());
 
         isIdle = false;
         if(health <= 0) {
+            healthBarFallOff.fillAmount = 0f;
             isDead = true;
         } else {
             isTakingDamage = true;
@@ -311,13 +405,52 @@ public class ArcherController : MonoBehaviour {
         float totalDamage = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
         healthBarPreview.fillAmount = (((float)health - totalDamage) / (float)maxHealth);
         healthBarPreview.gameObject.SetActive(true);
+        healthDamageTextPreview.gameObject.SetActive(true);
         
         if(armor != 0) {
             if(attackerType == weaknessType) {
+                armorAbsorbtionText.text = "WEAK";
                 armorBarPreview.fillAmount = (((float)armor - 1f) / (float)maxArmor); 
+                
+                int newArmor = armor - 1;
+                armorDamageTextPreview.text = newArmor.ToString();
+
+                armorDamageTextPreview.gameObject.SetActive(true);
                 armorBarPreview.gameObject.SetActive(true);
+
+                if(newArmor < 20) {
+                    if(newArmor < 0) {
+                        armorDamageTextPreview.text = "00";
+                        armorText.text = "    /" + maxArmor.ToString();
+                    } else if(newArmor == 1) {
+                        armorDamageTextPreview.text = "0" + armorDamageTextPreview.text;
+                        armorText.text = "    /" + maxArmor.ToString();
+                    } else if(newArmor < 10) {
+                        armorDamageTextPreview.text = "0" + armorDamageTextPreview.text;
+                        armorText.text = "     /" + maxArmor.ToString();
+                    } else {
+                        armorText.text = "    /" + maxArmor.ToString();
+                    }
+                } else {
+                    armorText.text = "     /" + maxArmor.ToString();
+                }
             }
-            armorAbsorbtionText.text = "Armor absorbs\n50'/, damage";
+        }
+
+        int newHealth = health - (int)(armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
+        healthDamageTextPreview.text = newHealth.ToString();
+        if(newHealth < 20) {
+            if(newHealth < 0) {
+                healthDamageTextPreview.text = "00";
+                healthText.text = "    /" + maxHealth.ToString();
+            } else if(newHealth < 10) {
+                healthDamageTextPreview.text = "0" + healthDamageTextPreview.text;
+                healthText.text = "     /" + maxHealth.ToString();
+            } else {
+                healthText.text = "    /" + maxHealth.ToString();
+            }
+        } else {
+            healthText.text = "     /" + maxHealth.ToString();
         }
         
         healthBarAlphaModifier = -1;
@@ -326,6 +459,8 @@ public class ArcherController : MonoBehaviour {
     public void DisablePreviewHealthBar() {
         healthBarPreview.gameObject.SetActive(false);
         armorBarPreview.gameObject.SetActive(false);
+        healthDamageTextPreview.gameObject.SetActive(false);
+        armorDamageTextPreview.gameObject.SetActive(false);
         armorAbsorbtionText.text = "";
 
         var newColor = healthBar.color;
@@ -337,5 +472,33 @@ public class ArcherController : MonoBehaviour {
         newColor = armorBar.color;
         newColor.a = 1.0f;
         armorBar.color = newColor;
+
+        armorText.text = armor + "/" + maxArmor;
+        if(armor < 10) {
+            armorText.text = "0" + armorText.text;
+        }
+
+        healthText.text = (health < 0 ? 0.ToString() : health.ToString()) + "/" + maxHealth;
+        if(health < 10) {
+            healthText.text = "0" + healthText.text;
+        }
+    }
+
+    
+    //get's remaning health and armor of the current 
+    public List<(float, int, int)> getDamage(float damage, string type){
+        int returnhealth; 
+        int returnarmor;
+        if(armor <= 0){
+            returnarmor = 0;
+            returnhealth =(int)(health - damage);
+        }else if(weaknessType == type){
+            returnarmor = armor-1;
+            returnhealth = (int)(health - Mathf.FloorToInt(damage / 2));
+        }else{
+            returnarmor = armor;
+            returnhealth = (int)(health - Mathf.FloorToInt(damage / 2));
+        }
+        return new List<(float,int,int)>(){(returnarmor,returnhealth,baseDamage)};
     }
 }
