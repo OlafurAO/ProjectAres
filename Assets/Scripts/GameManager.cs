@@ -104,6 +104,9 @@ public class GameManager : MonoBehaviour {
     public TMPro.TextMeshProUGUI EnemyArmorAfter;
     public TMPro.TextMeshProUGUI EnemyAttackAfter;
 
+
+    public Canvas BackgroundCanvas;
+
     void Awake() {
         instance = this;
         mainCamera = Camera.main;
@@ -242,7 +245,7 @@ public class GameManager : MonoBehaviour {
                 : portraitCount - middleIndex;
 
             // Sets the position of the portrait
-            trans.anchoredPosition = new Vector2(offset * 60, Screen.height/2 - 50);
+            trans.anchoredPosition = new Vector2(offset * 60, (Screen.height/4)-12);
             // Sets the size of the portrait
             trans.sizeDelta = new Vector2(50, 50);
 

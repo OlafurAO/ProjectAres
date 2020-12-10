@@ -223,7 +223,6 @@ public class PlacingUnits : MonoBehaviour {
     public void PlayerTwoFinished(){
         print(placing);
         PlayerTwoCanvas.enabled = false;
-        BackgroundImage.enabled = (false);
         placing = false;
         print(placing);
     }
