@@ -47,6 +47,20 @@ public class PlacingUnits : MonoBehaviour {
     public TMPro.TextMeshProUGUI goldText1;
     public TMPro.TextMeshProUGUI goldText2;
 
+    //allt shittið fyrir ofan fyrir utan fyrir player tvö
+    public TMPro.TextMeshProUGUI KnightHealth2;
+    public TMPro.TextMeshProUGUI KnightArmor2;
+    public TMPro.TextMeshProUGUI KnightGold2;
+    public TMPro.TextMeshProUGUI KnightAttack2;
+    public TMPro.TextMeshProUGUI WizardHealth2;
+    public TMPro.TextMeshProUGUI WizardArmor2;
+    public TMPro.TextMeshProUGUI WizardGold2;
+    public TMPro.TextMeshProUGUI WizardAttack2;
+    public TMPro.TextMeshProUGUI ArcherHealth2;
+    public TMPro.TextMeshProUGUI ArcherArmor2;
+    public TMPro.TextMeshProUGUI ArcherGold2;
+    public TMPro.TextMeshProUGUI ArcherAttack2;
+
     
     void Start(){
         PlayerTwoCanvas.enabled = false;
@@ -227,6 +241,9 @@ public class PlacingUnits : MonoBehaviour {
         PlayerTwoCanvas.enabled = false;
         placing = false;
         print(placing);
+        if(SelectedCell != null){
+            grid.DisableButton(currButtonCanvas);
+        }
     }
 
     public void DeleteUnit(){
