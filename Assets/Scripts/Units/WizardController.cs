@@ -29,8 +29,8 @@ public class WizardController : MonoBehaviour
     public TMPro.TextMeshProUGUI armorDamageTextPreview; // Text preview of the damage the player will deal to armor
     public Vector3 location;
 
-    private bool isAttacking = false;
-    private bool isMoving = false;
+    public bool isAttacking = false;
+    public bool isMoving = false;
     private bool isDefending = false;
     public bool isDead = false;
     public bool deathConfirmed = false;

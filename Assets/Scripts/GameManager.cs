@@ -276,6 +276,8 @@ public class GameManager : MonoBehaviour {
     }
 
     public void EndTurn() {
+        if(IsCurrentUnitMovingOrAttacking()) return;
+        
         // If the list is over, then the round is over and initiative needs to be rolled again
         if(currentUnitIndex != allUnits.Count - 1) {
             //TODO: Move camera to current unit
@@ -470,7 +472,7 @@ public class GameManager : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update() {   
         MoveCamera();
         mousePos = Input.mousePosition;
 
@@ -579,6 +581,7 @@ public class GameManager : MonoBehaviour {
                 if(!movement) return; 
                 //if move unit, display button that if pressed runs "move unit"
                 if(Physics.Raycast(toMouse, out rhInfo, 1000.0f)){
+                    print("eeee");
                     if(SelectedCell != null){
                         grid.DisableButton(currButtonCanvas);
                     }
@@ -822,5 +825,18 @@ public class GameManager : MonoBehaviour {
         RollInitiative();
         placingUnits.enabled = false;
         canvas.SetActive(true);
+    }
+
+    private bool IsCurrentUnitMovingOrAttacking() {
+        if(currentUnit.tag.Contains("Knight")) {
+            var script = currentUnit.GetComponent<KnightController>();
+            return script.isMoving || script.isAttacking;
+        } else if(currentUnit.tag.Contains("Archer")) {
+            var script = currentUnit.GetComponent<ArcherController>();
+            return script.isMoving || script.isAttacking;
+        } else {
+            var script = currentUnit.GetComponent<WizardController>();
+            return script.isMoving || script.isAttacking;
+        }
     }
 }
