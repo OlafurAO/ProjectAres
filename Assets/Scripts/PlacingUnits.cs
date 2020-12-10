@@ -213,7 +213,9 @@ public class PlacingUnits : MonoBehaviour {
         player = 2; 
         PlayerTwoCanvas.enabled = true;
         units = new List<GameObject>();
-        BackgroundImage.color = UnityEngine.Color.red;
+        Color red = UnityEngine.Color.red;
+        red.a = 0.5f;
+        BackgroundImage.color = red;
         gold = 1000;
         goldText = goldText2;
         if(SelectedCell != null){

@@ -105,7 +105,10 @@ public class GameManager : MonoBehaviour {
     public TMPro.TextMeshProUGUI EnemyAttackAfter;
 
 
-    public Canvas BackgroundCanvas;
+    public Image BackgroundImage;
+
+    private Color redColor;
+    private Color blueColor;
 
     void Awake() {
         instance = this;
@@ -118,6 +121,12 @@ public class GameManager : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        Color red = UnityEngine.Color.red;
+        red.a = 0.5f;
+        redColor = red;
+        Color blue = UnityEngine.Color.blue;
+        blue.a = 0.5f;
+        blueColor = blue;
         //TODO: Create units via code
         // UNIT COMPONENTS: a tag with their unit type, box controller, model, boxcontroller, 
         // animator, Selector (set to inactive at first, Mesh Renderer: Cast shadows = off), 
@@ -296,26 +305,48 @@ public class GameManager : MonoBehaviour {
             if(currentUnit.tag.Contains("Knight")) {
                 var attackerScript = currentUnit.GetComponent<KnightController>();
                 attackerScript.UnDefend(); 
-                CurrentHealth.text = currentUnit.GetComponent<KnightController>().health.ToString();
-                CurrentArmor.text = currentUnit.GetComponent<KnightController>().armor.ToString();
-                CurrentAttack.text = currentUnit.GetComponent<KnightController>().baseDamage.ToString();
+                CurrentHealth.text = attackerScript.health.ToString();
+                CurrentArmor.text = attackerScript.armor.ToString();
+                CurrentAttack.text = attackerScript.baseDamage.ToString();
+                if(attackerScript.team == "red"){
+                    BackgroundImage.color = redColor;
+                }else{
+                    BackgroundImage.color = blueColor;
+                }
             } else if(currentUnit.tag.Contains("Archer")) {
                 var attackerScript = currentUnit.GetComponent<ArcherController>();
                 attackerScript.UnDefend(); 
-                CurrentHealth.text = currentUnit.GetComponent<ArcherController>().health.ToString();
-                CurrentArmor.text = currentUnit.GetComponent<ArcherController>().armor.ToString();
-                CurrentAttack.text = currentUnit.GetComponent<ArcherController>().baseDamage.ToString();
+                CurrentHealth.text = attackerScript.health.ToString();
+                CurrentArmor.text = attackerScript.armor.ToString();
+                CurrentAttack.text = attackerScript.baseDamage.ToString();
+                if(attackerScript.team == "red"){
+                    BackgroundImage.color = redColor;
+                }else{
+                    BackgroundImage.color = blueColor;
+                }
             } else {
                 var attackerScript = currentUnit.GetComponent<WizardController>();
                 attackerScript.UnDefend(); 
-                CurrentHealth.text = currentUnit.GetComponent<WizardController>().health.ToString();
-                CurrentArmor.text = currentUnit.GetComponent<WizardController>().armor.ToString();
-                CurrentAttack.text = currentUnit.GetComponent<WizardController>().baseDamage.ToString();
+                CurrentHealth.text = attackerScript.health.ToString();
+                CurrentArmor.text = attackerScript.armor.ToString();
+                CurrentAttack.text = attackerScript.baseDamage.ToString();
+                if(attackerScript.team == "red"){
+                    BackgroundImage.color = redColor;
+                }else{
+                    BackgroundImage.color = blueColor;
+                }
             }
         } else {
             DisableAllUnitCircles();
             RollInitiative();
         }
+        EnemyArmor.text = "???";
+        EnemyHealth.text = "???";
+        EnemyAttack.text = "???";
+        EnemyArmorAfter.text = "???";
+        EnemyHealthAfter.text = "???";
+        EnemyAttackAfter.text = "???";
+        EnemyUnitProfile.GetComponent<Image>().sprite = null;
         action = true; 
         movement = true; 
     }
@@ -556,6 +587,10 @@ public class GameManager : MonoBehaviour {
                     EnemyHealth.text = knightVictim.health.ToString();
                     EnemyArmor.text = knightVictim.armor.ToString();
                     EnemyAttack.text = knightVictim.baseDamage.ToString();
+                    List<(float, int, int)> afterDamage =  knightVictim.getDamage(currentUnitDamage, currentUnitType);
+                    EnemyArmorAfter.text = afterDamage[0].Item1.ToString(); 
+                    EnemyHealthAfter.text = afterDamage[0].Item2.ToString();
+                    EnemyAttackAfter.text = afterDamage[0].Item3.ToString();
                 } else if(rhInfo.collider.gameObject.tag.Contains("Archer")) {
                     archVictim = rhInfo.collider.gameObject.GetComponent<ArcherController>();
                     VictimUnit = "Archer";
@@ -563,6 +598,10 @@ public class GameManager : MonoBehaviour {
                     EnemyHealth.text = archVictim.health.ToString();
                     EnemyArmor.text = archVictim.armor.ToString();
                     EnemyAttack.text = archVictim.baseDamage.ToString();
+                    List<(float, int, int)> afterDamage =  archVictim.getDamage(currentUnitDamage, currentUnitType);
+                    EnemyArmorAfter.text = afterDamage[0].Item1.ToString(); 
+                    EnemyHealthAfter.text = afterDamage[0].Item2.ToString();
+                    EnemyAttackAfter.text = afterDamage[0].Item3.ToString();
                 } else {
                     wizVictim = rhInfo.collider.gameObject.GetComponent<WizardController>();
                     VictimUnit = "Wizard";
@@ -570,6 +609,10 @@ public class GameManager : MonoBehaviour {
                     EnemyHealth.text = wizVictim.health.ToString();
                     EnemyArmor.text = wizVictim.armor.ToString();
                     EnemyAttack.text = wizVictim.baseDamage.ToString();
+                    List<(float, int, int)> afterDamage =  wizVictim.getDamage(currentUnitDamage, currentUnitType);
+                    EnemyArmorAfter.text = afterDamage[0].Item1.ToString(); 
+                    EnemyHealthAfter.text = afterDamage[0].Item2.ToString();
+                    EnemyAttackAfter.text = afterDamage[0].Item3.ToString();
                 }
                 //not sure this workds (clicks on unit at get's  unit's cell)
                 if(SelectedCell != null){
