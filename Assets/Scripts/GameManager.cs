@@ -59,10 +59,10 @@ public class GameManager : MonoBehaviour {
     bool movement; 
     bool action; 
     //when is player is finished placing units then this can stop
-    bool isPlacingUnits = true ; 
+    bool isPlacingUnits = true; 
 
     private bool isMouseOverEnemyUnit = false;
-
+    private bool isShuffling = false;
     // The current unit that the mouse is hovering over
     private GameObject currentMouseHoveringUnit;
 
@@ -170,9 +170,8 @@ public class GameManager : MonoBehaviour {
         currentUnit = allUnits.ElementAt(currentUnitIndex);
         currentUnitProfile.GetComponent<Image>().sprite = currentUnit.GetComponent<Image>().sprite;
         GetCurrentUnitDamageAndType();        
-        EnableCurrentUnitCircle();
         SetInitiativePortraits();
-        HighlightCurrentUnitsPortrait();
+        isShuffling = true;
         movement = true; 
         action = true; 
     }
@@ -195,13 +194,15 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    void HighlightCurrentUnitsPortrait() {
-        // Destroy previous hughlighters
+    void DestroyCurrentHighlighter() {
+        // Destroy previous highlighters
         var highlighters = GameObject.FindGameObjectsWithTag("Highlighter");
         for(var i = 0; i < highlighters.Length; i++) {
             Destroy(highlighters[i]);
         }
+    }
 
+    void HighlightCurrentUnitsPortrait() {
         GameObject highlighter = new GameObject("Highlighter");
         highlighter.tag = "Highlighter";
         RectTransform trans = highlighter.AddComponent<RectTransform>();
@@ -212,7 +213,8 @@ public class GameManager : MonoBehaviour {
         trans.localScale = Vector3.one;
         
         // Sets the position of the highlighter
-        trans.anchoredPosition = portraitLocations[currentUnitIndex]; //new Vector2(200, Screen.height/2 - 50);
+        trans.anchoredPosition = initiativeShuffleCanvas.GetComponent<InitiativeShuffleAnimator>().GetCurrPortraitLocations()[currentUnitIndex];
+            	 //portraitLocations[currentUnitIndex]; //new Vector2(200, Screen.height/2 - 50);
         // Sets the size of the highlighter
         trans.sizeDelta = new Vector2(50, 50);
 
@@ -289,7 +291,7 @@ public class GameManager : MonoBehaviour {
     }
 
     public void EndTurn() {
-        if(IsCurrentUnitMovingOrAttacking()) return;
+        if(IsCurrentUnitMovingOrAttacking() || isShuffling) return;
         
         // If the list is over, then the round is over and initiative needs to be rolled again
         if(currentUnitIndex != allUnits.Count - 1) {
@@ -297,9 +299,12 @@ public class GameManager : MonoBehaviour {
             currentUnitIndex++;
             DisableCurrentUnitCircle();
             currentUnit = allUnits[currentUnitIndex];
+            
             GetCurrentUnitDamageAndType();
             EnableCurrentUnitCircle();
+            DestroyCurrentHighlighter();
             HighlightCurrentUnitsPortrait();
+
             currentUnitProfile.GetComponent<Image>().sprite = currentUnit.GetComponent<Image>().sprite;
 
             //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
@@ -339,8 +344,10 @@ public class GameManager : MonoBehaviour {
             }
         } else {
             DisableAllUnitCircles();
+            DestroyCurrentHighlighter();
             RollInitiative();
         }
+
         EnemyArmor.text = "???";
         EnemyHealth.text = "???";
         EnemyAttack.text = "???";
@@ -508,6 +515,16 @@ public class GameManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {   
+        if(isShuffling) {
+            if(initiativeShuffleCanvas.GetComponent<InitiativeShuffleAnimator>().IsShuffling()) {
+                return;
+            } else {    
+                EnableCurrentUnitCircle();
+                HighlightCurrentUnitsPortrait();
+                isShuffling = false;
+            }    
+        }
+
         MoveCamera();
         mousePos = Input.mousePosition;
 

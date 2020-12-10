@@ -21,6 +21,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
     
     // Start is called before the first frame update
     void Start() {
+        overlay.color = new Vector4(overlay.color.r, overlay.color.g, overlay.color.b, 0.5f);
     }
 
     // Update is called once per frame
@@ -33,7 +34,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
                     if(currLocation == targetLocation) {
                         oldCardsGathered++;    
                     } else {
-                        portrait.transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 6f);
+                        portrait.transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 5.5f);
                         currLocation = portrait.transform.localPosition;
                     }                    
                 }
@@ -44,13 +45,14 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
                     oldCardsGathered = 0;
                 }
             } else {
-                //print("yo");
                 if(currentPortraitIndex < currPortraits.Count) {
                     Vector2 currLocation = currPortraits[currentPortraitIndex].transform.localPosition;
-                    Vector2 targetLocation = currPortraitLocations[currentPortraitIndex];// - new Vector2(0f, 1f);
+
+                    var loc = currPortraitLocations[currentPortraitIndex];
+                    Vector2 targetLocation = new Vector2(loc.x - 60 + currentPortraitIndex * 10, loc.y + 60);// - new Vector2(0f, 1f);
                     
                     if(currLocation != targetLocation) {
-                        currPortraits[currentPortraitIndex].transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 4.5f);
+                        currPortraits[currentPortraitIndex].transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 5f);
                     } else {
                         currentPortraitIndex++;
                     }
@@ -123,5 +125,13 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
             Destroy(portraits[i]);
         }
         */
+    }
+
+    public List<Vector2> GetCurrPortraitLocations() {
+        return currPortraitLocations;
+    }
+
+    public bool IsShuffling() {
+        return isShuffling;
     }
 }
