@@ -4837,7 +4837,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.027679205, b: 1, a: 0.7176471}
+  m_Color: {r: 0, g: 0.027679205, b: 1, a: 0.6745098}
   m_RaycastTarget: 0
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -5029,6 +5029,8 @@ MonoBehaviour:
   healthDamageTextPreview: {fileID: 2077805067}
   armorDamageTextPreview: {fileID: 1806993872}
   location: {x: 0, y: 0, z: 0}
+  isAttacking: 0
+  isMoving: 0
   isDead: 0
   deathConfirmed: 0
   isIdle: 1
@@ -5041,7 +5043,7 @@ MonoBehaviour:
   armorBarPreview: {fileID: 155252811}
   destination: {x: 0, y: 0, z: 0}
   speed: 5
-  team: 
+  team: red
   animator: {fileID: 1097178234}
   HealthCanvas: {fileID: 841452805}
   camera: {fileID: 414001886}
@@ -5541,6 +5543,8 @@ MonoBehaviour:
   healthDamageTextPreview: {fileID: 0}
   armorDamageTextPreview: {fileID: 0}
   location: {x: 0, y: 0, z: 0}
+  isAttacking: 0
+  isMoving: 0
   isDead: 0
   deathConfirmed: 0
   isIdle: 1
@@ -8017,7 +8021,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100
+  m_text: ???
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8183,6 +8187,8 @@ MonoBehaviour:
   healthDamageTextPreview: {fileID: 1825410089}
   armorDamageTextPreview: {fileID: 1747639139}
   location: {x: 0, y: 0, z: 0}
+  isAttacking: 0
+  isMoving: 0
   isDead: 0
   deathConfirmed: 0
   isIdle: 1
@@ -11215,6 +11221,8 @@ MonoBehaviour:
   healthDamageTextPreview: {fileID: 1492607404}
   armorDamageTextPreview: {fileID: 2059074261}
   location: {x: 0, y: 0, z: 0}
+  isAttacking: 0
+  isMoving: 0
   isDead: 0
   deathConfirmed: 0
   isIdle: 1
@@ -15680,6 +15688,8 @@ MonoBehaviour:
   healthDamageTextPreview: {fileID: 314489714}
   armorDamageTextPreview: {fileID: 315152603}
   location: {x: 0, y: 0, z: 0}
+  isAttacking: 0
+  isMoving: 0
   isDead: 0
   deathConfirmed: 0
   isIdle: 1
@@ -15692,7 +15702,7 @@ MonoBehaviour:
   armorBar: {fileID: 1050246432}
   armorBarPreview: {fileID: 570366529}
   speed: 5
-  team: 
+  team: red
   grid: {fileID: 531630220}
   animator: {fileID: 1460520248}
   HealthCanvas: {fileID: 1281890007}
@@ -16304,6 +16314,8 @@ MonoBehaviour:
   healthDamageTextPreview: {fileID: 0}
   armorDamageTextPreview: {fileID: 0}
   location: {x: 0, y: 0, z: 0}
+  isAttacking: 0
+  isMoving: 0
   isDead: 0
   deathConfirmed: 0
   isIdle: 1
@@ -21134,9 +21146,10 @@ MonoBehaviour:
   EnemyHealth: {fileID: 1222434460}
   EnemyArmor: {fileID: 1275457396}
   EnemyAttack: {fileID: 1420987132}
-  EnemyHealthAfter: {fileID: 0}
-  EnemyArmorAfter: {fileID: 0}
-  EnemyAttackAfter: {fileID: 0}
+  EnemyHealthAfter: {fileID: 417410230}
+  EnemyArmorAfter: {fileID: 1543476121}
+  EnemyAttackAfter: {fileID: 1167967673}
+  BackgroundImage: {fileID: 271061562}
 --- !u!4 &1022383812
 Transform:
   m_ObjectHideFlags: 0
@@ -23724,7 +23737,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100
+  m_text: ???
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -24345,6 +24358,8 @@ MonoBehaviour:
   healthDamageTextPreview: {fileID: 853507852}
   armorDamageTextPreview: {fileID: 807313073}
   location: {x: 0, y: 0, z: 0}
+  isAttacking: 0
+  isMoving: 0
   isDead: 0
   deathConfirmed: 0
   isIdle: 1
@@ -24533,7 +24548,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100
+  m_text: ???
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -25290,7 +25305,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100
+  m_text: ???
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -27250,6 +27265,8 @@ MonoBehaviour:
   healthDamageTextPreview: {fileID: 0}
   armorDamageTextPreview: {fileID: 0}
   location: {x: 0, y: 0, z: 0}
+  isAttacking: 0
+  isMoving: 0
   isDead: 0
   deathConfirmed: 0
   isIdle: 1
@@ -29955,7 +29972,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100
+  m_text: ???
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -33334,7 +33351,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100
+  m_text: ???
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -37317,6 +37334,8 @@ MonoBehaviour:
   healthDamageTextPreview: {fileID: 0}
   armorDamageTextPreview: {fileID: 0}
   location: {x: 0, y: 0, z: 0}
+  isAttacking: 0
+  isMoving: 0
   isDead: 0
   deathConfirmed: 0
   isIdle: 1
@@ -41731,6 +41750,8 @@ MonoBehaviour:
   healthDamageTextPreview: {fileID: 0}
   armorDamageTextPreview: {fileID: 0}
   location: {x: 0, y: 0, z: 0}
+  isAttacking: 0
+  isMoving: 0
   isDead: 0
   deathConfirmed: 0
   isIdle: 1
@@ -41876,6 +41897,8 @@ MonoBehaviour:
   healthDamageTextPreview: {fileID: 0}
   armorDamageTextPreview: {fileID: 0}
   location: {x: 0, y: 0, z: 0}
+  isAttacking: 0
+  isMoving: 0
   isDead: 0
   deathConfirmed: 0
   isIdle: 1
@@ -44690,6 +44713,8 @@ MonoBehaviour:
   healthDamageTextPreview: {fileID: 1099648585}
   armorDamageTextPreview: {fileID: 680868659}
   location: {x: 0, y: 0, z: 0}
+  isAttacking: 0
+  isMoving: 0
   isDead: 0
   deathConfirmed: 0
   isIdle: 1

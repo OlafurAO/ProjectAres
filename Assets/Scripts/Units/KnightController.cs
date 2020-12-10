@@ -396,6 +396,23 @@ public class KnightController : MonoBehaviour {
         healthBarAlphaModifier = -1;
     }
 
+    //get's remaning health and armor of the current 
+    public List<(float, int,int)> getDamage(float damage, string type){
+        int returnhealth; 
+        int returnarmor;
+        if(armor <= 0){
+            returnarmor = 0;
+            returnhealth =(int)(health - damage);
+        }else if(weaknessType == type){
+            returnarmor = armor-1;
+            returnhealth = (int)(health - Mathf.FloorToInt(damage / 2));
+        }else{
+            returnarmor = armor;
+            returnhealth = (int)(health - Mathf.FloorToInt(damage / 2));
+        }
+        return new List<(float,int,int)>(){(returnarmor,returnhealth,baseDamage)};
+    }
+
     public void DisablePreviewHealthBar() {
         healthBarPreview.gameObject.SetActive(false);
         armorBarPreview.gameObject.SetActive(false);
