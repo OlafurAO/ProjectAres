@@ -515,7 +515,6 @@ public class GameManager : MonoBehaviour {
         if(Input.GetMouseButtonDown(0)) {    
             // Did player click on a UI button? if so, don't do anything else
             if(EventSystem.current.IsPointerOverGameObject()) {
-                print("thingy");
                 return;
             }
 
@@ -581,7 +580,6 @@ public class GameManager : MonoBehaviour {
                 if(!movement) return; 
                 //if move unit, display button that if pressed runs "move unit"
                 if(Physics.Raycast(toMouse, out rhInfo, 1000.0f)){
-                    print("eeee");
                     if(SelectedCell != null){
                         grid.DisableButton(currButtonCanvas);
                     }
