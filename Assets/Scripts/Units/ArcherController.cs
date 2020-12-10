@@ -101,6 +101,9 @@ public class ArcherController : MonoBehaviour {
         healthDamageTextPreview.text = "";
 
         armorAbsorbtionText.text = "";
+        armorAbsorbtionText.transform.localPosition = new Vector3(-115f, 19f, 0f);
+        armorAbsorbtionText.color = Color.red;
+        armorAbsorbtionText.fontSize = 30;
         
         // Make healthbar face camera as soon as game starts
         MoveHealthBar();
@@ -406,6 +409,7 @@ public class ArcherController : MonoBehaviour {
         
         if(armor != 0) {
             if(attackerType == weaknessType) {
+                armorAbsorbtionText.text = "WEAK";
                 armorBarPreview.fillAmount = (((float)armor - 1f) / (float)maxArmor); 
                 
                 int newArmor = armor - 1;
@@ -431,7 +435,6 @@ public class ArcherController : MonoBehaviour {
                     armorText.text = "     /" + maxArmor.ToString();
                 }
             }
-            armorAbsorbtionText.text = "Armor absorbs\n50'/, damage";
         }
 
         int newHealth = health - (int)(armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
