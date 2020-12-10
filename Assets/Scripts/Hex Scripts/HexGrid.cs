@@ -41,7 +41,6 @@ public class HexGrid : MonoBehaviour {
 			}
 		}
 	}
-
 	void CreateCells () {
 		cells = new HexCell[cellCountZ * cellCountX];
 
