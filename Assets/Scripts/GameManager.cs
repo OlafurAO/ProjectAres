@@ -80,6 +80,7 @@ public class GameManager : MonoBehaviour {
     public string VictimUnit; 
     //stores a canvas of the newest button visable (so we can disable it if needed (click on 2 tiles at onece and 1 one dissapears))
     private Canvas currButtonCanvas;
+    public Canvas initiativeShuffleCanvas;
 
 
     private float currentUnitDamage;
@@ -222,7 +223,6 @@ public class GameManager : MonoBehaviour {
     }
 
     void SetInitiativePortraits() {
-        DestroyAllPortraits();
         portraitLocations = new List<Vector2>();
 
         int middleIndex = 0;
@@ -235,6 +235,9 @@ public class GameManager : MonoBehaviour {
         }
 
         int portraitCount = 1;
+
+        // For the initiative animator
+        List<GameObject> portraits = new List<GameObject>();
         foreach(GameObject unit in allUnits) {
             // Create a new gameobject to store the image
             GameObject imageObject = new GameObject("name_" + portraitCount.ToString());
@@ -274,17 +277,15 @@ public class GameManager : MonoBehaviour {
                 // Set the unit's texture as the image's sprite
                 image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
                 imageObject.transform.SetParent(canvas.transform);
+                
+                portraits.Add(imageObject);
             }
 
             portraitCount++;
         }
-    }
 
-    void DestroyAllPortraits() {
-        var portraits = GameObject.FindGameObjectsWithTag("Portrait");
-        for(var i = 0; i < portraits.Length; i++) {
-            Destroy(portraits[i]);
-        }
+        initiativeShuffleCanvas.GetComponent<InitiativeShuffleAnimator>().SetNewPortraits(portraits, portraitLocations);
+        initiativeShuffleCanvas.GetComponent<InitiativeShuffleAnimator>().StartShuffling();
     }
 
     public void EndTurn() {
@@ -797,6 +798,7 @@ public class GameManager : MonoBehaviour {
             if(unit.tag.Contains("Knight")) {
                 var script = unit.GetComponent<KnightController>();
                 if(script.IsUnitDead()) {
+                    initiativeShuffleCanvas.GetComponent<InitiativeShuffleAnimator>().RemovePrevPortrait(index);
                     unitsToRemove.Add(unit);
                     if(index < currentUnitIndex) {
                         currentUnitIndex--;
@@ -805,6 +807,7 @@ public class GameManager : MonoBehaviour {
             } else if(unit.tag.Contains("Archer")) {
                 var script = unit.GetComponent<ArcherController>();
                 if(script.IsUnitDead()) {
+                    initiativeShuffleCanvas.GetComponent<InitiativeShuffleAnimator>().RemovePrevPortrait(index);
                     unitsToRemove.Add(unit);
                     if(index < currentUnitIndex) {
                         currentUnitIndex--;
@@ -813,6 +816,7 @@ public class GameManager : MonoBehaviour {
             } else {
                 var script = unit.GetComponent<WizardController>();
                 if(script.IsUnitDead()) {
+                    initiativeShuffleCanvas.GetComponent<InitiativeShuffleAnimator>().RemovePrevPortrait(index);
                     unitsToRemove.Add(unit);
                     if(index < currentUnitIndex) {
                         currentUnitIndex--;

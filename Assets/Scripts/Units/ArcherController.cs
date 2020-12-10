@@ -398,7 +398,10 @@ public class ArcherController : MonoBehaviour {
     }
     //moving healthbar to face the camera
     public void MoveHealthBar(){
-        HealthCanvas.transform.LookAt(camera.transform.position);
+        HealthCanvas.transform.localPosition = this.transform.position + new Vector3(0f, 2f, 0f);
+        //HealthCanvas.transform.LookAt(camera.transform.position);
+        //HealthCanvas.transform.position = this.transform.position + new Vector3(0f, 2f, 0f);
+        //HealthCanvas.transform.position = Camera.main.WorldToScreenPoint(transform.position * 2);
     }
 
     public void ShowPreviewHealthBar(float damage, string attackerType) {
