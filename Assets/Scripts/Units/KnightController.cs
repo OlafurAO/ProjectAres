@@ -259,7 +259,7 @@ public class KnightController : MonoBehaviour {
             MoveHealthBar();
 
             // Play attack sfx
-            FindObjectOfType<AudioManager>().Play("knight_attack", 0.15f);
+            FindObjectOfType<AudioManager>().Play("knight_attack", 0.1f);
 
             return true; 
         }
@@ -270,6 +270,7 @@ public class KnightController : MonoBehaviour {
         //TODO: add some value to armorModifier
         isDefending = true; 
         DefenceImage.GetComponent<Renderer>().enabled = true; 
+        FindObjectOfType<AudioManager>().Play("unit_defend", 0f);
     }
 
     public void UnDefend() {
@@ -322,9 +323,11 @@ public class KnightController : MonoBehaviour {
 
         isIdle = false;
         if(health <= 0) {
+            FindObjectOfType<AudioManager>().Play("unit_death", 0f);
             healthBarFallOff.fillAmount = 0f;
             isDead = true;
         } else {
+            FindObjectOfType<AudioManager>().Play("unit_hit", 0f);
             isTakingDamage = true;
         }
     }
@@ -446,7 +449,7 @@ public class KnightController : MonoBehaviour {
     // Testing purposes, can delete this in final producxt
     public void AudioTests(string sfx) {
         if(sfx == "attack") {
-            FindObjectOfType<AudioManager>().Play("knight_attack", 0.15f);
+            FindObjectOfType<AudioManager>().Play("knight_attack", 0.1f);
             animator.Play("attack");
         } else if(sfx == "walk") { // TODO:
             FindObjectOfType<AudioManager>().Play("knight_walk", 0.15f);

@@ -370,6 +370,7 @@ public class WizardController : MonoBehaviour
         //TODO: add some value to armorModifier
         isDefending = true; 
         DefenceImage.GetComponent<Renderer>().enabled = true;
+        FindObjectOfType<AudioManager>().Play("unit_defend", 0f);
     }
 
     public void UnDefend() {
@@ -425,9 +426,11 @@ public class WizardController : MonoBehaviour
 
         isIdle = false;
         if(health <= 0) {
+            FindObjectOfType<AudioManager>().Play("unit_death", 0f);
             healthBarFallOff.fillAmount = 0f;
             isDead = true;
         } else {
+            FindObjectOfType<AudioManager>().Play("unit_hit", 0f);
             isTakingDamage = true;
         }
     }

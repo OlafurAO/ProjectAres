@@ -7,8 +7,8 @@ public class ArcherController : MonoBehaviour {
     public HexGrid grid; 
     public int health = 60;
     public int maxHealth = 60;
-    private int maxArmor = 50;
-    public int armor = 50;
+    private int maxArmor = 25;
+    public int armor = 25;
     public int armorModifier = 0;
     public int baseDamage = 10;
     public int damageModifier = 0;
@@ -333,6 +333,7 @@ public class ArcherController : MonoBehaviour {
         //TODO: add some value to armorModifier
         isDefending = true; 
         DefenceImage.GetComponent<Renderer>().enabled = true;
+        FindObjectOfType<AudioManager>().Play("unit_defend", 0f);
     }
 
     public void UnDefend() {
@@ -385,9 +386,11 @@ public class ArcherController : MonoBehaviour {
 
         isIdle = false;
         if(health <= 0) {
+            FindObjectOfType<AudioManager>().Play("unit_death", 0f);
             healthBarFallOff.fillAmount = 0f;
             isDead = true;
         } else {
+            FindObjectOfType<AudioManager>().Play("unit_hit", 0f);
             isTakingDamage = true;
         }
     }
@@ -512,7 +515,7 @@ public class ArcherController : MonoBehaviour {
     // Testing purposes, can delete this in final producxt
     public void AudioTests(string sfx) {
         if(sfx == "attack") {
-            FindObjectOfType<AudioManager>().Play("archer_attack", 0.15f);
+            FindObjectOfType<AudioManager>().Play("archer_attack", 0.1f);
             animator.Play("attack");
         } else if(sfx == "walk") { // TODO:
             FindObjectOfType<AudioManager>().Play("archer_walk", 0.15f);

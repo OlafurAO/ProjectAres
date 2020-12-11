@@ -10609,7 +10609,7 @@ MonoBehaviour:
   grid: {fileID: 1339844065}
   health: 60
   maxHealth: 60
-  armor: 2
+  armor: 25
   armorModifier: 0
   baseDamage: 10
   damageModifier: 0
@@ -13840,7 +13840,7 @@ MonoBehaviour:
   grid: {fileID: 1339844065}
   health: 60
   maxHealth: 60
-  armor: 2
+  armor: 25
   armorModifier: 0
   baseDamage: 10
   damageModifier: 0
