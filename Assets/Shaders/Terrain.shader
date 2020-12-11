@@ -57,7 +57,14 @@
 				GetTerrainColor(IN, 0) +
 				GetTerrainColor(IN, 1) +
 				GetTerrainColor(IN, 2);
-			o.Albedo = c.rgb * _Color;
+            
+            float2 gridUV = IN.worldPos.xz;
+			gridUV.x *= 1 / (6.928203232);
+			gridUV.y *= 1 / (6.00);
+
+            fixed4 grid = tex2D(_GridTex, gridUV);
+
+			o.Albedo = c.rgb * grid * _Color;
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
 			o.Alpha = c.a;
