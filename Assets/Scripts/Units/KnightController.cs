@@ -441,4 +441,24 @@ public class KnightController : MonoBehaviour {
             healthText.text = "0" + healthText.text;
         }
     }
+
+    // Testing purposes, can delete this in final producxt
+    public void AudioTests(string sfx) {
+        if(sfx == "attack") {
+            FindObjectOfType<AudioManager>().Play("knight_attack", 0.15f);
+            animator.Play("attack");
+        } else if(sfx == "walk") { // TODO:
+            FindObjectOfType<AudioManager>().Play("knight_walk", 0.15f);
+            animator.Play("run");
+        } else if(sfx == "defend") {
+            FindObjectOfType<AudioManager>().Play("unit_defend", 0f);
+            animator.Play("Defence");
+        } else if(sfx == "hit") {
+            FindObjectOfType<AudioManager>().Play("unit_hit", 0f);
+            animator.Play("hurt");
+        } else if(sfx == "die") {
+            FindObjectOfType<AudioManager>().Play("unit_death", 0f);
+            animator.Play("die1");
+        }
+    }
 }

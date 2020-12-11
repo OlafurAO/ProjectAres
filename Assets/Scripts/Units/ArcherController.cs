@@ -505,4 +505,24 @@ public class ArcherController : MonoBehaviour {
         }
         return new List<(float,int,int)>(){(returnarmor,returnhealth,baseDamage)};
     }
+
+    // Testing purposes, can delete this in final producxt
+    public void AudioTests(string sfx) {
+        if(sfx == "attack") {
+            FindObjectOfType<AudioManager>().Play("archer_attack", 0.15f);
+            animator.Play("attack");
+        } else if(sfx == "walk") { // TODO:
+            FindObjectOfType<AudioManager>().Play("archer_walk", 0.15f);
+            animator.Play("run");
+        } else if(sfx == "defend") {
+            FindObjectOfType<AudioManager>().Play("unit_defend", 0f);
+            animator.Play("Defence");
+        } else if(sfx == "hit") {
+            FindObjectOfType<AudioManager>().Play("unit_hit", 0f);
+            animator.Play("hurt");
+        } else if(sfx == "die") {
+            FindObjectOfType<AudioManager>().Play("unit_death", 0f);
+            animator.Play("die2");
+        }
+    }
 }
