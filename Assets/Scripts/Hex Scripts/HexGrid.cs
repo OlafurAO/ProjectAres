@@ -41,7 +41,6 @@ public class HexGrid : MonoBehaviour {
 			}
 		}
 	}
-
 	void CreateCells () {
 		cells = new HexCell[cellCountZ * cellCountX];
 
@@ -139,5 +138,52 @@ public class HexGrid : MonoBehaviour {
 		int index = cell.coordinates.X + cell.coordinates.Z * cellCountX + cell.coordinates.Z / 2;
 		cells[index].isOccupied = false;
 
+	}
+
+	//make button face camera 
+	public void MoveButton(Canvas ButtonCanvas){
+		ButtonCanvas.transform.LookAt(camera.transform.position);
+	}
+
+	
+
+	//button calls this to disable the button in the game
+	public void DisableButton(Canvas canvas){
+			canvas.enabled = false;
+	}
+	public HexCell DeleteCell(Vector3 position){
+		HexCell currCell = GetCell( position);
+		currCell.DeleteCanvas.transform.LookAt(camera.transform.position);
+		currCell.DeleteCanvas.enabled = true;
+		return currCell;
+
+		}
+	public HexCell CreateUnitCell(Vector3 position){
+		HexCell currCell = GetCell(position);
+		currCell.CreateCanvas.transform.LookAt(camera.transform.position);
+		if(currCell.isOccupied == false){
+			currCell.CreateCanvas.enabled = true;
+		}
+		return currCell;
+	}
+
+	public HexCell MovementCell(Vector3 position){
+		HexCell currCell = GetCell(position);
+		currCell.MoveCanvas.transform.LookAt(camera.transform.position);
+		currCell.MoveCanvas.enabled = true;
+		return currCell;
+	}
+	public HexCell AttackCell(Vector3 position){
+		HexCell currCell = GetCell(position) ;
+		currCell.AttackCanvas.transform.LookAt(camera.transform.position);
+		currCell.AttackCanvas.enabled = true;
+		return currCell;
+	}
+
+	public HexCell DefenceCell(Vector3 position){
+		HexCell currCell = GetCell( position);
+		currCell.DefenceCanvas.transform.LookAt(camera.transform.position);
+		currCell.DefenceCanvas.enabled = true;
+		return currCell;
 	}
 }

@@ -336,6 +336,7 @@ public class ArcherController : MonoBehaviour {
         //TODO: add some value to armorModifier
         isDefending = false; 
         DefenceImage.GetComponent<Renderer>().enabled = false;
+        animator.Play("idle");
     }
     public void TakeDamage(int damage, string attackerType, float animationDelay) {
         StartCoroutine(TakeDamageAfterDelay(damage, attackerType, animationDelay));
@@ -398,7 +399,10 @@ public class ArcherController : MonoBehaviour {
     }
     //moving healthbar to face the camera
     public void MoveHealthBar(){
+        //HealthCanvas.transform.localPosition = this.transform.position + new Vector3(0f, 2f, 0f);
         HealthCanvas.transform.LookAt(camera.transform.position);
+        //HealthCanvas.transform.position = this.transform.position + new Vector3(0f, 2f, 0f);
+        //HealthCanvas.transform.position = Camera.main.WorldToScreenPoint(transform.position * 2);
     }
 
     public void ShowPreviewHealthBar(float damage, string attackerType) {
