@@ -276,6 +276,7 @@ public class KnightController : MonoBehaviour {
         //TODO: add some value to armorModifier
         isDefending = false; 
         DefenceImage.GetComponent<Renderer>().enabled = false;
+        animator.Play("idle");
     }
     public void TakeDamage(int damage, string attackerType, float animationDelay) {
         StartCoroutine(TakeDamageAfterDelay(damage, attackerType, animationDelay));
