@@ -9,8 +9,8 @@ public class WizardController : MonoBehaviour
     public int health = 80;
     public HexCoordinates IndexedLocation;
     public HexCell CurrCell; 
-    public int armor = 50;
-    private int maxArmor = 50;
+    public int armor = 15;
+    private int maxArmor = 15;
     public int armorModifier = 0;
     public int baseDamage = 20;
     public int damageModifier = 0;
@@ -84,7 +84,7 @@ public class WizardController : MonoBehaviour
 
         armorText.text = armor + "/" + maxArmor;
         armorText.fontSize = 20;
-        armorText.transform.localPosition = new Vector3(-36.0f, 35.0f, 0.0f);
+        armorText.transform.localPosition = new Vector3(-28.0f, 35.0f, 0.0f);
 
         damageTakenText.fontWeight = TMPro.FontWeight.Bold;
         damageTakenText.transform.localPosition = new Vector3(-43.0f, 150.0f, 0.0f);
@@ -98,7 +98,7 @@ public class WizardController : MonoBehaviour
         armorBarPreview.color = new Vector4(253f/255f, 231f/255f, 76f/255f, 1f);
         armorBarPreview.fillAmount = 1f;
 
-        armorDamageTextPreview.transform.localPosition = new Vector3(-36.0f, 35.0f, 0.0f);
+        armorDamageTextPreview.transform.localPosition = new Vector3(-28.0f, 35.0f, 0.0f);
         healthDamageTextPreview.transform.localPosition = new Vector3(-25.0f, -10.0f, 0.0f);
         armorDamageTextPreview.fontSize = 20;
         healthDamageTextPreview.fontSize = 20;
@@ -294,7 +294,7 @@ public class WizardController : MonoBehaviour
             transform.LookAt(victimPos);
             MoveHealthBar();
 
-            FindObjectOfType<AudioManager>().Play("wizard_attack", 0.2f);
+            FindObjectOfType<AudioManager>().Play("wizard_attack", 0.18f);
 
             currentVictimPos = victimPos + new Vector3(0f, 1f, 0f);
             projectile = new GameObject("Projectile");
@@ -390,6 +390,7 @@ public class WizardController : MonoBehaviour
     IEnumerator TakeDamageAfterDelay(int damage, string attackerType, float time) {
         yield return new WaitForSeconds(time);
         damageTakenText.text = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage).ToString();
+
         if(armor != 0) {
             health -= Mathf.FloorToInt(damage / 2);
             if(attackerType == weaknessType) {
@@ -450,6 +451,8 @@ public class WizardController : MonoBehaviour
     }
 
     public void ShowPreviewHealthBar(float damage, string attackerType) {
+        if(isDefending) damage /= 2f;
+
         float totalDamage = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
         healthBarPreview.fillAmount = (((float)health - totalDamage) / (float)maxHealth);
         healthBarPreview.gameObject.SetActive(true);
@@ -534,6 +537,8 @@ public class WizardController : MonoBehaviour
     
     //get's remaning health and armor of the current 
     public List<(float, int, int)> getDamage(float damage, string type){
+        if(isDefending) damage /= 2f;
+
         int returnhealth; 
         int returnarmor;
         if(armor <= 0){
