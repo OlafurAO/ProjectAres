@@ -10609,7 +10609,7 @@ MonoBehaviour:
   grid: {fileID: 1339844065}
   health: 60
   maxHealth: 60
-  armor: 2
+  armor: 25
   armorModifier: 0
   baseDamage: 10
   damageModifier: 0
@@ -13840,7 +13840,7 @@ MonoBehaviour:
   grid: {fileID: 1339844065}
   health: 60
   maxHealth: 60
-  armor: 2
+  armor: 25
   armorModifier: 0
   baseDamage: 10
   damageModifier: 0
@@ -16734,7 +16734,7 @@ MonoBehaviour:
     x: 0
     z: 0
   CurrCell: {fileID: 0}
-  armor: 1
+  armor: 15
   armorModifier: 0
   baseDamage: 20
   damageModifier: 0
@@ -23783,7 +23783,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -169, y: 180}
+  m_AnchoredPosition: {x: -33.9, y: 169.5}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1059568162
@@ -23805,7 +23805,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'PLAYER TWO  PLACE UNITS '
+  m_text: 'RED TEAM  PLACE UNITS '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -23832,10 +23832,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 54.8
-  m_fontSizeBase: 36
+  m_fontSize: 40.82
+  m_fontSizeBase: 40.82
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -26470,7 +26470,7 @@ MonoBehaviour:
     x: 0
     z: 0
   CurrCell: {fileID: 0}
-  armor: 1
+  armor: 15
   armorModifier: 0
   baseDamage: 20
   damageModifier: 0
@@ -42877,7 +42877,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'PLAYER ONE PLACE UNITS '
+  m_text: 'BLUE TEAM PLACE UNITS '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -42904,7 +42904,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.75
+  m_fontSize: 40.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -49048,32 +49048,32 @@ MonoBehaviour:
   sounds:
   - clip: {fileID: 8300000, guid: 131c0082d95f3e5478782c0859a5377b, type: 3}
     name: knight_attack
-    volume: 1
+    volume: 0.682
     pitch: 1
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 82acf7487e1557a4098f154ce56b8feb, type: 3}
     name: archer_attack
-    volume: 1
+    volume: 0.823
     pitch: 1
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 063d482de302be14b829157d9d9a26ed, type: 3}
     name: wizard_attack
-    volume: 1
+    volume: 0.339
     pitch: 1
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 50ae59c3030f53a43b0799e9cf1678b3, type: 3}
     name: unit_hit
-    volume: 1
+    volume: 0.224
     pitch: 1
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: ffc99df23b9d8b040ada8041df763491, type: 3}
     name: unit_defend
-    volume: 1
+    volume: 0.875
     pitch: 1
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 31d1abb64a51de14f94fa67017743e3a, type: 3}
     name: unit_death
-    volume: 1
+    volume: 0.261
     pitch: 1
     source: {fileID: 0}
   - clip: {fileID: 0}
