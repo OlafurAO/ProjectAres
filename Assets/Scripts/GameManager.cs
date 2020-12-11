@@ -195,14 +195,17 @@ public class GameManager : MonoBehaviour {
     }
 
     void DestroyCurrentHighlighter() {
-        // Destroy previous highlighters
+        initiativeShuffleCanvas.GetComponent<InitiativeShuffleAnimator>().DestroyCurrentHighlighter();
+        /*// Destroy previous highlighters
         var highlighters = GameObject.FindGameObjectsWithTag("Highlighter");
         for(var i = 0; i < highlighters.Length; i++) {
             Destroy(highlighters[i]);
-        }
+        }*/
     }
 
     void HighlightCurrentUnitsPortrait() {
+        initiativeShuffleCanvas.GetComponent<InitiativeShuffleAnimator>().HighlightCurrentUnitsPortrait(currentUnitIndex);
+        /*
         GameObject highlighter = new GameObject("Highlighter");
         highlighter.tag = "Highlighter";
         RectTransform trans = highlighter.AddComponent<RectTransform>();
@@ -222,6 +225,7 @@ public class GameManager : MonoBehaviour {
         Texture2D tex = Resources.Load<Texture2D>("Images/Shapes/square");
         image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
         highlighter.transform.SetParent(canvas.transform);
+        */
     }
 
     void SetInitiativePortraits() {
@@ -259,7 +263,7 @@ public class GameManager : MonoBehaviour {
                 : portraitCount - middleIndex;
 
             // Sets the position of the portrait
-            trans.anchoredPosition = new Vector2(offset * 60, (Screen.height/4)-12);
+            trans.anchoredPosition = new Vector2(offset * 60, (Screen.height/4) + 20);
             // Sets the size of the portrait
             trans.sizeDelta = new Vector2(50, 50);
 
@@ -855,7 +859,8 @@ public class GameManager : MonoBehaviour {
         }
 
         if(unitsToRemove.Count != 0) {
-            SetInitiativePortraits();
+            //SetInitiativePortraits();
+            DestroyCurrentHighlighter();
             HighlightCurrentUnitsPortrait();
         }    
     }

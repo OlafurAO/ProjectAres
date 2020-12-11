@@ -70,6 +70,9 @@ public class ArcherController : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        // REMOVE THIS
+        health = 1;
+        
         destination = transform.position;  
         location = transform.position;
 
