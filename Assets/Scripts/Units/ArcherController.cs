@@ -7,8 +7,8 @@ public class ArcherController : MonoBehaviour {
     public HexGrid grid; 
     public int health = 60;
     public int maxHealth = 60;
-    private int maxArmor = 2;
-    public int armor = 2;
+    private int maxArmor = 50;
+    public int armor = 50;
     public int armorModifier = 0;
     public int baseDamage = 10;
     public int damageModifier = 0;
@@ -70,6 +70,7 @@ public class ArcherController : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        maxArmor = armor;
         destination = transform.position;  
         location = transform.position;
 
@@ -239,8 +240,10 @@ public class ArcherController : MonoBehaviour {
     }
 
     public bool StartMoving(Vector3 dest, HexCell hex) {
+        print(dest);
         float length = Vector3.Distance(transform.position, dest);
-        if(length > 7){
+        //veit ekki range ið
+        if(length > 1000000){
             print("no way hosey");
             return false;
         }else{

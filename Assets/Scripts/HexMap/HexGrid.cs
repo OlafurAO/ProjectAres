@@ -12,6 +12,7 @@ public class HexGrid : MonoBehaviour {
 	public Canvas AttackCanvas1;
 	public Canvas DefenceCanvas1;
 	public Canvas CreateUnitCanvas1;
+	public Canvas DeleteUnitCanvas1;
 	public Texture2D noiseSource;
 	public Camera camera;
 	public Text cellLabelPrefab;
@@ -41,6 +42,7 @@ public class HexGrid : MonoBehaviour {
 			}
 		}
 	}
+
 	void CreateCells () {
 		cells = new HexCell[cellCountZ * cellCountX];
 
@@ -59,8 +61,10 @@ public class HexGrid : MonoBehaviour {
 		position = transform.InverseTransformPoint(position);
 		HexCoordinates coordinates = HexCoordinates.FromPosition(position);
 		int index =
-			coordinates.X + coordinates.Z * cellCountX + coordinates.Z / 2;
+			coordinates.X + coordinates.Z * cellCountX+1 + coordinates.Z / 2;
 		return cells[index];
+
+
 	}
 
 	public HexCell GetCell (HexCoordinates coordinates) {
@@ -91,6 +95,29 @@ public class HexGrid : MonoBehaviour {
 		cell.transform.localPosition = position;
 		cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
 		cell.Color = defaultColor;
+		Canvas temp = Instantiate<Canvas>(MoveCanvas1);
+		Canvas temp2 = Instantiate<Canvas>(AttackCanvas1);
+		Canvas temp3 = Instantiate<Canvas>(DefenceCanvas1);
+		Canvas temp4 = Instantiate<Canvas>(CreateUnitCanvas1);
+		Canvas temp5 = Instantiate<Canvas>(DeleteUnitCanvas1);
+		temp.transform.SetParent(cell.transform, false);
+		temp2.transform.SetParent(cell.transform, false);
+		temp3.transform.SetParent(cell.transform, false);
+		temp4.transform.SetParent(cell.transform, false);
+		temp5.transform.SetParent(cell.transform, false);
+		
+		cell.MoveCanvas = temp;
+		cell.AttackCanvas = temp2;
+		cell.DefenceCanvas = temp3;
+		cell.CreateCanvas = temp4;
+		cell.DeleteCanvas = temp5;
+		cell.ActualPosition = cell.transform.position;
+		
+		cell.MoveCanvas.enabled = false;
+		cell.AttackCanvas.enabled = false;
+		cell.DefenceCanvas.enabled = false;
+		cell.CreateCanvas.enabled = false;
+		cell.DeleteCanvas.enabled = false;
 
 		if (x > 0) {
 			cell.SetNeighbor(HexDirection.W, cells[i - 1]);
@@ -140,24 +167,14 @@ public class HexGrid : MonoBehaviour {
 
 	}
 
-	//make button face camera 
-	public void MoveButton(Canvas ButtonCanvas){
-		ButtonCanvas.transform.LookAt(camera.transform.position);
-	}
-
-	
-
-	//button calls this to disable the button in the game
-	public void DisableButton(Canvas canvas){
-			canvas.enabled = false;
-	}
-	public HexCell DeleteCell(Vector3 position){
-		HexCell currCell = GetCell( position);
-		currCell.DeleteCanvas.transform.LookAt(camera.transform.position);
-		currCell.DeleteCanvas.enabled = true;
+	public HexCell MovementCell(Vector3 position){
+		HexCell currCell = GetCell(position);
+		currCell.MoveCanvas.transform.LookAt(camera.transform.position);
+		currCell.MoveCanvas.enabled = true;
 		return currCell;
+	}
 
-		}
+
 	public HexCell CreateUnitCell(Vector3 position){
 		HexCell currCell = GetCell(position);
 		currCell.CreateCanvas.transform.LookAt(camera.transform.position);
@@ -167,12 +184,6 @@ public class HexGrid : MonoBehaviour {
 		return currCell;
 	}
 
-	public HexCell MovementCell(Vector3 position){
-		HexCell currCell = GetCell(position);
-		currCell.MoveCanvas.transform.LookAt(camera.transform.position);
-		currCell.MoveCanvas.enabled = true;
-		return currCell;
-	}
 	public HexCell AttackCell(Vector3 position){
 		HexCell currCell = GetCell(position) ;
 		currCell.AttackCanvas.transform.LookAt(camera.transform.position);
@@ -180,10 +191,46 @@ public class HexGrid : MonoBehaviour {
 		return currCell;
 	}
 
+
+
 	public HexCell DefenceCell(Vector3 position){
 		HexCell currCell = GetCell( position);
 		currCell.DefenceCanvas.transform.LookAt(camera.transform.position);
 		currCell.DefenceCanvas.enabled = true;
 		return currCell;
 	}
+
+	public HexCell DeleteCell(Vector3 position){
+		HexCell currCell = GetCell( position);
+		currCell.DeleteCanvas.transform.LookAt(camera.transform.position);
+		currCell.DeleteCanvas.enabled = true;
+		return currCell;
+
+		}
+
+
+	/*public HexCell getCell(Vector3 position){
+		//the same as "touchCell" but different name 
+		position = transform.InverseTransformPoint(position);
+		HexCoordinates coordinates = HexCoordinates.FromPosition(position);
+		int index = coordinates.X + coordinates.Z * width + coordinates.Z / 2;
+		HexCell cell = cells[index];
+		cell.color = touchedColor;
+		hexMesh.Triangulate(cells);
+		
+		return cell; 
+		
+	}*/
+//make button face camera 
+	public void MoveButton(Canvas ButtonCanvas){
+		ButtonCanvas.transform.LookAt(camera.transform.position);
+	}
+
+	
+
+	//button calls this to disable the button in the game
+    public void DisableButton(Canvas canvas){
+        canvas.enabled = false;
+    }
+
 }

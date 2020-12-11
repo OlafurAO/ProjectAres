@@ -9,8 +9,8 @@ public class WizardController : MonoBehaviour
     public int health = 80;
     public HexCoordinates IndexedLocation;
     public HexCell CurrCell; 
-    public int armor = 1;
-    private int maxArmor = 1;
+    public int armor = 50;
+    private int maxArmor = 50;
     public int armorModifier = 0;
     public int baseDamage = 20;
     public int damageModifier = 0;
@@ -74,6 +74,7 @@ public class WizardController : MonoBehaviour
 
     // Start is called before the first frame update
     void Start() {
+        maxArmor = armor;
         destination = transform.position;  
         location = transform.position;
 
@@ -250,8 +251,10 @@ public class WizardController : MonoBehaviour
     }
 
     public bool StartMoving(Vector3 dest, HexCell hex) {
+        print(dest);
         float length = Vector3.Distance(transform.position, dest);
-        if(length > 7){
+        //veit ekki range ið
+        if(length > 1000000){
             print("no way hosey");
             return false; 
         }else{
