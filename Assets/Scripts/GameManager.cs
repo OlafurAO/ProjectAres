@@ -13,8 +13,8 @@ public class GameManager : MonoBehaviour {
     public GameObject canvas;
 
     // The bounds of the map that the camera can't travel beyond. Modify this if the map gets bigger
-    List<int> xBounds = new List<int>{-5, 25};
-    List<int> zBounds = new List<int>{-10, 20};
+    List<int> xBounds = new List<int>{-50, 100};
+    List<int> zBounds = new List<int>{-100, 200};
 
     public PlacingUnits placingUnits;
 
