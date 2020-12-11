@@ -21886,7 +21886,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99306cb59a5fa5848a9e97f0befd9a93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
+  canvas: {fileID: 709852885}
   placingUnits: {fileID: 1508964301}
   allUnits: []
   currentUnit: {fileID: 0}
