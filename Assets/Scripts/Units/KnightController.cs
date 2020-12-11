@@ -250,7 +250,7 @@ public class KnightController : MonoBehaviour {
     // Enable attack animation and disable idle animation
     public bool Attack(Vector3 victimPos) {
         float length = Vector3.Distance(transform.position, victimPos);
-        if(length > 4){
+        if(length > 4000000){
             print("no way hosey");
         }else{
             isAttacking = true;   
