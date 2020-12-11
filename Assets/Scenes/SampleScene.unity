@@ -35157,18 +35157,18 @@ MonoBehaviour:
   ArcherAttack: {fileID: 2133883894}
   goldText1: {fileID: 45442993}
   goldText2: {fileID: 359913131}
-  KnightHealth2: {fileID: 0}
-  KnightArmor2: {fileID: 0}
-  KnightGold2: {fileID: 0}
-  KnightAttack2: {fileID: 0}
-  WizardHealth2: {fileID: 0}
-  WizardArmor2: {fileID: 0}
-  WizardGold2: {fileID: 0}
-  WizardAttack2: {fileID: 0}
-  ArcherHealth2: {fileID: 0}
-  ArcherArmor2: {fileID: 0}
-  ArcherGold2: {fileID: 0}
-  ArcherAttack2: {fileID: 0}
+  KnightHealth2: {fileID: 636708028}
+  KnightArmor2: {fileID: 1652533596}
+  KnightGold2: {fileID: 2043748247}
+  KnightAttack2: {fileID: 1945867814}
+  WizardHealth2: {fileID: 1232675262}
+  WizardArmor2: {fileID: 876293478}
+  WizardGold2: {fileID: 1547897849}
+  WizardAttack2: {fileID: 1239650648}
+  ArcherHealth2: {fileID: 2123387817}
+  ArcherArmor2: {fileID: 1538697879}
+  ArcherGold2: {fileID: 1221527475}
+  ArcherAttack2: {fileID: 1238814931}
 --- !u!4 &1508964302
 Transform:
   m_ObjectHideFlags: 0
