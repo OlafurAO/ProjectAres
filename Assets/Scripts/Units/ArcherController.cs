@@ -240,8 +240,10 @@ public class ArcherController : MonoBehaviour {
     }
 
     public bool StartMoving(Vector3 dest, HexCell hex) {
+        print(dest);
         float length = Vector3.Distance(transform.position, dest);
-        if(length > 7){
+        //veit ekki range ið
+        if(length > 1000000){
             print("no way hosey");
             return false;
         }else{

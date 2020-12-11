@@ -61,8 +61,10 @@ public class HexGrid : MonoBehaviour {
 		position = transform.InverseTransformPoint(position);
 		HexCoordinates coordinates = HexCoordinates.FromPosition(position);
 		int index =
-			coordinates.X + coordinates.Z * cellCountX + coordinates.Z / 2;
+			coordinates.X + coordinates.Z * cellCountX+1 + coordinates.Z / 2;
 		return cells[index];
+
+
 	}
 
 	public HexCell GetCell (HexCoordinates coordinates) {
@@ -109,6 +111,7 @@ public class HexGrid : MonoBehaviour {
 		cell.DefenceCanvas = temp3;
 		cell.CreateCanvas = temp4;
 		cell.DeleteCanvas = temp5;
+		cell.ActualPosition = cell.transform.position;
 		
 		cell.MoveCanvas.enabled = false;
 		cell.AttackCanvas.enabled = false;

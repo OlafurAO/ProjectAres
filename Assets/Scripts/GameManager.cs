@@ -712,19 +712,10 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    List<(double, double)> NullLocation = new List<(double, double)>(){ ( 0, 0),(1.5,3),(3.5,6),(5.5,9),(7,12),(8.5,15)};
-
-    Vector3 GetMoveLocation(int x, int z) {
-        var up = NullLocation[z];
-        var left = (float)up.Item1 + (3.5 * x);
-        return new Vector3 ((float)left, 0, (float)up.Item2);
-
-    }
-
     public void MoveUnit(){
         if(SelectedCell == null) return; 
         var index = SelectedCell;
-        Vector3 destination = GetMoveLocation(index.coordinates.X, index.coordinates.Z);
+        Vector3 destination = index.ActualPosition;
         if(currentUnit.tag.Contains("Knight")) {
             var script = currentUnit.GetComponent<KnightController>();
             bool move = script.StartMoving(destination, index);
