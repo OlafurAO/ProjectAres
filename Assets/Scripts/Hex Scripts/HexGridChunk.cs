@@ -90,9 +90,7 @@ public class HexGridChunk : MonoBehaviour {
 		}
 	}
 
-	void TriangulateWater (
-		HexDirection direction, HexCell cell, Vector3 center
-	) {
+	void TriangulateWater (HexDirection direction, HexCell cell, Vector3 center) {
 		center.y = cell.WaterSurfaceY;
 		Vector3 c1 = center + HexMetrics.GetFirstSolidCorner(direction);
 		Vector3 c2 = center + HexMetrics.GetSecondSolidCorner(direction);

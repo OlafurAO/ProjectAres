@@ -61,9 +61,11 @@ public class HexMapEditor : MonoBehaviour {
 	public void SetRoadMode (int mode) {
 		roadMode = (OptionalToggle)mode;
 	}
+
 	public void ShowUI (bool visible) {
 		hexGrid.ShowUI(visible);
 	}
+
 	void Awake () {
 		SelectColor(0);
 	}

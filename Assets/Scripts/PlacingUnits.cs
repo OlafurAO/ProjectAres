@@ -47,12 +47,26 @@ public class PlacingUnits : MonoBehaviour {
     public TMPro.TextMeshProUGUI goldText1;
     public TMPro.TextMeshProUGUI goldText2;
 
+    //allt shittið fyrir ofan fyrir utan fyrir player tvö
+    public TMPro.TextMeshProUGUI KnightHealth2;
+    public TMPro.TextMeshProUGUI KnightArmor2;
+    public TMPro.TextMeshProUGUI KnightGold2;
+    public TMPro.TextMeshProUGUI KnightAttack2;
+    public TMPro.TextMeshProUGUI WizardHealth2;
+    public TMPro.TextMeshProUGUI WizardArmor2;
+    public TMPro.TextMeshProUGUI WizardGold2;
+    public TMPro.TextMeshProUGUI WizardAttack2;
+    public TMPro.TextMeshProUGUI ArcherHealth2;
+    public TMPro.TextMeshProUGUI ArcherArmor2;
+    public TMPro.TextMeshProUGUI ArcherGold2;
+    public TMPro.TextMeshProUGUI ArcherAttack2;
+
     
     void Start(){
         PlayerTwoCanvas.enabled = false;
         goldText = goldText1;
         //stendur fyrir ofan en hard kóða þetta bara 
-        
+        //blue
         KnightHealth.text = tempUnits[0].GetComponent<KnightController>().health.ToString();
         KnightArmor.text = tempUnits[0].GetComponent<KnightController>().armor.ToString();
         KnightAttack.text = tempUnits[0].GetComponent<KnightController>().baseDamage.ToString();
@@ -67,6 +81,24 @@ public class PlacingUnits : MonoBehaviour {
         ArcherArmor.text = tempUnits[1].GetComponent<ArcherController>().armor.ToString();
         ArcherAttack.text = tempUnits[1].GetComponent<ArcherController>().baseDamage.ToString();
         ArcherGold.text = tempUnits[1].GetComponent<ArcherController>().goldCost.ToString();
+
+
+        
+        //red
+        KnightHealth2.text = tempUnits[3].GetComponent<KnightController>().health.ToString();
+        KnightArmor2.text = tempUnits[3].GetComponent<KnightController>().armor.ToString();
+        KnightAttack2.text = tempUnits[3].GetComponent<KnightController>().baseDamage.ToString();
+        KnightGold2.text = tempUnits[3].GetComponent<KnightController>().goldCost.ToString();
+        
+        WizardHealth2.text = tempUnits[5].GetComponent<WizardController>().health.ToString();
+        WizardArmor2.text = tempUnits[5].GetComponent<WizardController>().armor.ToString();
+        WizardAttack2.text = tempUnits[5].GetComponent<WizardController>().baseDamage.ToString();
+        WizardGold2.text = tempUnits[5].GetComponent<WizardController>().goldCost.ToString();
+        
+        ArcherHealth2.text = tempUnits[4].GetComponent<ArcherController>().health.ToString();
+        ArcherArmor2.text = tempUnits[4].GetComponent<ArcherController>().armor.ToString();
+        ArcherAttack2.text = tempUnits[4].GetComponent<ArcherController>().baseDamage.ToString();
+        ArcherGold2.text = tempUnits[4].GetComponent<ArcherController>().goldCost.ToString();
         
     }       
 
@@ -227,6 +259,9 @@ public class PlacingUnits : MonoBehaviour {
         PlayerTwoCanvas.enabled = false;
         placing = false;
         print(placing);
+        if(SelectedCell != null){
+            grid.DisableButton(currButtonCanvas);
+        }
     }
 
     public void DeleteUnit(){

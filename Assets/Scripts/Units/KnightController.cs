@@ -8,8 +8,8 @@ public class KnightController : MonoBehaviour {
     public int health = 100;
     public int maxHealth = 100;
     public HexCoordinates IndexedLocation;
-    public int armor = 5;
-    private int maxArmor = 5;
+    public int armor = 50;
+    private int maxArmor = 50;
     public int armorModifier = 0;
     public int baseDamage = 15;
     public int damageModifier = 0;
@@ -65,6 +65,7 @@ public class KnightController : MonoBehaviour {
     public Image portrait;
     // Start is called before the first frame update
     void Start() {
+        maxArmor = armor;
         destination = transform.position;    
         location = transform.position;
 

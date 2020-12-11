@@ -9,8 +9,8 @@ public class WizardController : MonoBehaviour
     public int health = 80;
     public HexCoordinates IndexedLocation;
     public HexCell CurrCell; 
-    public int armor = 1;
-    private int maxArmor = 1;
+    public int armor = 50;
+    private int maxArmor = 50;
     public int armorModifier = 0;
     public int baseDamage = 20;
     public int damageModifier = 0;
@@ -74,6 +74,7 @@ public class WizardController : MonoBehaviour
 
     // Start is called before the first frame update
     void Start() {
+        maxArmor = armor;
         destination = transform.position;  
         location = transform.position;
 
