@@ -75,7 +75,7 @@ public class KnightController : MonoBehaviour {
 
         armorText.text = armor + "/" + maxArmor;
         armorText.fontSize = 20;
-        armorText.transform.localPosition = new Vector3(-36.0f, 35.0f, 0.0f);
+        armorText.transform.localPosition = new Vector3(-28.0f, 35.0f, 0.0f);
 
         damageTakenText.fontWeight = TMPro.FontWeight.Bold;
         damageTakenText.transform.localPosition = new Vector3(-43.0f, 150.0f, 0.0f);
@@ -89,7 +89,7 @@ public class KnightController : MonoBehaviour {
         armorBarPreview.color = new Vector4(253f/255f, 231f/255f, 76f/255f, 1f);
         armorBarPreview.fillAmount = 1f;
 
-        armorDamageTextPreview.transform.localPosition = new Vector3(-36.0f, 35.0f, 0.0f);
+        armorDamageTextPreview.transform.localPosition = new Vector3(-28.0f, 35.0f, 0.0f);
         healthDamageTextPreview.transform.localPosition = new Vector3(-25.0f, -10.0f, 0.0f);
         armorDamageTextPreview.fontSize = 20;
         healthDamageTextPreview.fontSize = 20;
@@ -250,7 +250,7 @@ public class KnightController : MonoBehaviour {
     // Enable attack animation and disable idle animation
     public bool Attack(Vector3 victimPos) {
         float length = Vector3.Distance(transform.position, victimPos);
-        if(length > 4){
+        if(length > 4000000){
             print("no way hosey");
         }else{
             isAttacking = true;   
@@ -259,7 +259,7 @@ public class KnightController : MonoBehaviour {
             MoveHealthBar();
 
             // Play attack sfx
-            FindObjectOfType<AudioManager>().Play("knight_attack", 0.15f);
+            FindObjectOfType<AudioManager>().Play("knight_attack", 0.1f);
 
             return true; 
         }
@@ -270,6 +270,7 @@ public class KnightController : MonoBehaviour {
         //TODO: add some value to armorModifier
         isDefending = true; 
         DefenceImage.GetComponent<Renderer>().enabled = true; 
+        FindObjectOfType<AudioManager>().Play("unit_defend", 0f);
     }
 
     public void UnDefend() {
@@ -279,6 +280,9 @@ public class KnightController : MonoBehaviour {
         animator.Play("idle");
     }
     public void TakeDamage(int damage, string attackerType, float animationDelay) {
+        if(isDefending == true){
+            damage = (int)(damage/2); 
+        }
         StartCoroutine(TakeDamageAfterDelay(damage, attackerType, animationDelay));
     }
 
@@ -322,9 +326,11 @@ public class KnightController : MonoBehaviour {
 
         isIdle = false;
         if(health <= 0) {
+            FindObjectOfType<AudioManager>().Play("unit_death", 0f);
             healthBarFallOff.fillAmount = 0f;
             isDead = true;
         } else {
+            FindObjectOfType<AudioManager>().Play("unit_hit", 0f);
             isTakingDamage = true;
         }
     }
@@ -344,6 +350,8 @@ public class KnightController : MonoBehaviour {
     }
 
     public void ShowPreviewHealthBar(float damage, string attackerType) {
+        if(isDefending) damage /= 2f;
+        
         float totalDamage = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
         healthBarPreview.fillAmount = (((float)health - totalDamage) / (float)maxHealth);
         healthBarPreview.gameObject.SetActive(true);
@@ -400,6 +408,8 @@ public class KnightController : MonoBehaviour {
 
     //get's remaning health and armor of the current 
     public List<(float, int,int)> getDamage(float damage, string type){
+        if(isDefending) damage /= 2f;
+
         int returnhealth; 
         int returnarmor;
         if(armor <= 0){
@@ -440,6 +450,26 @@ public class KnightController : MonoBehaviour {
         healthText.text = (health < 0 ? 0.ToString() : health.ToString()) + "/" + maxHealth;
         if(health < 10) {
             healthText.text = "0" + healthText.text;
+        }
+    }
+
+    // Testing purposes, can delete this in final producxt
+    public void AudioTests(string sfx) {
+        if(sfx == "attack") {
+            FindObjectOfType<AudioManager>().Play("knight_attack", 0.1f);
+            animator.Play("attack");
+        } else if(sfx == "walk") { // TODO:
+            FindObjectOfType<AudioManager>().Play("knight_walk", 0.15f);
+            animator.Play("run");
+        } else if(sfx == "defend") {
+            FindObjectOfType<AudioManager>().Play("unit_defend", 0f);
+            animator.Play("Defence");
+        } else if(sfx == "hit") {
+            FindObjectOfType<AudioManager>().Play("unit_hit", 0f);
+            animator.Play("hurt");
+        } else if(sfx == "die") {
+            FindObjectOfType<AudioManager>().Play("unit_death", 0f);
+            animator.Play("die1");
         }
     }
 }

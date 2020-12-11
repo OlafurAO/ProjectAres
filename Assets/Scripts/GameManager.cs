@@ -519,6 +519,80 @@ public class GameManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {   
+        // AUDIO TESTING ONLY, WILL BE REMOVED
+        if(Input.GetKeyDown(KeyCode.Alpha1)) {
+            if(currentUnit.tag.Contains("Knight")) {
+                var attackerScript = currentUnit.GetComponent<KnightController>();
+                attackerScript.AudioTests("attack");
+            
+            } else if(currentUnit.tag.Contains("Archer")) {
+                var attackerScript = currentUnit.GetComponent<ArcherController>();
+                attackerScript.AudioTests("attack");
+                
+            } else {
+                var attackerScript = currentUnit.GetComponent<WizardController>();
+                attackerScript.AudioTests("attack");
+                
+            }
+        } else if(Input.GetKeyDown(KeyCode.Alpha2)) {
+            if(currentUnit.tag.Contains("Knight")) {
+                var attackerScript = currentUnit.GetComponent<KnightController>();
+                attackerScript.AudioTests("walk");
+            
+            } else if(currentUnit.tag.Contains("Archer")) {
+                var attackerScript = currentUnit.GetComponent<ArcherController>();
+                attackerScript.AudioTests("walk");
+                
+            } else {
+                var attackerScript = currentUnit.GetComponent<WizardController>();
+                attackerScript.AudioTests("walk");
+                
+            }
+        } else if(Input.GetKeyDown(KeyCode.Alpha3)) {
+            if(currentUnit.tag.Contains("Knight")) {
+                var attackerScript = currentUnit.GetComponent<KnightController>();
+                attackerScript.AudioTests("defend");
+            
+            } else if(currentUnit.tag.Contains("Archer")) {
+                var attackerScript = currentUnit.GetComponent<ArcherController>();
+                attackerScript.AudioTests("defend");
+                
+            } else {
+                var attackerScript = currentUnit.GetComponent<WizardController>();
+                attackerScript.AudioTests("defend");
+                
+            }
+        } else if(Input.GetKeyDown(KeyCode.Alpha4)) {
+            if(currentUnit.tag.Contains("Knight")) {
+                var attackerScript = currentUnit.GetComponent<KnightController>();
+                attackerScript.AudioTests("hit");
+            
+            } else if(currentUnit.tag.Contains("Archer")) {
+                var attackerScript = currentUnit.GetComponent<ArcherController>();
+                attackerScript.AudioTests("hit");
+                
+            } else {
+                var attackerScript = currentUnit.GetComponent<WizardController>();
+                attackerScript.AudioTests("hit");
+                
+            }
+        } else if(Input.GetKeyDown(KeyCode.Alpha5)) {
+            if(currentUnit.tag.Contains("Knight")) {
+                var attackerScript = currentUnit.GetComponent<KnightController>();
+                attackerScript.AudioTests("die");
+            
+            } else if(currentUnit.tag.Contains("Archer")) {
+                var attackerScript = currentUnit.GetComponent<ArcherController>();
+                attackerScript.AudioTests("die");
+                
+            } else {
+                var attackerScript = currentUnit.GetComponent<WizardController>();
+                attackerScript.AudioTests("die");
+                
+            }
+        }
+
+
         if(isShuffling) {
             if(initiativeShuffleCanvas.GetComponent<InitiativeShuffleAnimator>().IsShuffling()) {
                 return;
@@ -759,7 +833,6 @@ public class GameManager : MonoBehaviour {
             type = attackerScript.type;
             InRange = attackerScript.Attack(victimLocation); 
             victimTakeDamageDelay = 0.57f;
-            
         }
         
         if(InRange) {
