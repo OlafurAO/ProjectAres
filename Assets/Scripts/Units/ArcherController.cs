@@ -70,9 +70,6 @@ public class ArcherController : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        // REMOVE THIS
-        health = 1;
-        
         destination = transform.position;  
         location = transform.position;
 
@@ -339,6 +336,7 @@ public class ArcherController : MonoBehaviour {
         //TODO: add some value to armorModifier
         isDefending = false; 
         DefenceImage.GetComponent<Renderer>().enabled = false;
+        animator.Play("idle");
     }
     public void TakeDamage(int damage, string attackerType, float animationDelay) {
         StartCoroutine(TakeDamageAfterDelay(damage, attackerType, animationDelay));
