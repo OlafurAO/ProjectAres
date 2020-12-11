@@ -13,6 +13,7 @@ public class HexCell : MonoBehaviour {
     public Canvas DefenceCanvas;
     public Canvas CreateCanvas;
     public Canvas DeleteCanvas;
+	public Vector3 ActualPosition;
 
 	public Color Color {
 		get {
