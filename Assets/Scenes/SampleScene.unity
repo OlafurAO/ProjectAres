@@ -24334,6 +24334,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   overlay: {fileID: 2132337868}
+  roundStartText: {fileID: 1133461558}
   canvas: {fileID: 709852888}
 --- !u!114 &1086726577
 MonoBehaviour:
@@ -49408,25 +49409,25 @@ MonoBehaviour:
     volume: 0.261
     pitch: 1
     source: {fileID: 0}
-  - clip: {fileID: 0}
-    name: 
-    volume: 0
-    pitch: 0
+  - clip: {fileID: 8300000, guid: ba717ebf8877ef7478ab4537d3b849df, type: 3}
+    name: initiative_shuffle_cards
+    volume: 1
+    pitch: 1
     source: {fileID: 0}
-  - clip: {fileID: 0}
-    name: 
-    volume: 0
-    pitch: 0
+  - clip: {fileID: 8300000, guid: 00230d14d6685da488a6f693ecd4806c, type: 3}
+    name: initiative_flip_card
+    volume: 1
+    pitch: 1
     source: {fileID: 0}
-  - clip: {fileID: 0}
-    name: 
-    volume: 0
-    pitch: 0
+  - clip: {fileID: 8300000, guid: e2a40ba85af2e3342a43d4aa7e3b77dc, type: 3}
+    name: initiative_round_start
+    volume: 1
+    pitch: 1
     source: {fileID: 0}
-  - clip: {fileID: 0}
-    name: 
-    volume: 0
-    pitch: 0
+  - clip: {fileID: 8300000, guid: b16135361d865df44abb40a7cb5d6976, type: 3}
+    name: menu_button_click
+    volume: 1
+    pitch: 1
     source: {fileID: 0}
 --- !u!4 &2139339747
 Transform:

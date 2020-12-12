@@ -315,10 +315,8 @@ public class GameManager : MonoBehaviour {
 
         int middleIndex = 0;
         if(allUnits.Count % 2 == 0) {
-            print("even number");
             middleIndex = allUnits.Count / 2; 
         } else {
-            print("odd number");
             middleIndex = Mathf.CeilToInt(allUnits.Count / 2) + 1;
         }
 
@@ -752,8 +750,6 @@ public class GameManager : MonoBehaviour {
                   || (currentUnit.tag.Contains("Blue") && rhInfo.collider.gameObject.tag.Contains("Blue"))) {
                     return;  
                 }
-
-                print("attack");
 
                 //attack 
                 //victim stuff put in global so that the other method doesn't need to get it (þarf script og þannig frá rhInfo.Colider stuff)

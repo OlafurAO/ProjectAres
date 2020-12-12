@@ -69,7 +69,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
                     if(currLocation == targetLocation) {
                         oldCardsGathered++;    
                     } else {
-                        portrait.transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 8f);
+                        portrait.transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 7.5f);
                         currLocation = portrait.transform.localPosition;
                     }                    
                 }
@@ -84,12 +84,15 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
                     Vector2 currLocation = currPortraits[currentPortraitIndex].transform.localPosition;
 
                     var loc = currPortraitLocations[currentPortraitIndex];
-                    Vector2 targetLocation = new Vector2(loc.x - 60, loc.y + 60);// - new Vector2(0f, 1f);
+                    Vector2 targetLocation = new Vector2(loc.x - 60, loc.y + 60);
                     
                     if(currLocation != targetLocation) {
                         currPortraits[currentPortraitIndex].transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 7f);
                     } else {
                         currentPortraitIndex++;
+                        if(currentPortraitIndex != currPortraits.Count) {
+                            FindObjectOfType<AudioManager>().Play("initiative_flip_card", 0.0f);
+                        }
                     }
                 } else {
                     if(!isComplete) {
@@ -98,7 +101,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
                         overlay.gameObject.SetActive(false);
 
                         roundStartText.gameObject.SetActive(true);
-                        FindObjectOfType<AudioManager>().Play("round_start", 0.0f);
+                        FindObjectOfType<AudioManager>().Play("initiative_round_start", 0.0f);
                         StartCoroutine(StartRoundWithDelay());
 
                         isComplete = true;
@@ -116,6 +119,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
         yield return new WaitForSeconds(3f);
         roundStartText.gameObject.SetActive(false);
         isShuffling = false;
+        isComplete = false;
     }
 
     public void SetNewPortraits(List<GameObject> newPortraits, List<Vector2> newPortraitLocations) {
@@ -136,6 +140,8 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
     }
 
     public void Shuffle() {
+        FindObjectOfType<AudioManager>().Play("initiative_shuffle_cards", 0.0f);
+
         // Reverse the list so that the first portrait will be the last gameobject to be added
         // and therefore be on top of the pile
         currPortraits.Reverse();
