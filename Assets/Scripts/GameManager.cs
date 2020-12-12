@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        //FindObjectOfType<AudioManager>().PlayLoop("deploy_phase", 0.0f, true);
+        FindObjectOfType<AudioManager>().PlayLoop("deploy_phase", 0.0f, true);
         Color red = UnityEngine.Color.red;
         red.a = 0.5f;
         redColor = red;
@@ -137,7 +137,7 @@ public class GameManager : MonoBehaviour {
     }
 
     public void Restart() {
-        //FindObjectOfType<AudioManager>().Play("menu_button_click", 0.0f);
+        FindObjectOfType<AudioManager>().Play("menu_button_click", 0.0f);
         SceneManager.LoadScene("SampleScene");
     }
 
@@ -624,71 +624,71 @@ public class GameManager : MonoBehaviour {
         if(Input.GetKeyDown(KeyCode.Alpha1)) {
             if(currentUnit.tag.Contains("Knight")) {
                 var attackerScript = currentUnit.GetComponent<KnightController>();
-                //attackerScript.AudioTests("attack");
+                attackerScript.AudioTests("attack");
             
             } else if(currentUnit.tag.Contains("Archer")) {
                 var attackerScript = currentUnit.GetComponent<ArcherController>();
-               // attackerScript.AudioTests("attack");
+                attackerScript.AudioTests("attack");
                 
             } else {
                 var attackerScript = currentUnit.GetComponent<WizardController>();
-                //attackerScript.AudioTests("attack");
+                attackerScript.AudioTests("attack");
                 
             }
         } else if(Input.GetKeyDown(KeyCode.Alpha2)) {
             if(currentUnit.tag.Contains("Knight")) {
                 var attackerScript = currentUnit.GetComponent<KnightController>();
-                //attackerScript.AudioTests("walk");
+                attackerScript.AudioTests("walk");
             
             } else if(currentUnit.tag.Contains("Archer")) {
                 var attackerScript = currentUnit.GetComponent<ArcherController>();
-                //attackerScript.AudioTests("walk");
+                attackerScript.AudioTests("walk");
                 
             } else {
                 var attackerScript = currentUnit.GetComponent<WizardController>();
-                //attackerScript.AudioTests("walk");
+                attackerScript.AudioTests("walk");
                 
             }
         } else if(Input.GetKeyDown(KeyCode.Alpha3)) {
             if(currentUnit.tag.Contains("Knight")) {
                 var attackerScript = currentUnit.GetComponent<KnightController>();
-                //attackerScript.AudioTests("defend");
+                attackerScript.AudioTests("defend");
             
             } else if(currentUnit.tag.Contains("Archer")) {
                 var attackerScript = currentUnit.GetComponent<ArcherController>();
-                //attackerScript.AudioTests("defend");
+                attackerScript.AudioTests("defend");
                 
             } else {
                 var attackerScript = currentUnit.GetComponent<WizardController>();
-                //attackerScript.AudioTests("defend");
+                attackerScript.AudioTests("defend");
                 
             }
         } else if(Input.GetKeyDown(KeyCode.Alpha4)) {
             if(currentUnit.tag.Contains("Knight")) {
                 var attackerScript = currentUnit.GetComponent<KnightController>();
-                //attackerScript.AudioTests("hit");
+                attackerScript.AudioTests("hit");
             
             } else if(currentUnit.tag.Contains("Archer")) {
                 var attackerScript = currentUnit.GetComponent<ArcherController>();
-                //attackerScript.AudioTests("hit");
+                attackerScript.AudioTests("hit");
                 
             } else {
                 var attackerScript = currentUnit.GetComponent<WizardController>();
-                //attackerScript.AudioTests("hit");
+                attackerScript.AudioTests("hit");
                 
             }
         } else if(Input.GetKeyDown(KeyCode.Alpha5)) {
             if(currentUnit.tag.Contains("Knight")) {
                 var attackerScript = currentUnit.GetComponent<KnightController>();
-                //attackerScript.AudioTests("die");
+                attackerScript.AudioTests("die");
             
             } else if(currentUnit.tag.Contains("Archer")) {
                 var attackerScript = currentUnit.GetComponent<ArcherController>();
-                //attackerScript.AudioTests("die");
+                attackerScript.AudioTests("die");
                 
             } else {
                 var attackerScript = currentUnit.GetComponent<WizardController>();
-                //attackerScript.AudioTests("die");
+                attackerScript.AudioTests("die");
                 
             }
         }
@@ -722,16 +722,16 @@ public class GameManager : MonoBehaviour {
         if(blueUnitsRemaining == 0) {
             winnerLabel.text = "Red team wins!";
             winnerLabel.color = Color.red;   
-            //FindObjectOfType<AudioManager>().Stop("battle_phase");
-            //FindObjectOfType<AudioManager>().Play("victory_song", 0.0f);
-            //FindObjectOfType<AudioManager>().Play("victory_scream", 0.0f);
-            //gameOver = true;
+            FindObjectOfType<AudioManager>().Stop("battle_phase");
+            FindObjectOfType<AudioManager>().Play("victory_song", 0.0f);
+            FindObjectOfType<AudioManager>().Play("victory_scream", 0.0f);
+            gameOver = true;
         } else if(redUnitsRemaining == 0) {
             winnerLabel.text = "Blue team wins!";
             winnerLabel.color = Color.blue;
-            //FindObjectOfType<AudioManager>().Stop("battle_phase");
-            //FindObjectOfType<AudioManager>().Play("victory_song", 0.0f);
-            //FindObjectOfType<AudioManager>().Play("victory_scream", 0.0f);
+            FindObjectOfType<AudioManager>().Stop("battle_phase");
+            FindObjectOfType<AudioManager>().Play("victory_song", 0.0f);
+            FindObjectOfType<AudioManager>().Play("victory_scream", 0.0f);
             gameOver = true;
         }
 
@@ -1079,9 +1079,9 @@ public class GameManager : MonoBehaviour {
         RollInitiative();
         placingUnits.enabled = false;
         canvas.SetActive(true);
-        //FindObjectOfType<AudioManager>().Stop("deploy_phase");
-        //FindObjectOfType<AudioManager>().Play("battle_begin", 0.0f);
-        //FindObjectOfType<AudioManager>().PlayLoop("battle_phase", 2f, true);
+        FindObjectOfType<AudioManager>().Stop("deploy_phase");
+        FindObjectOfType<AudioManager>().Play("battle_begin", 0.0f);
+        FindObjectOfType<AudioManager>().PlayLoop("battle_phase", 2f, true);
     }
 
     public void CountUnits() {

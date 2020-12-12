@@ -33,6 +33,9 @@ public class AudioManager : MonoBehaviour {
 
     public void PlayLoop(string name, float delay, bool loop) {
         Sound s = Array.Find(sounds, sound => sound.name == name);
+        if(s == null){
+            return;
+        }
         s.source.loop = loop;
         s.source.PlayDelayed(delay);
     }

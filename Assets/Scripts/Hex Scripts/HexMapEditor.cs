@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using System.IO;
+using System.Text;
+using UnityEngine.Networking;
+using UnityEngine.UI;
+using System.Collections;
 
 public class HexMapEditor : MonoBehaviour {
 
@@ -160,13 +164,30 @@ public class HexMapEditor : MonoBehaviour {
 		}
 	}
 
-	public void Load () {
-		string path = Path.Combine(Application.persistentDataPath, "test.map");
-		using (
-			BinaryReader reader =
-				new BinaryReader(File.OpenRead(path))) {
-					hexGrid.Load(reader);
+	IEnumerator LoadMap() {
+		var loadingRequest = UnityWebRequest.Get(Path.Combine(Application.streamingAssetsPath, "test.map"));
+		Debug.Log("Sending request");
+		yield return loadingRequest.SendWebRequest();
+		Debug.Log("Done Sending request");
+
+		if(loadingRequest.isNetworkError || loadingRequest.isHttpError) {
+			Debug.Log("OH NOOOOOOOOOOO");
+			Debug.Log(loadingRequest.error);
+		} else {
+			Debug.Log("OH YEEEEEEEEEEEEEEEAH");
+			Debug.Log(loadingRequest.downloadHandler.text);
+
+			byte[] byteArray = loadingRequest.downloadHandler.data;
+			MemoryStream stream = new MemoryStream(byteArray);
+			using (BinaryReader reader = new BinaryReader(stream)) {
+				hexGrid.Load(reader);
+			}
 		}
+		
 		hexGrid.CellsForBlue();
+	}
+
+	public void Load () {
+		StartCoroutine(LoadMap());
 	}
 }
