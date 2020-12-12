@@ -555,12 +555,12 @@ public class GameManager : MonoBehaviour {
 
         // Scroll wheel zoom
         if(Input.GetAxis("Mouse ScrollWheel") > 0f) {
-            if(mainCamera.transform.position.y > 2) {
+            if(mainCamera.transform.position.y > 15) {
                 mainCamera.transform.Translate(new Vector3(0, 0, 50f * Time.deltaTime));
                 didCameraMove = true;
             }
         } else if(Input.GetAxis("Mouse ScrollWheel") < 0f) {
-            if(mainCamera.transform.position.y < 10) {
+            if(mainCamera.transform.position.y < 32) {
                 mainCamera.transform.Translate(new Vector3(0, 0, -50f * Time.deltaTime));
                 didCameraMove = true;
             }
