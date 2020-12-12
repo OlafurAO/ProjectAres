@@ -67,7 +67,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
                     if(currLocation == targetLocation) {
                         oldCardsGathered++;    
                     } else {
-                        portrait.transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 6.5f);
+                        portrait.transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 8f);
                         currLocation = portrait.transform.localPosition;
                     }                    
                 }
@@ -85,7 +85,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
                     Vector2 targetLocation = new Vector2(loc.x - 60, loc.y + 60);// - new Vector2(0f, 1f);
                     
                     if(currLocation != targetLocation) {
-                        currPortraits[currentPortraitIndex].transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 6f);
+                        currPortraits[currentPortraitIndex].transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 7f);
                     } else {
                         currentPortraitIndex++;
                     }
