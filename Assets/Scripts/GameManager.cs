@@ -361,6 +361,9 @@ public class GameManager : MonoBehaviour {
         EnemyUnitProfile.GetComponent<Image>().sprite = null;
         action = true; 
         movement = true; 
+        if(currButtonCanvas != null){
+            currButtonCanvas.enabled = false;
+        }
     }
 
     void MoveCamera() {
