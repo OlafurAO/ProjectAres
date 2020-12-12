@@ -9748,7 +9748,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce9749dfd95dc9545a1ba6dcc05a224d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid: {fileID: 0}
+  grid: {fileID: 1204749302}
   health: 100
   maxHealth: 100
   IndexedLocation:
@@ -16013,7 +16013,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce9749dfd95dc9545a1ba6dcc05a224d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid: {fileID: 0}
+  grid: {fileID: 1204749302}
   health: 100
   maxHealth: 100
   IndexedLocation:
@@ -17334,7 +17334,7 @@ MonoBehaviour:
   armorBarPreview: {fileID: 975137335}
   speed: 5
   team: red
-  grid: {fileID: 0}
+  grid: {fileID: 1204749302}
   animator: {fileID: 464046819}
   HealthCanvas: {fileID: 1623197198}
   camera: {fileID: 414001886}
@@ -25135,7 +25135,7 @@ MonoBehaviour:
   armorBarPreview: {fileID: 2051699538}
   speed: 5
   team: blue
-  grid: {fileID: 0}
+  grid: {fileID: 1204749302}
   animator: {fileID: 1877259736}
   HealthCanvas: {fileID: 203299426}
   camera: {fileID: 414001886}
@@ -41532,7 +41532,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1632b7344e230a241943eb7e7ff92bb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid: {fileID: 0}
+  grid: {fileID: 1204749302}
   health: 60
   maxHealth: 60
   armor: 2
@@ -46957,7 +46957,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1632b7344e230a241943eb7e7ff92bb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid: {fileID: 0}
+  grid: {fileID: 1204749302}
   health: 60
   maxHealth: 60
   armor: 2
