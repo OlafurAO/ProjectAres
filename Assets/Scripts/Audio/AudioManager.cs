@@ -8,9 +8,6 @@ public class AudioManager : MonoBehaviour {
     void Awake() {
         foreach (Sound s in sounds) {
             if(s.clip != null) {
-                print(s.name);
-                print(s.clip.name);
-
                 s.source = gameObject.AddComponent<AudioSource>();
                 s.source.clip = s.clip;
                 s.source.volume = s.volume;
@@ -31,7 +28,6 @@ public class AudioManager : MonoBehaviour {
 
     public void Play(string name, float delay) {
         Sound s = Array.Find(sounds, sound => sound.name == name);
-        print(s.source.name);
         s.source.PlayDelayed(delay);
     }
 }
