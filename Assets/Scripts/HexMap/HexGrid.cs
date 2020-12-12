@@ -11,6 +11,7 @@ public class HexGrid : MonoBehaviour {
 	public Canvas DefenceCanvas1;
 	public Canvas CreateUnitCanvas1;
 	public Canvas DeleteUnitCanvas1;
+	public Canvas HexRangeCanvas1;
 	public Texture2D noiseSource;
 	public Camera camera;
 	public Text cellLabelPrefab;
@@ -28,6 +29,7 @@ public class HexGrid : MonoBehaviour {
 
 		CreateChunks();
 		CreateCells();
+    SetRangeOnEachCell();
 	}
 
 	void CreateChunks () {
@@ -98,11 +100,13 @@ public class HexGrid : MonoBehaviour {
 		Canvas temp3 = Instantiate<Canvas>(DefenceCanvas1);
 		Canvas temp4 = Instantiate<Canvas>(CreateUnitCanvas1);
 		Canvas temp5 = Instantiate<Canvas>(DeleteUnitCanvas1);
+		Canvas temp6 = Instantiate<Canvas>(HexRangeCanvas1);
 		temp.transform.SetParent(cell.transform, false);
 		temp2.transform.SetParent(cell.transform, false);
 		temp3.transform.SetParent(cell.transform, false);
 		temp4.transform.SetParent(cell.transform, false);
 		temp5.transform.SetParent(cell.transform, false);
+		temp6.transform.SetParent(cell.transform, false);
 		
 		cell.MoveCanvas = temp;
 		cell.AttackCanvas = temp2;
@@ -110,6 +114,7 @@ public class HexGrid : MonoBehaviour {
 		cell.CreateCanvas = temp4;
 		cell.DeleteCanvas = temp5;
 		cell.ActualPosition = cell.transform.position;
+		cell.HexRangeCanvas = temp6;
 		
 		cell.MoveCanvas.enabled = false;
 		cell.AttackCanvas.enabled = false;
@@ -134,7 +139,6 @@ public class HexGrid : MonoBehaviour {
 				}
 			}
 		}
-
 		Text label = Instantiate<Text>(cellLabelPrefab);
 		label.rectTransform.anchoredPosition =
 			new Vector2(position.x, position.z);
@@ -144,6 +148,7 @@ public class HexGrid : MonoBehaviour {
 		cell.Elevation = 0;
 
 		AddCellToChunk(x, z, cell);
+
 	}
 
 	void AddCellToChunk (int x, int z, HexCell cell) {
@@ -243,6 +248,22 @@ public class HexGrid : MonoBehaviour {
 		}
 		for (int i = 0; i < chunks.Length; i++) {
 			chunks[i].Refresh();
+		}
+	}
+
+	public void PlacementBlueTeam(Vector3 position){
+		HexCell cell = GetCell(position);
+		cell.BlueCanPlace = true; 
+	}
+	public void PlacementRedTeam(Vector3 position){
+		HexCell cell = GetCell(position);
+		cell.RedCanPlace = true; 
+	}
+
+	public void SetRangeOnEachCell(){
+		foreach (HexCell cell in cells)
+		{
+				cell.SetRange();
 		}
 	}
 }

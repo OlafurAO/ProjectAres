@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.IO;
+using System.Collections.Generic;
 
 public class HexCell : MonoBehaviour {
 
@@ -8,13 +9,17 @@ public class HexCell : MonoBehaviour {
 	public RectTransform uiRect;
 
 	public HexGridChunk chunk;
-    public bool isOccupied = false;
-    public Canvas MoveCanvas; 
-    public Canvas AttackCanvas;
-    public Canvas DefenceCanvas;
-    public Canvas CreateCanvas;
-    public Canvas DeleteCanvas;
+	public bool isOccupied = false;
+	public Canvas MoveCanvas; 
+	public Canvas AttackCanvas;
+	public Canvas DefenceCanvas;
+	public Canvas CreateCanvas;
+	public Canvas DeleteCanvas;
+	public Canvas HexRangeCanvas;
 	public Vector3 ActualPosition;
+	public bool BlueCanPlace;
+	public bool RedCanPlace;
+	public List<HexCell> HexRange = new List<HexCell>();
 
 	public Color Color {
 		get {
@@ -78,6 +83,7 @@ public class HexCell : MonoBehaviour {
 			Vector3 uiPosition = uiRect.localPosition;
 			uiPosition.z = -position.y;
 			uiRect.localPosition = uiPosition;
+			ActualPosition = transform.position;
 	}
 
 	public int WaterLevel {
@@ -183,6 +189,24 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	public HexCell[] GetNeighbors(){
+		return neighbors;
+	}
+
+	public void SetRange(){
+		foreach (HexCell neigh in neighbors)
+		{
+			if(neigh != null){
+				foreach (HexCell item in neigh.neighbors)
+				{
+						if (!HexRange.Contains(item)){
+							HexRange.Add(item);
+						}
+				}
+			}
+		}
+	}
+
 	//Color color;
 	int terrainTypeIndex;
 
@@ -193,7 +217,7 @@ public class HexCell : MonoBehaviour {
 	HexDirection incomingRiver, outgoingRiver;
 
 	[SerializeField]
-	HexCell[] neighbors;
+	public HexCell[] neighbors;
 
 	[SerializeField]
 	bool[] roads;
@@ -326,10 +350,13 @@ public class HexCell : MonoBehaviour {
 	void RefreshSelfOnly () {
 		chunk.Refresh();
 	}
+	//TODO save bool value of stuff 
 	public void Save (BinaryWriter writer) {
 		writer.Write(terrainTypeIndex);
 		writer.Write(elevation);
 		writer.Write(waterLevel);
+		writer.Write(BlueCanPlace);
+		writer.Write(RedCanPlace);
 		/*writer.Write(urbanLevel);
 		writer.Write(farmLevel);
 		writer.Write(plantLevel);
@@ -352,6 +379,10 @@ public class HexCell : MonoBehaviour {
 		elevation = reader.ReadInt32();
 		RefreshPosition();
 		waterLevel = reader.ReadInt32();
+		
+		//BlueCanPlace = reader.ReadBoolean();
+		//RedCanPlace = reader.ReadBoolean();
+		
 		/*urbanLevel = reader.ReadInt32();
 		farmLevel = reader.ReadInt32();
 		plantLevel = reader.ReadInt32();
@@ -368,5 +399,24 @@ public class HexCell : MonoBehaviour {
 			roads[i] = reader.ReadBoolean();
 		}
 		*/
+	}
+	
+	//show range on map (walking range)
+	public void ShowWalkRange(){
+		foreach (HexCell neigh in HexRange)
+		{
+				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+				/*if(neigh.isOccupied){
+					neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+				}*/
+		}
+	}
+	
+	//no show range on map (walking range)
+	public void NoShowWalkRange(){
+		foreach (HexCell neigh in HexRange)
+		{
+				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+		}
 	}
 }

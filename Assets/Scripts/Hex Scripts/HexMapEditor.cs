@@ -1,9 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using System.IO;
+<<<<<<< HEAD
 using UnityEngine.Networking;
 
 
+=======
+using System.Text;
+using UnityEngine.Networking;
+using UnityEngine.UI;
+using System.Collections;
+>>>>>>> 40a8d9651fa4c234ee8dec9b4f773a5b30b783c4
 
 public class HexMapEditor : MonoBehaviour {
 
@@ -164,6 +171,7 @@ public class HexMapEditor : MonoBehaviour {
 		}
 	}
 
+<<<<<<< HEAD
 	public void Load () {
 		string path = Path.Combine(Application.streamingAssetsPath, "test.map");
 
@@ -175,6 +183,30 @@ public class HexMapEditor : MonoBehaviour {
 			BinaryReader reader =
 				new BinaryReader(File.OpenRead(path))) {
 					hexGrid.Load(reader);
+=======
+	IEnumerator LoadMap() {
+		var loadingRequest = UnityWebRequest.Get(Path.Combine(Application.streamingAssetsPath, "test.map"));
+		Debug.Log("Sending request");
+		yield return loadingRequest.SendWebRequest();
+		Debug.Log("Done Sending request");
+
+		if(loadingRequest.isNetworkError || loadingRequest.isHttpError) {
+			Debug.Log("OH NOOOOOOOOOOO");
+			Debug.Log(loadingRequest.error);
+		} else {
+			Debug.Log("OH YEEEEEEEEEEEEEEEAH");
+			Debug.Log(loadingRequest.downloadHandler.text);
+
+			byte[] byteArray = loadingRequest.downloadHandler.data;
+			MemoryStream stream = new MemoryStream(byteArray);
+			using (BinaryReader reader = new BinaryReader(stream)) {
+				hexGrid.Load(reader);
+			}
+>>>>>>> 40a8d9651fa4c234ee8dec9b4f773a5b30b783c4
 		}
+	}
+
+	public void Load () {
+		StartCoroutine(LoadMap());
 	}
 }
