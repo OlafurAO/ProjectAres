@@ -13,6 +13,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
 
     public Image overlay;
     public TMPro.TextMeshProUGUI roundStartText;
+    public TMPro.TextMeshProUGUI prepareForBattleText;
     public Canvas canvas;
 
     bool isFirstShuffle = true;
@@ -21,6 +22,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
     bool isDestroyingPortrait = false;
     bool isShiftingPortraits = false;
     bool isComplete = false;
+    bool startShuffling = false;
     int oldCardsGathered = 0;
     int removeIndex = -1;
     int portraitsToShift = -1; // How many portraits need to be shifted if a unit is defeated
@@ -33,6 +35,9 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if(!startShuffling) {
+            return;
+        }
         if(isDestroyingPortrait) {
             var color = portraitToDestroy.gameObject.GetComponent<Image>().color;
             if(color.a <= 0f) {
@@ -116,7 +121,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
     }
 
     IEnumerator StartRoundWithDelay() {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
         roundStartText.gameObject.SetActive(false);
         isShuffling = false;
         isComplete = false;
@@ -136,7 +141,17 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
         isShuffling = true;
         if(!isFirstShuffle) {
             isGatheringOldCards = true;
-        } 
+        }  else {
+            startShuffling = false;
+            prepareForBattleText.gameObject.SetActive(true);
+            StartCoroutine(StartShufflingWithDelay());
+        }
+    }
+
+    IEnumerator StartShufflingWithDelay() {
+        yield return new WaitForSeconds(2f);
+        prepareForBattleText.gameObject.SetActive(false);
+        startShuffling = true;
     }
 
     public void Shuffle() {
@@ -181,12 +196,6 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
         foreach(GameObject portrait in prevPortraits) {
             Destroy(portrait);
         }
-        /*
-        var portraits = GameObject.FindGameObjectsWithTag("Portrait");
-        for(var i = 0; i < portraits.Length; i++) {
-            Destroy(portraits[i]);
-        }
-        */
     }
 
     public void DestroyCurrentHighlighter() {

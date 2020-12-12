@@ -134,6 +134,7 @@ public class GameManager : MonoBehaviour {
     }
 
     public void Restart() {
+        FindObjectOfType<AudioManager>().Play("menu_button_click", 0.0f);
         SceneManager.LoadScene("SampleScene");
     }
 
@@ -699,10 +700,16 @@ public class GameManager : MonoBehaviour {
         }
 
         if(blueUnitsRemaining == 0) {
-            winnerLabel.text = "Red wins!";
+            winnerLabel.text = "Red team wins!";
+            winnerLabel.color = Color.red;   
+            FindObjectOfType<AudioManager>().Play("victory_song", 0.0f);
+            FindObjectOfType<AudioManager>().Play("victory_scream", 0.0f);
             gameOver = true;
         } else if(redUnitsRemaining == 0) {
-            winnerLabel.text = "Blue wins!";
+            winnerLabel.text = "Blue team wins!";
+            winnerLabel.color = Color.blue;
+            FindObjectOfType<AudioManager>().Play("victory_song", 0.0f);
+            FindObjectOfType<AudioManager>().Play("victory_scream", 0.0f);
             gameOver = true;
         }
 
@@ -1038,6 +1045,7 @@ public class GameManager : MonoBehaviour {
         RollInitiative();
         placingUnits.enabled = false;
         canvas.SetActive(true);
+        FindObjectOfType<AudioManager>().Play("battle_begin", 0.0f);
     }
 
     public void CountUnits() {

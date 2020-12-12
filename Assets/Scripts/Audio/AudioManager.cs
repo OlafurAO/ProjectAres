@@ -3,7 +3,7 @@ using UnityEngine;
 using System;
 
 public class AudioManager : MonoBehaviour {
-    public Sound[] sounds = new Sound[10];
+    public Sound[] sounds = new Sound[20];
 
     void Awake() {
         foreach (Sound s in sounds) {
