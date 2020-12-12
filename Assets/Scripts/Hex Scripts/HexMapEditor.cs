@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using System.IO;
+using UnityEngine.Networking;
+
+
 
 public class HexMapEditor : MonoBehaviour {
 
@@ -151,7 +154,8 @@ public class HexMapEditor : MonoBehaviour {
 		activeTerrainTypeIndex = index;
 	}
 	public void Save () {
-		string path = Path.Combine(Application.persistentDataPath, "test.map");
+		string path = Path.Combine(Application.streamingAssetsPath, "test.map");
+
 		using (
 			BinaryWriter writer =
 				new BinaryWriter(File.Open(path, FileMode.Create))
@@ -161,7 +165,12 @@ public class HexMapEditor : MonoBehaviour {
 	}
 
 	public void Load () {
-		string path = Path.Combine(Application.persistentDataPath, "test.map");
+		string path = Path.Combine(Application.streamingAssetsPath, "test.map");
+
+		var unityWebRequest = UnityWebRequest.Get(path);
+		unityWebRequest.SendWebRequest();
+		var stuff = unityWebRequest.downloadHandler.data;
+		
 		using (
 			BinaryReader reader =
 				new BinaryReader(File.OpenRead(path))) {
