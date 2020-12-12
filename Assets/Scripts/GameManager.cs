@@ -120,6 +120,7 @@ public class GameManager : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        FindObjectOfType<AudioManager>().PlayLoop("deploy_phase", 0.0f, true);
         Color red = UnityEngine.Color.red;
         red.a = 0.5f;
         redColor = red;
@@ -702,12 +703,14 @@ public class GameManager : MonoBehaviour {
         if(blueUnitsRemaining == 0) {
             winnerLabel.text = "Red team wins!";
             winnerLabel.color = Color.red;   
+            FindObjectOfType<AudioManager>().Stop("battle_phase");
             FindObjectOfType<AudioManager>().Play("victory_song", 0.0f);
             FindObjectOfType<AudioManager>().Play("victory_scream", 0.0f);
             gameOver = true;
         } else if(redUnitsRemaining == 0) {
             winnerLabel.text = "Blue team wins!";
             winnerLabel.color = Color.blue;
+            FindObjectOfType<AudioManager>().Stop("battle_phase");
             FindObjectOfType<AudioManager>().Play("victory_song", 0.0f);
             FindObjectOfType<AudioManager>().Play("victory_scream", 0.0f);
             gameOver = true;
@@ -1045,7 +1048,9 @@ public class GameManager : MonoBehaviour {
         RollInitiative();
         placingUnits.enabled = false;
         canvas.SetActive(true);
+        FindObjectOfType<AudioManager>().Stop("deploy_phase");
         FindObjectOfType<AudioManager>().Play("battle_begin", 0.0f);
+        FindObjectOfType<AudioManager>().PlayLoop("battle_phase", 2f, true);
     }
 
     public void CountUnits() {
