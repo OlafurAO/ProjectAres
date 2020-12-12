@@ -12,6 +12,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
     private int currentPortraitIndex;
 
     public Image overlay;
+    public TMPro.TextMeshProUGUI roundStartText;
     public Canvas canvas;
 
     bool isFirstShuffle = true;
@@ -19,6 +20,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
     bool isGatheringOldCards = false;
     bool isDestroyingPortrait = false;
     bool isShiftingPortraits = false;
+    bool isComplete = false;
     int oldCardsGathered = 0;
     int removeIndex = -1;
     int portraitsToShift = -1; // How many portraits need to be shifted if a unit is defeated
@@ -90,17 +92,30 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
                         currentPortraitIndex++;
                     }
                 } else {
-                    prevPortraits = currPortraits;
-                    prevPortraitLocations = currPortraitLocations;
-                    overlay.gameObject.SetActive(false);
-                    isShuffling = false;
+                    if(!isComplete) {
+                        prevPortraits = currPortraits;
+                        prevPortraitLocations = currPortraitLocations;
+                        overlay.gameObject.SetActive(false);
 
-                    if(isFirstShuffle) {
-                        isFirstShuffle = false;
-                    }
+                        roundStartText.gameObject.SetActive(true);
+                        FindObjectOfType<AudioManager>().Play("round_start", 0.0f);
+                        StartCoroutine(StartRoundWithDelay());
+
+                        isComplete = true;
+
+                        if(isFirstShuffle) {
+                            isFirstShuffle = false;
+                        }
+                    }    
                 }
             }    
         } 
+    }
+
+    IEnumerator StartRoundWithDelay() {
+        yield return new WaitForSeconds(3f);
+        roundStartText.gameObject.SetActive(false);
+        isShuffling = false;
     }
 
     public void SetNewPortraits(List<GameObject> newPortraits, List<Vector2> newPortraitLocations) {
