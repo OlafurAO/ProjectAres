@@ -15,7 +15,7 @@
 
         CGPROGRAM
         // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Standard fullforwardshadows
+        #pragma surface surf Standard fullforwardshadows vertex:vert
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.5
@@ -27,7 +27,12 @@
         {
             float4 color : COLOR;
             float3 worldPos;
+			float3 terrain;
         };
+        void vert (inout appdata_full v, out Input data) {
+			UNITY_INITIALIZE_OUTPUT(Input, data);
+			data.terrain = v.texcoord2.xyz;
+		}
 
         half _Glossiness;
         half _Metallic;
@@ -40,21 +45,30 @@
             // put more per-instance properties here
         UNITY_INSTANCING_BUFFER_END(Props)
 
-        void surf (Input IN, inout SurfaceOutputStandard o)
-        {
-            float2 uv = IN.worldPos.xz * 0.02;
+        float4 GetTerrainColor (Input IN, int index) {
+			float3 uvw = float3(IN.worldPos.xz * 0.02, IN.terrain[index]);
+			float4 c = UNITY_SAMPLE_TEX2DARRAY(_MainTex, uvw);
+			return c * IN.color[index];
+		}
+
+		void surf (Input IN, inout SurfaceOutputStandard o) {
+//			float2 uv = IN.worldPos.xz * 0.02;
+			fixed4 c =
+				GetTerrainColor(IN, 0) +
+				GetTerrainColor(IN, 1) +
+				GetTerrainColor(IN, 2);
+            
             float2 gridUV = IN.worldPos.xz;
-            gridUV.x *= 1 / ((4 * 8.66025404)/5.00);
-            gridUV.y *= 1 / (6.00);
+			gridUV.x *= 1 / (6.928203232);
+			gridUV.y *= 1 / (6.00);
+
             fixed4 grid = tex2D(_GridTex, gridUV);
-            // Albedo comes from a texture tinted by color
-            fixed4 c = UNITY_SAMPLE_TEX2DARRAY(_MainTex, float3(uv, 0));
-            o.Albedo = c.rgb * grid * _Color;
-            // Metallic and smoothness come from slider variables
-            o.Metallic = _Metallic;
-            o.Smoothness = _Glossiness;
-            o.Alpha = c.a;
-        }
+
+			o.Albedo = c.rgb * grid * _Color;
+			o.Metallic = _Metallic;
+			o.Smoothness = _Glossiness;
+			o.Alpha = c.a;
+		}
         ENDCG
     }
     FallBack "Diffuse"

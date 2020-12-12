@@ -1,20 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using System.IO;
 
 public class HexMapEditor : MonoBehaviour {
 
-	public Color[] colors;
-
+	int activeTerrainTypeIndex;
 	public HexGrid hexGrid;
 
 	int activeElevation;
 	int activeWaterLevel;
 
-	Color activeColor;
-
 	int brushSize;
 
-	bool applyColor;
 	bool applyElevation = true;
 	bool applyWaterLevel = true;
 
@@ -27,13 +24,6 @@ public class HexMapEditor : MonoBehaviour {
 	bool isDrag;
 	HexDirection dragDirection;
 	HexCell previousCell;
-
-	public void SelectColor (int index) {
-		applyColor = index >= 0;
-		if (applyColor) {
-			activeColor = colors[index];
-		}
-	}
 
 	public void SetApplyElevation (bool toggle) {
 		applyElevation = toggle;
@@ -64,10 +54,6 @@ public class HexMapEditor : MonoBehaviour {
 
 	public void ShowUI (bool visible) {
 		hexGrid.ShowUI(visible);
-	}
-
-	void Awake () {
-		SelectColor(0);
 	}
 
 	void Update () {
@@ -133,8 +119,8 @@ public class HexMapEditor : MonoBehaviour {
 
 	void EditCell (HexCell cell) {
 		if (cell) {
-			if (applyColor) {
-				cell.Color = activeColor;
+			if (activeTerrainTypeIndex >= 0) {
+				cell.TerrainTypeIndex = activeTerrainTypeIndex;
 			}
 			if (applyElevation) {
 				cell.Elevation = activeElevation;
@@ -159,6 +145,27 @@ public class HexMapEditor : MonoBehaviour {
 					}
 				}
 			}
+		}
+	}
+	public void SetTerrainTypeIndex (int index) {
+		activeTerrainTypeIndex = index;
+	}
+	public void Save () {
+		string path = Path.Combine(Application.persistentDataPath, "test.map");
+		using (
+			BinaryWriter writer =
+				new BinaryWriter(File.Open(path, FileMode.Create))
+		) {
+			hexGrid.Save(writer);
+		}
+	}
+
+	public void Load () {
+		string path = Path.Combine(Application.persistentDataPath, "test.map");
+		using (
+			BinaryReader reader =
+				new BinaryReader(File.OpenRead(path))) {
+					hexGrid.Load(reader);
 		}
 	}
 }
