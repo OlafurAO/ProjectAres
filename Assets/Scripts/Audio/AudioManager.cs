@@ -3,7 +3,7 @@ using UnityEngine;
 using System;
 
 public class AudioManager : MonoBehaviour {
-    public Sound[] sounds = new Sound[10];
+    public Sound[] sounds = new Sound[20];
 
     void Awake() {
         foreach (Sound s in sounds) {
@@ -29,5 +29,16 @@ public class AudioManager : MonoBehaviour {
     public void Play(string name, float delay) {
         Sound s = Array.Find(sounds, sound => sound.name == name);
         s.source.PlayDelayed(delay);
+    }
+
+    public void PlayLoop(string name, float delay, bool loop) {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        s.source.loop = loop;
+        s.source.PlayDelayed(delay);
+    }
+
+    public void Stop(string name) {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        s.source.Stop();
     }
 }
