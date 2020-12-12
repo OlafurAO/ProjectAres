@@ -54,6 +54,7 @@ public class ArcherController : MonoBehaviour {
     public Image healthBarPreview; // Shows a preview of the damage that will be done to the unit
     public Image healthBarFallOff; // Animation where a chunk falls off the health bar
     private int healthBarAlphaModifier = 0; // Makes the health damage preview slowly fade in and out to compare current health to future health
+    private int armorBarAlphaModifier = 0; // Makes the armor damage preview slowly fade in and out to compare current armor to future armor
     public Image armorBar;
     public Image armorBarPreview;
     public HexCoordinates IndexedLocation;
@@ -113,7 +114,7 @@ public class ArcherController : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if(!isDead) {
-            if(damageTakenText.text != "") {
+            if(damageTakenText.text != "" || armorDamageText.text != "") {
                 UpdateDamageTakenText();
             }
 
@@ -142,16 +143,22 @@ public class ArcherController : MonoBehaviour {
                 newColor.a += healthBarAlphaModifier * 0.012f;
                 healthBar.color = newColor;
                 
-                if(armorBarPreview.gameObject.activeSelf) {
-                    newColor = armorBar.color;
-                    newColor.a += healthBarAlphaModifier * 0.012f;
-                    armorBar.color = newColor;
-                }
-
                 if(newColor.a <= 0.1f) {
                     healthBarAlphaModifier = 1;
                 } else if(newColor.a >= 1.0f) {
                     healthBarAlphaModifier = -1;
+                }
+            }
+
+            if(armorBarAlphaModifier != 0) {
+                var newColor = armorBar.color;
+                newColor.a += armorBarAlphaModifier * 0.012f;
+                armorBar.color = newColor;                
+                
+                if(newColor.a <= 0.1f) {
+                    armorBarAlphaModifier = 1;
+                } else if(newColor.a >= 1.0f) {
+                    armorBarAlphaModifier = -1;
                 }
             }
 
@@ -208,8 +215,13 @@ public class ArcherController : MonoBehaviour {
     }
 
     void UpdateDamageTakenText() {
-        damageTakenText.transform.Translate(new Vector3(0, 0.005f, 0));
-        armorDamageText.transform.Translate(new Vector3(0, 0.005f, 0));
+        if(damageTakenText.text != "") {
+            damageTakenText.transform.Translate(new Vector3(0, 0.005f, 0));
+        }
+
+        if(armorDamageText.text != "") {
+            armorDamageText.transform.Translate(new Vector3(0, 0.005f, 0));
+        }
     }
 
     IEnumerator ClearDamageTakenText() {
@@ -352,6 +364,40 @@ public class ArcherController : MonoBehaviour {
     // Delay taking damage to line up with the attack animation
     IEnumerator TakeDamageAfterDelay(int damage, string attackerType, float time) {
         yield return new WaitForSeconds(time);
+        if(attackerType == weaknessType || armor <= 0) {
+            health -= damage;
+            healthText.text = health.ToString() + "/" + maxHealth;
+
+            damageTakenText.text = damage.ToString();
+            healthBar.fillAmount = ((float)health / (float)maxHealth);
+            damageTakenText.transform.localPosition = new Vector3(-43.0f, 55.0f, 0.0f);
+
+            healthBarFallOff.gameObject.SetActive(true);
+            healthBarFallOff.fillAmount = (float)damage / (float)maxHealth;
+            showHealthBarDropOff = true;
+            if(health < 0) {
+                health = 0;
+                healthText.text = "00" + "/" + maxHealth;
+            } else if(health < 10) {
+                healthText.text = "0" + health + "/" + maxHealth;
+            }
+        } else {
+            armor -= damage;
+
+            armorDamageText.transform.localPosition = new Vector3(-80.0f, 55.0f, 0.0f);
+            armorDamageText.text = damage.ToString();
+
+            armorBar.fillAmount = ((float)armor / (float)maxArmor);
+            armorText.text = armor + "/" + maxArmor;
+            if(armor < 0) {
+                armor = 0;
+                armorText.text = "00" + "/" + maxArmor;
+            } if(armor < 10) {
+                armorText.text = "0" + armor + "/" + maxArmor;
+            }
+        }
+
+        /*
         damageTakenText.text = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage).ToString();
         if(armor != 0) {
             health -= Mathf.FloorToInt(damage / 2);
@@ -369,7 +415,7 @@ public class ArcherController : MonoBehaviour {
         } else {
             health -= damage;
         }
-        
+
         healthBar.fillAmount = ((float)health / (float)maxHealth);
         healthText.text = (health < 0 ? 0.ToString() : health.ToString()) + "/" + maxHealth;
         if(health < 10) {
@@ -381,8 +427,9 @@ public class ArcherController : MonoBehaviour {
         healthBarFallOff.gameObject.SetActive(true);
         healthBarFallOff.fillAmount = (armor != 0 ? ((float)Mathf.FloorToInt(damage / 2) / (float)maxHealth)
             : (float)damage / (float)maxHealth);
-            
+        
         showHealthBarDropOff = true;
+        */
         
         StartCoroutine(ClearDamageTakenText());
         StartCoroutine(ResetHealthBarFallOff());
@@ -417,14 +464,76 @@ public class ArcherController : MonoBehaviour {
     public void ShowPreviewHealthBar(float damage, string attackerType) {
         if(isDefending) damage /= 2f;
 
+        if(attackerType == weaknessType) {
+            armorAbsorbtionText.text = "WEAK";
+        }
+
+        if(attackerType == weaknessType || armor == 0) {
+            healthBarPreview.fillAmount = (((float)health - damage) / (float)maxHealth);
+            healthBarPreview.gameObject.SetActive(true);
+            healthDamageTextPreview.gameObject.SetActive(true);
+
+            int newHealth = health - Mathf.FloorToInt(damage);
+            healthDamageTextPreview.text = newHealth.ToString();
+            if(newHealth < 20) {
+                if(newHealth < 0) {
+                    healthDamageTextPreview.text = "00";
+                    healthText.text = "    /" + maxHealth.ToString();
+                } else if(newHealth < 10) {
+                    healthDamageTextPreview.text = "0" + healthDamageTextPreview.text;
+                    healthText.text = "     /" + maxHealth.ToString();
+                } else {
+                    healthText.text = "    /" + maxHealth.ToString();
+                }
+            } else {
+                healthText.text = "     /" + maxHealth.ToString();
+            }
+            
+            healthBarAlphaModifier = -1;
+        } else {
+            int newArmor = armor - Mathf.FloorToInt(damage);
+            if(newArmor < 0) newArmor = 0;
+
+            armorBarPreview.fillAmount = ((float)newArmor / (float)maxArmor); 
+            //armorBarPreview.fillAmount = (((float)armor - 10f) / (float)maxArmor); 
+            armorDamageTextPreview.text = newArmor.ToString();
+
+            armorDamageTextPreview.gameObject.SetActive(true);
+            armorBarPreview.gameObject.SetActive(true);
+
+            if(newArmor < 20) {
+                if(newArmor < 0) {
+                    armorDamageTextPreview.text = "00";
+                    armorText.text = "    /" + maxArmor.ToString();
+                } else if(newArmor == 1) {
+                    armorDamageTextPreview.text = "0" + armorDamageTextPreview.text;
+                    armorText.text = "    /" + maxArmor.ToString();
+                }else if(newArmor < 10) {
+                    armorDamageTextPreview.text = "0" + armorDamageTextPreview.text;
+                    armorText.text = "     /" + maxArmor.ToString();
+                } else {
+                    armorText.text = "    /" + maxArmor.ToString();
+                }
+            } else {
+                armorText.text = "     /" + maxArmor.ToString();
+            }
+
+            armorBarAlphaModifier = -1;
+        }
+
+        /*
         float totalDamage = (armor != 0 ? Mathf.FloorToInt(damage / 2) : damage);
+        
         healthBarPreview.fillAmount = (((float)health - totalDamage) / (float)maxHealth);
         healthBarPreview.gameObject.SetActive(true);
         healthDamageTextPreview.gameObject.SetActive(true);
+
+        if(attackerType == weaknessType) {
+            armorAbsorbtionText.text = "WEAK";
+        }
         
         if(armor != 0) {
             if(attackerType == weaknessType) {
-                armorAbsorbtionText.text = "WEAK";
                 armorBarPreview.fillAmount = (((float)armor - 1f) / (float)maxArmor); 
                 
                 int newArmor = armor - 1;
@@ -469,6 +578,7 @@ public class ArcherController : MonoBehaviour {
         }
         
         healthBarAlphaModifier = -1;
+         */
     }
 
     public void DisablePreviewHealthBar() {
@@ -480,6 +590,7 @@ public class ArcherController : MonoBehaviour {
 
         var newColor = healthBar.color;
         healthBarAlphaModifier = 0;
+        armorBarAlphaModifier = 0;
         
         newColor.a = 1.0f;
         healthBar.color = newColor;
@@ -506,9 +617,22 @@ public class ArcherController : MonoBehaviour {
 
         int returnhealth; 
         int returnarmor;
+        
+        if(weaknessType == type) {
+            returnarmor = armor;
+            returnhealth = (int)(health - damage);
+        } else if(armor <= 0) {
+            returnarmor = 0;
+            returnhealth = (int)(health - damage);
+        } else{
+            returnarmor = armor - (int)damage;
+            returnhealth = health;
+        }
+        
+        /*
         if(armor <= 0){
             returnarmor = 0;
-            returnhealth =(int)(health - damage);
+            returnhealth = (int)(health - damage);
         }else if(weaknessType == type){
             returnarmor = armor-1;
             returnhealth = (int)(health - Mathf.FloorToInt(damage / 2));
@@ -516,6 +640,8 @@ public class ArcherController : MonoBehaviour {
             returnarmor = armor;
             returnhealth = (int)(health - Mathf.FloorToInt(damage / 2));
         }
+        */
+
         return new List<(float,int,int)>(){(returnarmor,returnhealth,baseDamage)};
     }
 

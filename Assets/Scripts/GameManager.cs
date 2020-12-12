@@ -50,9 +50,8 @@ public class GameManager : MonoBehaviour {
         "KnightRed", "ArcherRed", "WizardRed",
     };
 
-    // TODO: fix harcoding
-    private int blueUnitsRemaining = 3;
-    private int redUnitsRemaining = 3;
+    private int blueUnitsRemaining = 0;
+    private int redUnitsRemaining = 0;
     public bool gameOver = false;
     private bool startDisplayingUnitHealthPreview = false;
     //if player has finished dooing what he can do 
@@ -81,7 +80,6 @@ public class GameManager : MonoBehaviour {
     //stores a canvas of the newest button visable (so we can disable it if needed (click on 2 tiles at onece and 1 one dissapears))
     private Canvas currButtonCanvas;
     public Canvas initiativeShuffleCanvas;
-
 
     private float currentUnitDamage;
     private string currentUnitType;
@@ -133,10 +131,6 @@ public class GameManager : MonoBehaviour {
         // animator, Selector (set to inactive at first, Mesh Renderer: Cast shadows = off), 
         // layer = "Unit" (for both object and model)
         // Use GameObject.AddComponent function
-
-
-        
-        //RollInitiative();
     }
 
     public void Restart() {
@@ -165,7 +159,9 @@ public class GameManager : MonoBehaviour {
         System.Random rnd = new System.Random();
         allUnits = allUnits.Select(x => new { value = x, order = rnd.Next()})
             .OrderBy(x => x.order).Select(x => x.value).ToList();
-        
+
+        OptimizeInitiative();
+
         // Set the current unit as the first unit in the list
         currentUnit = allUnits.ElementAt(currentUnitIndex);
         currentUnitProfile.GetComponent<Image>().sprite = currentUnit.GetComponent<Image>().sprite;
@@ -174,6 +170,92 @@ public class GameManager : MonoBehaviour {
         isShuffling = true;
         movement = true; 
         action = true; 
+    }
+
+    // Make sure a team won't be able to move more than 2 times in a row
+    void OptimizeInitiative() {
+        int sameTeamInRow = 0;
+        string lastTeam = "";
+
+        /*
+        // See previous order
+        print("Old");
+        foreach(GameObject unit in allUnits) {
+            print(unit.tag);
+        }
+         */
+
+        // Optimize
+        for(int i = 0; i < allUnits.Count; i++) {
+            if(lastTeam == "") {
+                lastTeam = GetTeamColor(allUnits[i]);
+            } else {
+                if(GetTeamColor(allUnits[i]) == lastTeam) {
+                    sameTeamInRow++;
+                    if(sameTeamInRow >= 2) {
+                        ShuffleInitiativeOrder(i, lastTeam);
+                    } 
+                } else {
+                    lastTeam = GetTeamColor(allUnits[i]);
+                    sameTeamInRow = 0;
+                }
+            }
+        }
+
+        /*
+        // See new order
+        print("New");
+        foreach(GameObject unit in allUnits) {
+            print(unit.tag);
+        }
+         */
+    }
+
+    void ShuffleInitiativeOrder(int index, string currentTeamColor) {
+        // Is this the end of the list?
+        if(index == allUnits.Count - 1) {
+            // If the first and last units in the order aren't of the same team, swap them
+            if(GetTeamColor(allUnits[0]) != currentTeamColor) {
+                GameObject tmp = allUnits[0].gameObject;
+                allUnits[0] = allUnits[index];
+                allUnits[index] = tmp;
+            }
+        } else {
+            for(int i = 0; i < allUnits.Count; i++) {
+                if(GetTeamColor(allUnits[i]) != currentTeamColor) {
+                    if(i < allUnits.Count - 2) {
+                        if(!(GetTeamColor(allUnits[i + 1]) == currentTeamColor && GetTeamColor(allUnits[i + 2]) == currentTeamColor)) {
+                            if(i > 1) {
+                                if(!(GetTeamColor(allUnits[i - 1]) == currentTeamColor && GetTeamColor(allUnits[i - 2]) == currentTeamColor)) {
+                                    GameObject tmp = allUnits[i].gameObject;
+                                    allUnits[i] = allUnits[index];
+                                    allUnits[index] = tmp;
+                                    break;
+                                } else {
+                                    GameObject tmp = allUnits[i].gameObject;
+                                    allUnits[i] = allUnits[index];
+                                    allUnits[index] = tmp;
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        GameObject tmp = allUnits[i].gameObject;
+                        allUnits[i] = allUnits[index];
+                        allUnits[index] = tmp;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    string GetTeamColor(GameObject unit) {
+        if(unit.tag.Contains("Blue")) {
+            return "blue";
+        } else {
+            return "red";
+        }
     }
 
     // Enables the circle around the current unit
@@ -233,10 +315,8 @@ public class GameManager : MonoBehaviour {
 
         int middleIndex = 0;
         if(allUnits.Count % 2 == 0) {
-            print("even number");
             middleIndex = allUnits.Count / 2; 
         } else {
-            print("odd number");
             middleIndex = Mathf.CeilToInt(allUnits.Count / 2) + 1;
         }
 
@@ -674,8 +754,6 @@ public class GameManager : MonoBehaviour {
                     return;  
                 }
 
-                print("attack");
-
                 //attack 
                 //victim stuff put in global so that the other method doesn't need to get it (þarf script og þannig frá rhInfo.Colider stuff)
                 victimLocation = rhInfo.collider.gameObject.GetComponent<Transform>().position;
@@ -958,10 +1036,27 @@ public class GameManager : MonoBehaviour {
     }
 
     public void FinishedPlacingUnits(){
+        CountUnits();
         isPlacingUnits = false; 
         RollInitiative();
         placingUnits.enabled = false;
         canvas.SetActive(true);
+    }
+
+    public void CountUnits() {
+        List<GameObject> units = new List<GameObject>();
+        foreach(string tag in tags) {
+            var tmp = new List<GameObject>(GameObject.FindGameObjectsWithTag(tag));
+            units = units.Concat(tmp).ToList();
+        }
+
+        foreach(GameObject unit in units) {
+            if(unit.tag.Contains("Blue")) {
+                blueUnitsRemaining++;
+            } else if(unit.tag.Contains("Red")) {
+                redUnitsRemaining++;
+            }
+        }
     }
 
     private bool IsCurrentUnitMovingOrAttacking() {
