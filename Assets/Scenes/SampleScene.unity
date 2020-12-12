@@ -3278,7 +3278,7 @@ RectTransform:
   m_GameObject: {fileID: 148345079}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_Children:
   - {fileID: 1145360733}
   m_Father: {fileID: 0}
@@ -9812,7 +9812,7 @@ RectTransform:
   m_GameObject: {fileID: 407597994}
   m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 12}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 500373573}
   - {fileID: 803087572}
@@ -9980,7 +9980,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 414001884}
   m_LocalRotation: {x: 0.36650118, y: 0, z: 0, w: 0.9304176}
-  m_LocalPosition: {x: 170, y: 135, z: -90}
+  m_LocalPosition: {x: 35, y: 35, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -12058,7 +12058,7 @@ RectTransform:
   m_GameObject: {fileID: 567494328}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_Children:
   - {fileID: 1113679550}
   - {fileID: 1813783119}
@@ -16077,7 +16077,7 @@ RectTransform:
   m_GameObject: {fileID: 729390969}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 3}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 545469138}
   - {fileID: 669320577}
@@ -17233,7 +17233,7 @@ RectTransform:
   m_GameObject: {fileID: 804990723}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 12}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1623197195}
   - {fileID: 464046818}
@@ -19790,7 +19790,7 @@ RectTransform:
   m_GameObject: {fileID: 879722024}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 2045438852}
   m_Father: {fileID: 567494335}
@@ -19855,7 +19855,7 @@ MonoBehaviour:
           m_StringArgument: Archer
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1204749302}
         m_MethodName: DisableButton
         m_Mode: 2
         m_Arguments:
@@ -23230,7 +23230,7 @@ MonoBehaviour:
   initiativePortraits: []
   portraitTextures: []
   portraitLocations: []
-  grid: {fileID: 0}
+  grid: {fileID: 1204749302}
   winnerLabel: {fileID: 728278742}
   gameOver: 0
   victimLocation: {x: 0, y: 0, z: 0}
@@ -24781,7 +24781,7 @@ RectTransform:
   m_GameObject: {fileID: 1113679549}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 13746665}
   m_Father: {fileID: 567494335}
@@ -24846,7 +24846,7 @@ MonoBehaviour:
           m_StringArgument: Wizard
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1204749302}
         m_MethodName: DisableButton
         m_Mode: 2
         m_Arguments:
@@ -25162,7 +25162,7 @@ RectTransform:
   m_GameObject: {fileID: 1133601709}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 3}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1877259737}
   - {fileID: 2080729575}
@@ -29844,7 +29844,7 @@ RectTransform:
   m_GameObject: {fileID: 1324853733}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1928044820}
   m_Father: {fileID: 753628730}
@@ -29909,7 +29909,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1204749302}
         m_MethodName: DisableButton
         m_Mode: 2
         m_Arguments:
@@ -30352,7 +30352,7 @@ RectTransform:
   m_GameObject: {fileID: 1375188510}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 528428947}
   m_Father: {fileID: 795423848}
@@ -30417,7 +30417,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1204749302}
         m_MethodName: DisableButton
         m_Mode: 2
         m_Arguments:
@@ -41597,7 +41597,7 @@ RectTransform:
   m_GameObject: {fileID: 1788313716}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 12}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1050779825}
   - {fileID: 234385139}
@@ -41772,7 +41772,7 @@ RectTransform:
   m_GameObject: {fileID: 1813783118}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 1017070542}
   m_Father: {fileID: 567494335}
@@ -41837,7 +41837,7 @@ MonoBehaviour:
           m_StringArgument: Knight
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1204749302}
         m_MethodName: DisableButton
         m_Mode: 2
         m_Arguments:
@@ -47009,7 +47009,7 @@ RectTransform:
   m_GameObject: {fileID: 2053523451}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 3}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 933665779}
   - {fileID: 1410039954}
@@ -49620,6 +49620,21 @@ PrefabInstance:
       propertyPath: colors.Array.data[0].b
       value: 0.68379164
       objectReference: {fileID: 0}
+    - target: {fileID: 3675855038492156629, guid: 6cffb12a1a6702f4e898bc1d6645ab33,
+        type: 3}
+      propertyPath: AttackCanvas1
+      value: 
+      objectReference: {fileID: 148345085}
+    - target: {fileID: 3675855038492156629, guid: 6cffb12a1a6702f4e898bc1d6645ab33,
+        type: 3}
+      propertyPath: MoveCanvas1
+      value: 
+      objectReference: {fileID: 795423847}
+    - target: {fileID: 3675855038492156629, guid: 6cffb12a1a6702f4e898bc1d6645ab33,
+        type: 3}
+      propertyPath: DefenceCanvas1
+      value: 
+      objectReference: {fileID: 753628729}
     - target: {fileID: 3675855038492156630, guid: 6cffb12a1a6702f4e898bc1d6645ab33,
         type: 3}
       propertyPath: m_Name
