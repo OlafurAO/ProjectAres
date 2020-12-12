@@ -85,7 +85,7 @@ public class PlacingUnits : MonoBehaviour {
 
         
         //red
-/*        KnightHealth2.text = tempUnits[3].GetComponent<KnightController>().health.ToString();
+        KnightHealth2.text = tempUnits[3].GetComponent<KnightController>().health.ToString();
         KnightArmor2.text = tempUnits[3].GetComponent<KnightController>().armor.ToString();
         KnightAttack2.text = tempUnits[3].GetComponent<KnightController>().baseDamage.ToString();
         KnightGold2.text = tempUnits[3].GetComponent<KnightController>().goldCost.ToString();
@@ -99,7 +99,7 @@ public class PlacingUnits : MonoBehaviour {
         ArcherArmor2.text = tempUnits[4].GetComponent<ArcherController>().armor.ToString();
         ArcherAttack2.text = tempUnits[4].GetComponent<ArcherController>().baseDamage.ToString();
         ArcherGold2.text = tempUnits[4].GetComponent<ArcherController>().goldCost.ToString();
-  */      
+        
     }       
 
     void Update(){
@@ -145,6 +145,18 @@ public class PlacingUnits : MonoBehaviour {
                 SelectedCell = index;
             }
         };
+        
+        // Check for right mouse button click
+        if(Input.GetMouseButtonDown(1)) {    
+            //if move unit, display button that if pressed runs "move unit"
+            if(Physics.Raycast(toMouse, out rhInfo, 1000.0f)){
+                if(BackgroundImage.color == GameManager.instance.blueColor){
+                    grid.PlacementBlueTeam(rhInfo.point);
+                }else{
+                    grid.PlacementRedTeam(rhInfo.point);
+                }
+            }
+        }
 
     }
     public void CreateUnit(string type){
