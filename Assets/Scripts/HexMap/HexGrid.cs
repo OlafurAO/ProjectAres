@@ -20,6 +20,7 @@ public class HexGrid : MonoBehaviour {
 	HexCell[] cells;
 	public Color[] colors;
 	int cellCountX, cellCountZ;
+	private string team;
 
 	void Awake () {
 		HexMetrics.noiseSource = noiseSource;
@@ -30,6 +31,7 @@ public class HexGrid : MonoBehaviour {
 		CreateChunks();
 		CreateCells();
     SetRangeOnEachCell();
+		CellsForBlue();
 	}
 
 	void CreateChunks () {
@@ -181,7 +183,9 @@ public class HexGrid : MonoBehaviour {
 	public HexCell CreateUnitCell(Vector3 position){
 		HexCell currCell = GetCell(position);
 		currCell.CreateCanvas.transform.LookAt(camera.transform.position);
-		if(currCell.isOccupied == false){
+		if(team == "blue" && currCell.BlueCanPlace && currCell.isOccupied == false){
+			currCell.CreateCanvas.enabled = true;
+		}else if( team == "Red" && currCell.RedCanPlace && currCell.isOccupied == false){
 			currCell.CreateCanvas.enabled = true;
 		}
 		return currCell;
@@ -265,5 +269,41 @@ public class HexGrid : MonoBehaviour {
 		{
 				cell.SetRange();
 		}
+	}
+	public void CellsForBlue(){
+		team = "blue";
+		foreach (HexCell cell in cells)
+		{
+				if(cell.BlueCanPlace){
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+				}
+		}
+	}
+	public void NoCellsForBlue(){
+		foreach (HexCell cell in cells)
+		{
+				if(cell.BlueCanPlace){
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+				}
+		}
+	}
+	public void CellsForRed(){
+		team = "Red";
+		foreach (HexCell cell in cells)
+		{
+				if(cell.RedCanPlace){
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+				}
+		}
+		
+	}
+	public void NoCellsForRed(){
+		foreach (HexCell cell in cells)
+		{
+				if(cell.RedCanPlace){
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+				}
+		}
+		
 	}
 }

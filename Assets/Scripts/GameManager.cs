@@ -150,6 +150,11 @@ public class GameManager : MonoBehaviour {
     }
 
     void RollInitiative() {
+        HexCell currCell;
+        if(currentUnit != null){
+            currCell = grid.GetCell(currentUnit.transform.position);
+            currCell.NoShowWalkRange();
+        }
         allUnits = new List<GameObject>();
         currentUnitIndex = 0;
 
@@ -174,6 +179,9 @@ public class GameManager : MonoBehaviour {
         isShuffling = true;
         movement = true; 
         action = true; 
+        
+        currCell = grid.GetCell(currentUnit.transform.position);
+        currCell.ShowWalkRange();
     }
 
     // Make sure a team won't be able to move more than 2 times in a row
@@ -379,6 +387,9 @@ public class GameManager : MonoBehaviour {
     }
 
     public void EndTurn() {
+        HexCell currCell = grid.GetCell(currentUnit.transform.position);
+        currCell.NoShowWalkRange();
+        
         if(IsCurrentUnitMovingOrAttacking() || isShuffling) return;
         
         // If the list is over, then the round is over and initiative needs to be rolled again
@@ -448,7 +459,7 @@ public class GameManager : MonoBehaviour {
         if(currButtonCanvas != null){
             currButtonCanvas.enabled = false;
         }
-        HexCell currCell = grid.GetCell(currentUnit.transform.position);
+        currCell = grid.GetCell(currentUnit.transform.position);
         currCell.ShowWalkRange();
         
     }

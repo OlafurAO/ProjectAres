@@ -267,6 +267,8 @@ public class PlacingUnits : MonoBehaviour {
         if(SelectedCell != null){
             grid.DisableButton(currButtonCanvas);
         }
+        grid.NoCellsForBlue();
+        grid.CellsForRed();
     }
     public void PlayerTwoFinished(){
         print(placing);
@@ -276,6 +278,7 @@ public class PlacingUnits : MonoBehaviour {
         if(SelectedCell != null){
             grid.DisableButton(currButtonCanvas);
         }
+        grid.NoCellsForRed();
     }
 
     public void DeleteUnit(){
