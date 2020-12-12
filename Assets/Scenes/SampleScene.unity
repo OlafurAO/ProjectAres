@@ -3278,7 +3278,7 @@ RectTransform:
   m_GameObject: {fileID: 148345079}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_Children:
   - {fileID: 1145360733}
   m_Father: {fileID: 0}
@@ -6651,7 +6651,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &295782836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9979,8 +9979,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 414001884}
-  m_LocalRotation: {x: 0.20760061, y: 0.042914554, z: -0.009116679, w: 0.9772294}
-  m_LocalPosition: {x: 7, y: 20.2, z: -22.2}
+  m_LocalRotation: {x: 0.36650118, y: 0, z: 0, w: 0.9304176}
+  m_LocalPosition: {x: 35, y: 35, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -10560,7 +10560,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &445856536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12951,7 +12951,7 @@ RectTransform:
   m_GameObject: {fileID: 626090270}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_Children:
   - {fileID: 201020860}
   m_Father: {fileID: 1508964302}
@@ -13778,7 +13778,7 @@ GameObject:
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &653082839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16682,7 +16682,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &779965771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19790,7 +19790,7 @@ RectTransform:
   m_GameObject: {fileID: 879722024}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 2045438852}
   m_Father: {fileID: 567494335}
@@ -19855,7 +19855,7 @@ MonoBehaviour:
           m_StringArgument: Archer
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1204749302}
         m_MethodName: DisableButton
         m_Mode: 2
         m_Arguments:
@@ -23230,7 +23230,7 @@ MonoBehaviour:
   initiativePortraits: []
   portraitTextures: []
   portraitLocations: []
-  grid: {fileID: 0}
+  grid: {fileID: 1204749302}
   winnerLabel: {fileID: 728278742}
   gameOver: 0
   victimLocation: {x: 0, y: 0, z: 0}
@@ -24781,7 +24781,7 @@ RectTransform:
   m_GameObject: {fileID: 1113679549}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 13746665}
   m_Father: {fileID: 567494335}
@@ -24846,7 +24846,7 @@ MonoBehaviour:
           m_StringArgument: Wizard
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1204749302}
         m_MethodName: DisableButton
         m_Mode: 2
         m_Arguments:
@@ -26430,7 +26430,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1217178867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29844,7 +29844,7 @@ RectTransform:
   m_GameObject: {fileID: 1324853733}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1928044820}
   m_Father: {fileID: 753628730}
@@ -29909,7 +29909,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1204749302}
         m_MethodName: DisableButton
         m_Mode: 2
         m_Arguments:
@@ -30352,7 +30352,7 @@ RectTransform:
   m_GameObject: {fileID: 1375188510}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 528428947}
   m_Father: {fileID: 795423848}
@@ -30417,7 +30417,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1204749302}
         m_MethodName: DisableButton
         m_Mode: 2
         m_Arguments:
@@ -41772,7 +41772,7 @@ RectTransform:
   m_GameObject: {fileID: 1813783118}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 1017070542}
   m_Father: {fileID: 567494335}
@@ -41837,7 +41837,7 @@ MonoBehaviour:
           m_StringArgument: Knight
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1204749302}
         m_MethodName: DisableButton
         m_Mode: 2
         m_Arguments:
@@ -49401,7 +49401,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2145122288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49620,6 +49620,21 @@ PrefabInstance:
       propertyPath: colors.Array.data[0].b
       value: 0.68379164
       objectReference: {fileID: 0}
+    - target: {fileID: 3675855038492156629, guid: 6cffb12a1a6702f4e898bc1d6645ab33,
+        type: 3}
+      propertyPath: AttackCanvas1
+      value: 
+      objectReference: {fileID: 148345085}
+    - target: {fileID: 3675855038492156629, guid: 6cffb12a1a6702f4e898bc1d6645ab33,
+        type: 3}
+      propertyPath: MoveCanvas1
+      value: 
+      objectReference: {fileID: 795423847}
+    - target: {fileID: 3675855038492156629, guid: 6cffb12a1a6702f4e898bc1d6645ab33,
+        type: 3}
+      propertyPath: DefenceCanvas1
+      value: 
+      objectReference: {fileID: 753628729}
     - target: {fileID: 3675855038492156630, guid: 6cffb12a1a6702f4e898bc1d6645ab33,
         type: 3}
       propertyPath: m_Name
