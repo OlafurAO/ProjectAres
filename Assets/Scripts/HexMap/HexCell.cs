@@ -379,6 +379,7 @@ public class HexCell : MonoBehaviour {
 		elevation = reader.ReadInt32();
 		RefreshPosition();
 		waterLevel = reader.ReadInt32();
+
 		
 		BlueCanPlace = reader.ReadBoolean();
 		RedCanPlace = reader.ReadBoolean();

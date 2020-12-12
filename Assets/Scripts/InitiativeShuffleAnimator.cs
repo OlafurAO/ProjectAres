@@ -96,7 +96,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
                     } else {
                         currentPortraitIndex++;
                         if(currentPortraitIndex != currPortraits.Count) {
-                            FindObjectOfType<AudioManager>().Play("initiative_flip_card", 0.0f);
+                            //FindObjectOfType<AudioManager>().Play("initiative_flip_card", 0.0f);
                         }
                     }
                 } else {
@@ -106,7 +106,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
                         overlay.gameObject.SetActive(false);
 
                         roundStartText.gameObject.SetActive(true);
-                        FindObjectOfType<AudioManager>().Play("initiative_round_start", 0.0f);
+                        //FindObjectOfType<AudioManager>().Play("initiative_round_start", 0.0f);
                         StartCoroutine(StartRoundWithDelay());
 
                         isComplete = true;
@@ -155,7 +155,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
     }
 
     public void Shuffle() {
-        FindObjectOfType<AudioManager>().Play("initiative_shuffle_cards", 0.0f);
+        //FindObjectOfType<AudioManager>().Play("initiative_shuffle_cards", 0.0f);
 
         // Reverse the list so that the first portrait will be the last gameobject to be added
         // and therefore be on top of the pile

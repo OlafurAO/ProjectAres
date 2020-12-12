@@ -160,7 +160,7 @@ public class PlacingUnits : MonoBehaviour {
 
     }
     public void CreateUnit(string type){
-        FindObjectOfType<AudioManager>().Play("menu_button_click", 0.0f);
+        //FindObjectOfType<AudioManager>().Play("menu_button_click", 0.0f);
         if(player == 1){
             if(type == "Knight"){
                 if(gold < tempUnits[0].GetComponent<KnightController>().goldCost){
@@ -263,10 +263,12 @@ public class PlacingUnits : MonoBehaviour {
         BackgroundImage.color = red;
         gold = 1000;
         goldText = goldText2;
-        FindObjectOfType<AudioManager>().Play("menu_button_click", 0.0f);
+        //FindObjectOfType<AudioManager>().Play("menu_button_click", 0.0f);
         if(SelectedCell != null){
             grid.DisableButton(currButtonCanvas);
         }
+        grid.NoCellsForBlue();
+        grid.CellsForRed();
     }
     public void PlayerTwoFinished(){
         print(placing);
@@ -276,6 +278,7 @@ public class PlacingUnits : MonoBehaviour {
         if(SelectedCell != null){
             grid.DisableButton(currButtonCanvas);
         }
+        grid.NoCellsForRed();
     }
 
     public void DeleteUnit(){
