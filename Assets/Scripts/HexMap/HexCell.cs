@@ -78,6 +78,7 @@ public class HexCell : MonoBehaviour {
 			Vector3 uiPosition = uiRect.localPosition;
 			uiPosition.z = -position.y;
 			uiRect.localPosition = uiPosition;
+			ActualPosition = transform.position;
 	}
 
 	public int WaterLevel {

@@ -234,7 +234,7 @@ public class KnightController : MonoBehaviour {
             print("no way hosey");
             return false; 
         }else{
-            if(hex.isOccupied){
+            if(hex.isOccupied || hex.IsUnderwater){
                 print("nowayer hoseyer");
                 return false; 
             }

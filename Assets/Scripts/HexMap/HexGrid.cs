@@ -109,7 +109,7 @@ public class HexGrid : MonoBehaviour {
 		cell.DefenceCanvas = temp3;
 		cell.CreateCanvas = temp4;
 		cell.DeleteCanvas = temp5;
-		cell.ActualPosition = cell.MoveCanvas.transform.position;
+		cell.ActualPosition = cell.transform.position;
 		
 		cell.MoveCanvas.enabled = false;
 		cell.AttackCanvas.enabled = false;

@@ -870,6 +870,8 @@ public class GameManager : MonoBehaviour {
     public void MoveUnit(){
         if(SelectedCell == null) return; 
         var index = SelectedCell;
+        print("destingation");
+        print(index.ActualPosition);
         Vector3 destination = index.ActualPosition;
         if(currentUnit.tag.Contains("Knight")) {
             var script = currentUnit.GetComponent<KnightController>();
