@@ -103,11 +103,11 @@ public class GameManager : MonoBehaviour {
     public TMPro.TextMeshProUGUI EnemyArmorAfter;
     public TMPro.TextMeshProUGUI EnemyAttackAfter;
 
-
+    //blue or red background depending on whitch team turn it is 
     public Image BackgroundImage;
-
-    private Color redColor;
-    private Color blueColor;
+    //color for the background (had to do this to make them transparrent)
+    public Color redColor;
+    public Color blueColor;
 
     void Awake() {
         instance = this;
@@ -131,7 +131,9 @@ public class GameManager : MonoBehaviour {
         // UNIT COMPONENTS: a tag with their unit type, box controller, model, boxcontroller, 
         // animator, Selector (set to inactive at first, Mesh Renderer: Cast shadows = off), 
         // layer = "Unit" (for both object and model)
-        // Use GameObject.AddComponent function
+        // Use GameObject.AddComponent function+
+        instance = this;
+        BackgroundImage.color = blueColor;
     }
 
     public void Restart() {
@@ -443,6 +445,12 @@ public class GameManager : MonoBehaviour {
         EnemyUnitProfile.GetComponent<Image>().sprite = null;
         action = true; 
         movement = true; 
+        if(currButtonCanvas != null){
+            currButtonCanvas.enabled = false;
+        }
+        HexCell currCell = grid.GetCell(currentUnit.transform.position);
+        currCell.ShowWalkRange();
+        
     }
 
     void MoveCamera() {
@@ -817,7 +825,7 @@ public class GameManager : MonoBehaviour {
                     currButtonCanvas = index.MoveCanvas;
                     SelectedCell = index; 
                 }
-            } 
+            }
         };
 
         CheckForDeadUnits();
@@ -881,15 +889,27 @@ public class GameManager : MonoBehaviour {
         if(currentUnit.tag.Contains("Knight")) {
             var script = currentUnit.GetComponent<KnightController>();
             bool move = script.StartMoving(destination, index);
-            if(move) movement = false; 
+            if(move){
+                movement = false;
+                HexCell currCell1 = grid.GetCell(currentUnit.transform.position);
+                currCell1.NoShowWalkRange();
+            }  
         } else if(currentUnit.tag.Contains("Archer")) {
             var script = currentUnit.GetComponent<ArcherController>();  
             bool move = script.StartMoving(destination, index );
-            if(move) movement = false; 
+            if(move){
+                movement = false;
+                HexCell currCell1 = grid.GetCell(currentUnit.transform.position);
+                currCell1.NoShowWalkRange();
+            }  
         } else {
             var script = currentUnit.GetComponent<WizardController>();
             bool move = script.StartMoving(destination, index );
-            if(move) movement = false; 
+            if(move){
+                movement = false;
+                HexCell currCell1 = grid.GetCell(currentUnit.transform.position);
+                currCell1.NoShowWalkRange();
+            }  
         }
     }
     //run's the "creatUnit" Functionin the class "placingUnits
