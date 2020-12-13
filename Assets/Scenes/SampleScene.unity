@@ -12466,7 +12466,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 0.990566, g: 0.98680526, b: 0.97654855, a: 1}
-  m_Intensity: 1.4
+  m_Intensity: 1.2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -50846,7 +50846,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 82acf7487e1557a4098f154ce56b8feb, type: 3}
     name: archer_attack
-    volume: 0.823
+    volume: 0.588
     pitch: 1
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 063d482de302be14b829157d9d9a26ed, type: 3}
