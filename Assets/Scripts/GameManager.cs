@@ -131,10 +131,10 @@ public class GameManager : MonoBehaviour {
     void Start() {
         
         FindObjectOfType<AudioManager>().PlayLoop("deploy_phase", 0.0f, true);
-        Color red = UnityEngine.Color.red;
+        Color red = UnityEngine.Color.white;
         red.a = 0.5f;
         redColor = red;
-        Color blue = UnityEngine.Color.blue;
+        Color blue = UnityEngine.Color.white;
         blue.a = 0.5f;
         blueColor = blue;
         //TODO: Create units via code
@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour {
         BackgroundImage.color = blueColor;
     }
 
-    public void Restart() {
+     public void Restart() {
         FindObjectOfType<AudioManager>().Play("menu_button_click", 0.0f);
         SceneManager.LoadScene("SampleScene");
     }
@@ -302,6 +302,7 @@ public class GameManager : MonoBehaviour {
     void DisableAllUnitCircles() {
         foreach(GameObject unit in allUnits) {
             unit.gameObject.transform.Find("Selector").gameObject.SetActive(false);
+            unit.gameObject.transform.Find("Spot Light").gameObject.SetActive(false);
         }
     }
 
