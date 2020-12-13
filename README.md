@@ -1,5 +1,12 @@
 # ProjectAres
 
+HOW TO RUN THE GAME:
+The main Scene to run in unity is under Assets > Scenes > "SampleScene.unity" 
+
+Controlls:
+Please Use A mouse to Command units and play the game, And keyboard to move the camera "WASD" and the scroll wheel to zoom in and out.
+
+
 ASSETS:
  Art:
 Units - https://assetstore.unity.com/packages/3d/characters/toony-tiny-rts-set-135258
@@ -32,8 +39,4 @@ Button click - https://freesound.org/people/volkbutphan/sounds/485486/
 Victory drums - https://freesound.org/people/Sheyvan/sounds/470083/
 Victory cries - https://freesound.org/people/chripei/sounds/165491/
 
-HOW TO RUN THE GAME:
-The main Scene to run in unity is under Assets > Scenes > "SampleScene.unity" 
 
-Controlls:
-Please Use A mouse to Command units and play the game, And keyboard to move the camera "WASD" and the scroll wheel to zoom in and out.
