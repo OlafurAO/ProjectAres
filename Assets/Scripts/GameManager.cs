@@ -291,6 +291,7 @@ public class GameManager : MonoBehaviour {
     void DisableAllUnitCircles() {
         foreach(GameObject unit in allUnits) {
             unit.gameObject.transform.Find("Selector").gameObject.SetActive(false);
+            unit.gameObject.transform.Find("Spot Light").gameObject.SetActive(false);
         }
     }
 
@@ -904,13 +905,14 @@ public class GameManager : MonoBehaviour {
             var attackerScript = currentUnit.GetComponent<ArcherController>();
             damage = attackerScript.baseDamage;
             type = attackerScript.type;
-            InRange = attackerScript.Attack(victimLocation);             
+            InRange = attackerScript.Attack(victimLocation);  
+            //victimTakeDamageDelay = 0.55f;           
         } else {
             var attackerScript = currentUnit.GetComponent<WizardController>();
             damage = attackerScript.baseDamage;
             type = attackerScript.type;
             InRange = attackerScript.Attack(victimLocation); 
-            victimTakeDamageDelay = 0.6f;
+            victimTakeDamageDelay = 0.57f;
         }
         
         if(InRange) {
