@@ -944,9 +944,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: " \nEvery unit has a certain amount of armor points. If a unit gets attacked,
-    they lose armor points.\r If the unit has no armor points left, they take damage
-    too their health. "
+  m_text: '
+
+    Each unit type has a weakness which can pierce through its armor.
+    If a unit attacks another unit who''s weak against it, it will not take armor
+    damage but instead take health damage regardless of  how many armor points it
+    has.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -36845,12 +36848,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "The game begins with the blue team placing units on the map. What types
-    of units\r and how many depends on the amount of gold available. After that it's
-    the red team's turn\r to place. In each round of the battle, a random initiative
-    order is decided which will decide\rthe order in which each unit takes their
-    turn. When all units have had their turn, the order\r is randomized again. When
-    all units in one team have been defeated, the game ends.\r"
+  m_text: The game begins with the blue team placing units on the map. What types
+    of units and how many depends on the amount of gold available. After that it's
+    the red team's turn to place. In each round of the battle, a random initiative
+    order is decided which will decide the order in which each unit takes their turn.
+    When all units have had their turn, the order is randomized again. W en all units
+    in one team have been defeated, the game ends.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -46193,8 +46196,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "\nOn each unit's turn, they have two Action Points (AP) to spend. They
-    can use AP to move (costs 1 AP),\rattack (costs ALL remaining AP) or defend (costs
-    ALL remaining AP). \r\n"
+    can use AP to move (costs 1 AP), attack (costs ALL remaining AP) or defend (costs
+    ALL remaining AP). \r\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
