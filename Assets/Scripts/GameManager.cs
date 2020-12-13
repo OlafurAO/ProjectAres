@@ -186,6 +186,11 @@ public class GameManager : MonoBehaviour {
         
         currCell = grid.GetCell(currentUnit.transform.position);
         currCell.ShowWalkRange();
+
+        var apCanvas = canvas.gameObject.transform.Find("ActionPointsCanvas");
+        apCanvas.transform.Find("MovesText").GetComponent<TMPro.TextMeshProUGUI>().text = "Action Points: 2";
+        apCanvas.transform.Find("AvailableMoves").GetComponent<TMPro.TextMeshProUGUI>().text = "Movement: 1 AP\nAttack/Defend: All AP";
+        apCanvas.gameObject.SetActive(true);
     }
 
     // Make sure a team won't be able to move more than 2 times in a row
@@ -404,6 +409,10 @@ public class GameManager : MonoBehaviour {
             currentUnitIndex++;
             DisableCurrentUnitCircle();
             currentUnit = allUnits[currentUnitIndex];
+
+            var apCanvas = canvas.gameObject.transform.Find("ActionPointsCanvas");
+            apCanvas.transform.Find("MovesText").GetComponent<TMPro.TextMeshProUGUI>().text = "Action Points: 2";
+            apCanvas.transform.Find("AvailableMoves").GetComponent<TMPro.TextMeshProUGUI>().text = "Movement: 1 AP\nAttack/Defend: All AP";
             
             GetCurrentUnitDamageAndType();
             EnableCurrentUnitCircle();
@@ -863,6 +872,11 @@ public class GameManager : MonoBehaviour {
         if(SelectedCell == null) return; 
         var index = SelectedCell;
         Vector3 destination = index.ActualPosition;
+
+        var apCanvas = canvas.gameObject.transform.Find("ActionPointsCanvas");
+        apCanvas.transform.Find("MovesText").GetComponent<TMPro.TextMeshProUGUI>().text = "Action Points: 1";
+        apCanvas.transform.Find("AvailableMoves").GetComponent<TMPro.TextMeshProUGUI>().text = "Attack/Defend: All AP";
+
         if(currentUnit.tag.Contains("Knight")) {
             var script = currentUnit.GetComponent<KnightController>();
             bool move = script.StartMoving(destination, index);
@@ -904,6 +918,10 @@ public class GameManager : MonoBehaviour {
 
         // Line attack animation up with take damage animation
         float victimTakeDamageDelay = 0.5f;
+
+        var apCanvas = canvas.gameObject.transform.Find("ActionPointsCanvas");
+        apCanvas.transform.Find("MovesText").GetComponent<TMPro.TextMeshProUGUI>().text = "Action Points: 0";
+        apCanvas.transform.Find("AvailableMoves").GetComponent<TMPro.TextMeshProUGUI>().text = "";
 
         if(currentUnit.tag.Contains("Knight")) {
             var attackerScript = currentUnit.GetComponent<KnightController>();

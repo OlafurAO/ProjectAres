@@ -5,19 +5,19 @@ using UnityEngine.UI;
 
 public class WizardController : MonoBehaviour
 {
-    public int maxHealth = 80;
-    public int health = 80;
+    public int maxHealth = 50;
+    public int health = 50;
     public HexCoordinates IndexedLocation;
     public HexCell CurrCell; 
     public int armor = 15;
     private int maxArmor = 15;
     public int armorModifier = 0;
-    public int baseDamage = 20;
+    public int baseDamage = 35;
     public int damageModifier = 0;
     
     public string type = "wizard";
     public string weaknessType = "archer";
-    public int goldCost = 150;
+    public int goldCost = 75;
     public int movementRange = 8;
     public int attackRange = 2;
     public TMPro.TextMeshProUGUI damageTakenText;
