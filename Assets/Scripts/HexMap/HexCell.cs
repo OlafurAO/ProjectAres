@@ -479,4 +479,18 @@ public class HexCell : MonoBehaviour {
 			}
 		}
 	}
+
+	
+	public bool CanAttack(HexCell victimLocation){
+		if(isKnight){
+			foreach (var units in neighbors)
+			{
+					if(units == victimLocation){return true;}
+			}
+			return false;
+		}else{
+			if(HexRange.Contains(victimLocation)){return true;}
+			return false;
+		}
+	}
 }

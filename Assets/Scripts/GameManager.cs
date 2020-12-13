@@ -291,7 +291,6 @@ public class GameManager : MonoBehaviour {
     void DisableAllUnitCircles() {
         foreach(GameObject unit in allUnits) {
             unit.gameObject.transform.Find("Selector").gameObject.SetActive(false);
-            unit.gameObject.transform.Find("Spot Light").gameObject.SetActive(false);
         }
     }
 
@@ -734,6 +733,9 @@ public class GameManager : MonoBehaviour {
                 //victim stuff put in global so that the other method doesn't need to get it (þarf script og þannig frá rhInfo.Colider stuff)
                 victimLocation = rhInfo.collider.gameObject.GetComponent<Transform>().position;
                 if(rhInfo.collider.gameObject.tag.Contains("Knight")) {
+                    if(index != null){
+                        if(!index.CanAttack( grid.GetCell(rhInfo.point))){return;}
+                    }
                     knightVictim = rhInfo.collider.gameObject.GetComponent<KnightController>();
                     VictimUnit = "Knight";
                     EnemyUnitProfile.GetComponent<Image>().sprite = knightVictim.GetComponent<Image>().sprite;
@@ -745,6 +747,10 @@ public class GameManager : MonoBehaviour {
                     EnemyHealthAfter.text = afterDamage[0].Item2.ToString();
                     EnemyAttackAfter.text = afterDamage[0].Item3.ToString();
                 } else if(rhInfo.collider.gameObject.tag.Contains("Archer")) {
+                    
+                    if(index != null){
+                        if(!index.CanAttack(grid.GetCell(rhInfo.point))){return;}
+                    }
                     archVictim = rhInfo.collider.gameObject.GetComponent<ArcherController>();
                     VictimUnit = "Archer";
                     EnemyUnitProfile.GetComponent<Image>().sprite = archVictim.GetComponent<Image>().sprite;
@@ -756,6 +762,9 @@ public class GameManager : MonoBehaviour {
                     EnemyHealthAfter.text = afterDamage[0].Item2.ToString();
                     EnemyAttackAfter.text = afterDamage[0].Item3.ToString();
                 } else {
+                    if(index != null){
+                        if(!index.CanAttack(grid.GetCell(rhInfo.point))){return;}
+                    }
                     wizVictim = rhInfo.collider.gameObject.GetComponent<WizardController>();
                     VictimUnit = "Wizard";
                     EnemyUnitProfile.GetComponent<Image>().sprite = wizVictim.GetComponent<Image>().sprite;
@@ -905,14 +914,13 @@ public class GameManager : MonoBehaviour {
             var attackerScript = currentUnit.GetComponent<ArcherController>();
             damage = attackerScript.baseDamage;
             type = attackerScript.type;
-            InRange = attackerScript.Attack(victimLocation);  
-            //victimTakeDamageDelay = 0.55f;           
+            InRange = attackerScript.Attack(victimLocation);             
         } else {
             var attackerScript = currentUnit.GetComponent<WizardController>();
             damage = attackerScript.baseDamage;
             type = attackerScript.type;
             InRange = attackerScript.Attack(victimLocation); 
-            victimTakeDamageDelay = 0.57f;
+            victimTakeDamageDelay = 0.6f;
         }
         
         if(InRange) {
