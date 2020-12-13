@@ -276,11 +276,13 @@ public class GameManager : MonoBehaviour {
     // Enables the circle around the current unit
     void EnableCurrentUnitCircle() {
         currentUnit.gameObject.transform.Find("Selector").gameObject.SetActive(true);
+        currentUnit.gameObject.transform.Find("Spot Light").gameObject.SetActive(true);
     }
 
     // Disables the circle around the current unit
     void DisableCurrentUnitCircle() {
         currentUnit.gameObject.transform.Find("Selector").gameObject.SetActive(false);
+        currentUnit.gameObject.transform.Find("Spot Light").gameObject.SetActive(false);
     }
 
     // For some reason after the first round, two units keep their circles. 
@@ -899,7 +901,7 @@ public class GameManager : MonoBehaviour {
             damage = attackerScript.baseDamage;
             type = attackerScript.type;
             InRange = attackerScript.Attack(victimLocation); 
-            victimTakeDamageDelay = 0.57f;
+            victimTakeDamageDelay = 0.6f;
         }
         
         if(InRange) {
