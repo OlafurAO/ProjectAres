@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour {
 
     private HexCell SelectedCell; 
     private HexCell lastHoveredCell;
+    public Canvas InformationCanvas;
 
     private string[] portraitTextureNames = {
         "KnightBlue", "ArcherBlue", "WizardBlue", 
@@ -1085,5 +1086,13 @@ public class GameManager : MonoBehaviour {
             var script = currentUnit.GetComponent<WizardController>();
             return script.isMoving || script.isAttacking;
         }
+    }
+
+    public void Information(){
+        InformationCanvas.GetComponent<Canvas>().enabled = true;
+    }
+    public void StopInformation(){
+        InformationCanvas.GetComponent<Canvas>().enabled = false;
+
     }
 }
