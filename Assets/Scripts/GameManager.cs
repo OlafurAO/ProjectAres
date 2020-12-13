@@ -119,6 +119,7 @@ public class GameManager : MonoBehaviour {
         canvas = GameObject.Find("Canvas");
         canvas.SetActive(false);
         LoadPortraitTextures();
+        winnerLabel.gameObject.SetActive(false);
     }
 
     // Start is called before the first frame update
@@ -651,6 +652,7 @@ public class GameManager : MonoBehaviour {
         }
 
         if(blueUnitsRemaining == 0) {
+            winnerLabel.gameObject.SetActive(true);
             winnerLabel.text = "Red team wins!";
             winnerLabel.color = Color.red;   
             FindObjectOfType<AudioManager>().Stop("battle_phase");
@@ -659,6 +661,7 @@ public class GameManager : MonoBehaviour {
             restart.gameObject.SetActive(true);
             gameOver = true;
         } else if(redUnitsRemaining == 0) {
+            winnerLabel.gameObject.SetActive(true);
             winnerLabel.text = "Blue team wins!";
             winnerLabel.color = Color.blue;
             FindObjectOfType<AudioManager>().Stop("battle_phase");
@@ -701,6 +704,9 @@ public class GameManager : MonoBehaviour {
             }
 
             HexCell index = grid.GetCell(currentUnit.transform.position); 
+            if(didHit){
+                print(rhInfo.collider.gameObject);
+            }
 
             // Did player click on a unit?
             if(didHit && (rhInfo.collider.gameObject.tag.Contains("Knight") || rhInfo.collider.gameObject.tag.Contains("Archer") 
@@ -775,15 +781,15 @@ public class GameManager : MonoBehaviour {
                     if(SelectedCell != null){
                         grid.DisableButton(currButtonCanvas);
                     }
+                    if(index != null){
+                        if(!grid.CanMove(index, rhInfo.point)){return;}
+                    }
 
                     var cell = grid.GetCell(rhInfo.point);
                     if(!cell.isOccupied) {
                         index = grid.MovementCell(rhInfo.point);
                         currButtonCanvas = index.MoveCanvas;
                         SelectedCell = index; 
-                    }
-                    if(index != null){
-                        if(!grid.CanMove(index, rhInfo.point)){return;}
                     }
                 }
             }
