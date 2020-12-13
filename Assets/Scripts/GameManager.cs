@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour {
     public TMPro.TextMeshProUGUI winnerLabel;
 
     private HexCell SelectedCell; 
+    private HexCell lastHoveredCell;
 
     private string[] portraitTextureNames = {
         "KnightBlue", "ArcherBlue", "WizardBlue", 
@@ -49,6 +50,8 @@ public class GameManager : MonoBehaviour {
         "KnightBlue", "ArcherBlue", "WizardBlue",
         "KnightRed", "ArcherRed", "WizardRed",
     };
+
+    public Button restart;
 
     private int blueUnitsRemaining = 0;
     private int redUnitsRemaining = 0;
@@ -116,6 +119,7 @@ public class GameManager : MonoBehaviour {
         canvas = GameObject.Find("Canvas");
         canvas.SetActive(false);
         LoadPortraitTextures();
+        winnerLabel.gameObject.SetActive(false);
     }
 
     // Start is called before the first frame update
@@ -150,6 +154,11 @@ public class GameManager : MonoBehaviour {
     }
 
     void RollInitiative() {
+        HexCell currCell;
+        if(currentUnit != null){
+            currCell = grid.GetCell(currentUnit.transform.position);
+            currCell.NoShowWalkRange();
+        }
         allUnits = new List<GameObject>();
         currentUnitIndex = 0;
 
@@ -174,6 +183,9 @@ public class GameManager : MonoBehaviour {
         isShuffling = true;
         movement = true; 
         action = true; 
+        
+        currCell = grid.GetCell(currentUnit.transform.position);
+        currCell.ShowWalkRange();
     }
 
     // Make sure a team won't be able to move more than 2 times in a row
@@ -265,11 +277,13 @@ public class GameManager : MonoBehaviour {
     // Enables the circle around the current unit
     void EnableCurrentUnitCircle() {
         currentUnit.gameObject.transform.Find("Selector").gameObject.SetActive(true);
+        currentUnit.gameObject.transform.Find("Spot Light").gameObject.SetActive(true);
     }
 
     // Disables the circle around the current unit
     void DisableCurrentUnitCircle() {
         currentUnit.gameObject.transform.Find("Selector").gameObject.SetActive(false);
+        currentUnit.gameObject.transform.Find("Spot Light").gameObject.SetActive(false);
     }
 
     // For some reason after the first round, two units keep their circles. 
@@ -379,6 +393,9 @@ public class GameManager : MonoBehaviour {
     }
 
     public void EndTurn() {
+        HexCell currCell = grid.GetCell(currentUnit.transform.position);
+        currCell.NoShowWalkRange();
+        
         if(IsCurrentUnitMovingOrAttacking() || isShuffling) return;
         
         // If the list is over, then the round is over and initiative needs to be rolled again
@@ -448,7 +465,7 @@ public class GameManager : MonoBehaviour {
         if(currButtonCanvas != null){
             currButtonCanvas.enabled = false;
         }
-        HexCell currCell = grid.GetCell(currentUnit.transform.position);
+        currCell = grid.GetCell(currentUnit.transform.position);
         currCell.ShowWalkRange();
         
     }
@@ -565,12 +582,12 @@ public class GameManager : MonoBehaviour {
         // Scroll wheel zoom
         if(Input.GetAxis("Mouse ScrollWheel") > 0f) {
             if(mainCamera.transform.position.y > 15) {
-                mainCamera.transform.Translate(new Vector3(0, 0, 50f * Time.deltaTime));
+                mainCamera.transform.Translate(new Vector3(0, 0, 100f * Time.deltaTime));
                 didCameraMove = true;
             }
         } else if(Input.GetAxis("Mouse ScrollWheel") < 0f) {
             if(mainCamera.transform.position.y < 32) {
-                mainCamera.transform.Translate(new Vector3(0, 0, -50f * Time.deltaTime));
+                mainCamera.transform.Translate(new Vector3(0, 0, -100f * Time.deltaTime));
                 didCameraMove = true;
             }
         }
@@ -609,80 +626,6 @@ public class GameManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {   
-        // AUDIO TESTING ONLY, WILL BE REMOVED
-        if(Input.GetKeyDown(KeyCode.Alpha1)) {
-            if(currentUnit.tag.Contains("Knight")) {
-                var attackerScript = currentUnit.GetComponent<KnightController>();
-                attackerScript.AudioTests("attack");
-            
-            } else if(currentUnit.tag.Contains("Archer")) {
-                var attackerScript = currentUnit.GetComponent<ArcherController>();
-                attackerScript.AudioTests("attack");
-                
-            } else {
-                var attackerScript = currentUnit.GetComponent<WizardController>();
-                attackerScript.AudioTests("attack");
-                
-            }
-        } else if(Input.GetKeyDown(KeyCode.Alpha2)) {
-            if(currentUnit.tag.Contains("Knight")) {
-                var attackerScript = currentUnit.GetComponent<KnightController>();
-                attackerScript.AudioTests("walk");
-            
-            } else if(currentUnit.tag.Contains("Archer")) {
-                var attackerScript = currentUnit.GetComponent<ArcherController>();
-                attackerScript.AudioTests("walk");
-                
-            } else {
-                var attackerScript = currentUnit.GetComponent<WizardController>();
-                attackerScript.AudioTests("walk");
-                
-            }
-        } else if(Input.GetKeyDown(KeyCode.Alpha3)) {
-            if(currentUnit.tag.Contains("Knight")) {
-                var attackerScript = currentUnit.GetComponent<KnightController>();
-                attackerScript.AudioTests("defend");
-            
-            } else if(currentUnit.tag.Contains("Archer")) {
-                var attackerScript = currentUnit.GetComponent<ArcherController>();
-                attackerScript.AudioTests("defend");
-                
-            } else {
-                var attackerScript = currentUnit.GetComponent<WizardController>();
-                attackerScript.AudioTests("defend");
-                
-            }
-        } else if(Input.GetKeyDown(KeyCode.Alpha4)) {
-            if(currentUnit.tag.Contains("Knight")) {
-                var attackerScript = currentUnit.GetComponent<KnightController>();
-                attackerScript.AudioTests("hit");
-            
-            } else if(currentUnit.tag.Contains("Archer")) {
-                var attackerScript = currentUnit.GetComponent<ArcherController>();
-                attackerScript.AudioTests("hit");
-                
-            } else {
-                var attackerScript = currentUnit.GetComponent<WizardController>();
-                attackerScript.AudioTests("hit");
-                
-            }
-        } else if(Input.GetKeyDown(KeyCode.Alpha5)) {
-            if(currentUnit.tag.Contains("Knight")) {
-                var attackerScript = currentUnit.GetComponent<KnightController>();
-                attackerScript.AudioTests("die");
-            
-            } else if(currentUnit.tag.Contains("Archer")) {
-                var attackerScript = currentUnit.GetComponent<ArcherController>();
-                attackerScript.AudioTests("die");
-                
-            } else {
-                var attackerScript = currentUnit.GetComponent<WizardController>();
-                attackerScript.AudioTests("die");
-                
-            }
-        }
-
-
         if(isShuffling) {
             if(initiativeShuffleCanvas.GetComponent<InitiativeShuffleAnimator>().IsShuffling()) {
                 return;
@@ -709,18 +652,22 @@ public class GameManager : MonoBehaviour {
         }
 
         if(blueUnitsRemaining == 0) {
+            winnerLabel.gameObject.SetActive(true);
             winnerLabel.text = "Red team wins!";
             winnerLabel.color = Color.red;   
             FindObjectOfType<AudioManager>().Stop("battle_phase");
             FindObjectOfType<AudioManager>().Play("victory_song", 0.0f);
             FindObjectOfType<AudioManager>().Play("victory_scream", 0.0f);
+            restart.gameObject.SetActive(true);
             gameOver = true;
         } else if(redUnitsRemaining == 0) {
+            winnerLabel.gameObject.SetActive(true);
             winnerLabel.text = "Blue team wins!";
             winnerLabel.color = Color.blue;
             FindObjectOfType<AudioManager>().Stop("battle_phase");
             FindObjectOfType<AudioManager>().Play("victory_song", 0.0f);
             FindObjectOfType<AudioManager>().Play("victory_scream", 0.0f);
+            restart.gameObject.SetActive(true);
             gameOver = true;
         }
 
@@ -730,6 +677,16 @@ public class GameManager : MonoBehaviour {
         bool didHit = Physics.Raycast(toMouse, out rhInfo, 500.0f);
         if(didHit) {
             CheckForMouseHoveringOverUnit(rhInfo);
+            if(Physics.Raycast(toMouse, out rhInfo, 1000.0f)){
+                HexCell cell = grid.GetCell(rhInfo.point);
+                if(cell != null) {
+                    if(lastHoveredCell != cell && lastHoveredCell != null) {
+                        lastHoveredCell.HexHoverImageCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;   
+                    }
+                    cell.HexHoverImageCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+                    lastHoveredCell = cell;
+                } 
+            }
         } 
         
         if(isMouseOverEnemyUnit && startDisplayingUnitHealthPreview) {
@@ -746,7 +703,10 @@ public class GameManager : MonoBehaviour {
                 return;
             }
 
-            HexCell index; 
+            HexCell index = grid.GetCell(currentUnit.transform.position); 
+            if(didHit){
+                print(rhInfo.collider.gameObject);
+            }
 
             // Did player click on a unit?
             if(didHit && (rhInfo.collider.gameObject.tag.Contains("Knight") || rhInfo.collider.gameObject.tag.Contains("Archer") 
@@ -773,6 +733,9 @@ public class GameManager : MonoBehaviour {
                 //victim stuff put in global so that the other method doesn't need to get it (þarf script og þannig frá rhInfo.Colider stuff)
                 victimLocation = rhInfo.collider.gameObject.GetComponent<Transform>().position;
                 if(rhInfo.collider.gameObject.tag.Contains("Knight")) {
+                    if(index != null){
+                        if(!index.CanAttack( grid.GetCell(rhInfo.point))){return;}
+                    }
                     knightVictim = rhInfo.collider.gameObject.GetComponent<KnightController>();
                     VictimUnit = "Knight";
                     EnemyUnitProfile.GetComponent<Image>().sprite = knightVictim.GetComponent<Image>().sprite;
@@ -784,6 +747,10 @@ public class GameManager : MonoBehaviour {
                     EnemyHealthAfter.text = afterDamage[0].Item2.ToString();
                     EnemyAttackAfter.text = afterDamage[0].Item3.ToString();
                 } else if(rhInfo.collider.gameObject.tag.Contains("Archer")) {
+                    
+                    if(index != null){
+                        if(!index.CanAttack(grid.GetCell(rhInfo.point))){return;}
+                    }
                     archVictim = rhInfo.collider.gameObject.GetComponent<ArcherController>();
                     VictimUnit = "Archer";
                     EnemyUnitProfile.GetComponent<Image>().sprite = archVictim.GetComponent<Image>().sprite;
@@ -795,6 +762,9 @@ public class GameManager : MonoBehaviour {
                     EnemyHealthAfter.text = afterDamage[0].Item2.ToString();
                     EnemyAttackAfter.text = afterDamage[0].Item3.ToString();
                 } else {
+                    if(index != null){
+                        if(!index.CanAttack(grid.GetCell(rhInfo.point))){return;}
+                    }
                     wizVictim = rhInfo.collider.gameObject.GetComponent<WizardController>();
                     VictimUnit = "Wizard";
                     EnemyUnitProfile.GetComponent<Image>().sprite = wizVictim.GetComponent<Image>().sprite;
@@ -821,9 +791,16 @@ public class GameManager : MonoBehaviour {
                     if(SelectedCell != null){
                         grid.DisableButton(currButtonCanvas);
                     }
-                    index = grid.MovementCell(rhInfo.point);
-                    currButtonCanvas = index.MoveCanvas;
-                    SelectedCell = index; 
+                    if(index != null){
+                        if(!grid.CanMove(index, rhInfo.point)){return;}
+                    }
+
+                    var cell = grid.GetCell(rhInfo.point);
+                    if(!cell.isOccupied) {
+                        index = grid.MovementCell(rhInfo.point);
+                        currButtonCanvas = index.MoveCanvas;
+                        SelectedCell = index; 
+                    }
                 }
             }
         };
@@ -893,6 +870,7 @@ public class GameManager : MonoBehaviour {
                 movement = false;
                 HexCell currCell1 = grid.GetCell(currentUnit.transform.position);
                 currCell1.NoShowWalkRange();
+                index.ShowAttackRange("knight");
             }  
         } else if(currentUnit.tag.Contains("Archer")) {
             var script = currentUnit.GetComponent<ArcherController>();  
@@ -901,6 +879,7 @@ public class GameManager : MonoBehaviour {
                 movement = false;
                 HexCell currCell1 = grid.GetCell(currentUnit.transform.position);
                 currCell1.NoShowWalkRange();
+                index.ShowAttackRange("Archer");
             }  
         } else {
             var script = currentUnit.GetComponent<WizardController>();
@@ -909,6 +888,7 @@ public class GameManager : MonoBehaviour {
                 movement = false;
                 HexCell currCell1 = grid.GetCell(currentUnit.transform.position);
                 currCell1.NoShowWalkRange();
+                index.ShowAttackRange("Wizard");
             }  
         }
     }
@@ -940,7 +920,7 @@ public class GameManager : MonoBehaviour {
             damage = attackerScript.baseDamage;
             type = attackerScript.type;
             InRange = attackerScript.Attack(victimLocation); 
-            victimTakeDamageDelay = 0.57f;
+            victimTakeDamageDelay = 0.6f;
         }
         
         if(InRange) {
@@ -1064,6 +1044,8 @@ public class GameManager : MonoBehaviour {
 
     public void FinishedPlacingUnits(){
         CountUnits();
+        if(redUnitsRemaining < 2 || blueUnitsRemaining < 2) return;
+
         isPlacingUnits = false; 
         RollInitiative();
         placingUnits.enabled = false;
@@ -1075,6 +1057,9 @@ public class GameManager : MonoBehaviour {
 
     public void CountUnits() {
         List<GameObject> units = new List<GameObject>();
+        blueUnitsRemaining = 0;
+        redUnitsRemaining = 0;
+
         foreach(string tag in tags) {
             var tmp = new List<GameObject>(GameObject.FindGameObjectsWithTag(tag));
             units = units.Concat(tmp).ToList();

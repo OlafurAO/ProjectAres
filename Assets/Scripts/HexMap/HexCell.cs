@@ -27,11 +27,13 @@ public class HexCell : MonoBehaviour {
 	public Canvas CreateCanvas;
 	public Canvas DeleteCanvas;
 	public Canvas HexRangeCanvas;
+	public Canvas HexHoverImageCanvas;
+	public Vector3 ActualPosition;
 	public bool BlueCanPlace;
 	public bool RedCanPlace;
 	public List<HexCell> HexRange = new List<HexCell>();
-
-	public Vector3 ActualPosition;
+	public string team;
+	public bool isKnight; 
 	public Color Color {
 		get {
 			return HexMetrics.colors[terrainTypeIndex];
@@ -390,9 +392,10 @@ public class HexCell : MonoBehaviour {
 		elevation = reader.ReadInt32();
 		RefreshPosition();
 		waterLevel = reader.ReadInt32();
+
 		
-		//BlueCanPlace = reader.ReadBoolean();
-		//RedCanPlace = reader.ReadBoolean();
+		BlueCanPlace = reader.ReadBoolean();
+		RedCanPlace = reader.ReadBoolean();
 		
 		/*urbanLevel = reader.ReadInt32();
 		farmLevel = reader.ReadInt32();
@@ -411,6 +414,10 @@ public class HexCell : MonoBehaviour {
 		}
 		*/
 	}
+
+	public void HoverHighlight() {
+
+	}
 	
 	void UpdateDistanceLabel () {
 		UnityEngine.UI.Text label = uiRect.GetComponent<UnityEngine.UI.Text>();
@@ -422,9 +429,30 @@ public class HexCell : MonoBehaviour {
 		foreach (HexCell neigh in HexRange)
 		{
 				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-				/*if(neigh.isOccupied){
-					neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-				}*/
+				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+				if(neigh.isOccupied){
+					if(team == neigh.team){
+						neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+					}else if (neigh.team == ""){
+						return;
+					}else {
+						if (!isKnight){
+							neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+						}else{
+							neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+							
+						}
+					}
+				}
+		}
+		if(isKnight){
+			foreach (HexCell unit in neighbors)
+			{
+					if(unit.isOccupied && unit.team != team && unit.team != ""){
+						unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+						unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+					}
+			}
 		}
 	}
 	
@@ -435,6 +463,49 @@ public class HexCell : MonoBehaviour {
 				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
 		}
 	}
+	//makes a red hexagon appear beneath a enemy that you can attack 
+	public void ShowAttackRange(string type){
+		if(type == "knight"){
+			foreach (HexCell unit in neighbors)
+			{
+				if(unit.isOccupied && unit.team != team){
+					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+				}
+			}
+		}else{
+			foreach (HexCell unit in HexRange)
+			{
+				if(unit.isOccupied && unit.team != team && unit.team != ""){
+					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+				}
+			}
 
+		}
+	}
+	//make attack hexagon dissapear
+	public void NoShowAttackRange(string type){
+		foreach (HexCell unit in HexRange)
+		{
+			if(unit.isOccupied && unit.team != team){
+				unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+				unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+			}
+		}
+	}
 
+	
+	public bool CanAttack(HexCell victimLocation){
+		if(isKnight){
+			foreach (var units in neighbors)
+			{
+					if(units == victimLocation){return true;}
+			}
+			return false;
+		}else{
+			if(HexRange.Contains(victimLocation)){return true;}
+			return false;
+		}
+	}
 }

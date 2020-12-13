@@ -43,6 +43,8 @@ public class WizardController : MonoBehaviour
 
     //Where the unit should move next
     public Vector3 destination;
+
+    private Quaternion selectorRotation;
     
     public GameObject DefenceImage;
     public Image healthBar;
@@ -78,6 +80,7 @@ public class WizardController : MonoBehaviour
         maxArmor = armor;
         destination = transform.position;  
         location = transform.position;
+        selectorRotation = this.transform.Find("Selector").GetComponent<MeshRenderer>().transform.rotation;
 
         healthText.text = health + "/" + maxHealth;
         healthText.fontSize = 20;
@@ -263,10 +266,10 @@ public class WizardController : MonoBehaviour
     }
 
     public bool StartMoving(Vector3 dest, HexCell hex) {
-        print(dest);
-        float length = Vector3.Distance(transform.position, dest);
+        HexCell destCell = grid.GetCell(dest);
+        HexCell currCell = grid.GetCell(transform.position);
         //veit ekki range ið
-        if(length > 1000000){
+        if(!currCell.HexRange.Contains(destCell)){
             print("no way hosey");
             return false; 
         }else{
@@ -280,7 +283,7 @@ public class WizardController : MonoBehaviour
             isMoving = true;
             isIdle = false;
             IndexedLocation = hex.coordinates; 
-            grid.OccupyCell(hex);
+            grid.OccupyCell(hex, team, false);
             if(CurrCell != null){
                 grid.UnOccupyCell(CurrCell);
             } 
@@ -494,6 +497,7 @@ public class WizardController : MonoBehaviour
     //moving healthbar to face the camera
     public void MoveHealthBar(){
         HealthCanvas.transform.LookAt(camera.transform.position);
+        this.transform.Find("Selector").GetComponent<MeshRenderer>().transform.rotation = selectorRotation;
     }
 
     public void ShowPreviewHealthBar(float damage, string attackerType) {

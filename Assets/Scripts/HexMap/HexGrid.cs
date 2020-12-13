@@ -12,6 +12,7 @@ public class HexGrid : MonoBehaviour {
 	public Canvas CreateUnitCanvas1;
 	public Canvas DeleteUnitCanvas1;
 	public Canvas HexRangeCanvas1;
+	public Canvas HexHoverImageCanvas1;
 	public Texture2D noiseSource;
 	public Camera camera;
 	public Text cellLabelPrefab;
@@ -20,6 +21,7 @@ public class HexGrid : MonoBehaviour {
 	HexCell[] cells;
 	public Color[] colors;
 	int cellCountX, cellCountZ;
+	private string team;
 
 	void Awake () {
 		HexMetrics.noiseSource = noiseSource;
@@ -30,6 +32,7 @@ public class HexGrid : MonoBehaviour {
 		CreateChunks();
 		CreateCells();
     SetRangeOnEachCell();
+		CellsForBlue();
 	}
 
 	void CreateChunks () {
@@ -101,12 +104,14 @@ public class HexGrid : MonoBehaviour {
 		Canvas temp4 = Instantiate<Canvas>(CreateUnitCanvas1);
 		Canvas temp5 = Instantiate<Canvas>(DeleteUnitCanvas1);
 		Canvas temp6 = Instantiate<Canvas>(HexRangeCanvas1);
+		Canvas temp7 = Instantiate<Canvas>(HexHoverImageCanvas1);
 		temp.transform.SetParent(cell.transform, false);
 		temp2.transform.SetParent(cell.transform, false);
 		temp3.transform.SetParent(cell.transform, false);
 		temp4.transform.SetParent(cell.transform, false);
 		temp5.transform.SetParent(cell.transform, false);
 		temp6.transform.SetParent(cell.transform, false);
+		temp7.transform.SetParent(cell.transform, false);
 		
 		cell.MoveCanvas = temp;
 		cell.AttackCanvas = temp2;
@@ -115,6 +120,7 @@ public class HexGrid : MonoBehaviour {
 		cell.DeleteCanvas = temp5;
 		cell.ActualPosition = cell.transform.position;
 		cell.HexRangeCanvas = temp6;
+		cell.HexHoverImageCanvas = temp7;
 		
 		cell.MoveCanvas.enabled = false;
 		cell.AttackCanvas.enabled = false;
@@ -160,13 +166,19 @@ public class HexGrid : MonoBehaviour {
 		int localZ = z - chunkZ * HexMetrics.chunkSizeZ;
 		chunk.AddCell(localX + localZ * HexMetrics.chunkSizeX, cell);
 	}
-	public void OccupyCell(HexCell cell){
+	public void OccupyCell(HexCell cell, string team, bool isKnight){
+		print(team);
+		print("teamabove");
 		int index = cell.coordinates.X + cell.coordinates.Z * cellCountX + cell.coordinates.Z / 2;
 		cells[index].isOccupied = true; 
+		cells[index].team = team; 
+		cells[index].isKnight = isKnight; 
 	}
 	public void UnOccupyCell(HexCell cell){
 		int index = cell.coordinates.X + cell.coordinates.Z * cellCountX + cell.coordinates.Z / 2;
+		cells[index].team = "";
 		cells[index].isOccupied = false;
+		cells[index].isKnight = false;
 
 	}
 
@@ -181,7 +193,9 @@ public class HexGrid : MonoBehaviour {
 	public HexCell CreateUnitCell(Vector3 position){
 		HexCell currCell = GetCell(position);
 		currCell.CreateCanvas.transform.LookAt(camera.transform.position);
-		if(currCell.isOccupied == false){
+		if(team == "blue" && currCell.BlueCanPlace && currCell.isOccupied == false){
+			currCell.CreateCanvas.enabled = true;
+		}else if( team == "Red" && currCell.RedCanPlace && currCell.isOccupied == false){
 			currCell.CreateCanvas.enabled = true;
 		}
 		return currCell;
@@ -270,6 +284,56 @@ public class HexGrid : MonoBehaviour {
 		for (int i = 0; i < cells.Length; i++) {
 			cells[i].Distance = 
 				cell.coordinates.DistanceTo(cells[i].coordinates);
+	
+		}
+	}
+	public void CellsForBlue(){
+		team = "blue";
+		foreach (HexCell cell in cells)
+		{
+				if(cell.BlueCanPlace){
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.blue);
+				}
+		}
+	}
+	public void NoCellsForBlue(){
+		foreach (HexCell cell in cells)
+		{
+				if(cell.BlueCanPlace){
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+				}
+		}
+	}
+	public void CellsForRed(){
+		team = "Red";
+		foreach (HexCell cell in cells)
+		{
+				if(cell.RedCanPlace){
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+				}
+		}
+		
+	}
+	public void NoCellsForRed(){
+		foreach (HexCell cell in cells)
+		{
+				if(cell.RedCanPlace){
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+				}
+		}
+		
+	}
+
+	public bool CanMove(HexCell current, Vector3 desti){
+		HexCell destCell = GetCell(desti);
+		if(current.HexRange.Contains(destCell)){
+			return true;
+		}else{
+			return false;
 		}
 	}
 }

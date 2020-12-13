@@ -36,6 +36,8 @@ public class ArcherController : MonoBehaviour {
     public bool isTakingDamage = false;
     public HexCell CurrCell; 
 
+    private Quaternion selectorRotation;
+
     private bool startPlayingMoveAnimation = false;
     private bool startPlayingIdleAnimation = true;
     private bool showHealthBarDropOff = false;
@@ -74,6 +76,7 @@ public class ArcherController : MonoBehaviour {
         maxArmor = armor;
         destination = transform.position;  
         location = transform.position;
+        selectorRotation = this.transform.Find("Selector").GetComponent<MeshRenderer>().transform.rotation;
 
         healthText.text = health + "/" + maxHealth;
         healthText.fontSize = 20;
@@ -252,10 +255,10 @@ public class ArcherController : MonoBehaviour {
     }
 
     public bool StartMoving(Vector3 dest, HexCell hex) {
-        print(dest);
-        float length = Vector3.Distance(transform.position, dest);
+        HexCell destCell = grid.GetCell(dest);
+        HexCell currCell = grid.GetCell(transform.position);
         //veit ekki range ið
-        if(length > 1000000){
+        if(!currCell.HexRange.Contains(destCell)){
             print("no way hosey");
             return false;
         }else{
@@ -269,7 +272,7 @@ public class ArcherController : MonoBehaviour {
             isMoving = true;
             isIdle = false;
             IndexedLocation = hex.coordinates;
-            grid.OccupyCell(hex);
+            grid.OccupyCell(hex, team, false);
             if(CurrCell != null){
                 grid.UnOccupyCell(CurrCell);
             } 
@@ -457,8 +460,10 @@ public class ArcherController : MonoBehaviour {
     public void MoveHealthBar(){
         //HealthCanvas.transform.localPosition = this.transform.position + new Vector3(0f, 2f, 0f);
         HealthCanvas.transform.LookAt(camera.transform.position);
+        this.transform.Find("Selector").GetComponent<MeshRenderer>().transform.rotation = selectorRotation;
         //HealthCanvas.transform.position = this.transform.position + new Vector3(0f, 2f, 0f);
         //HealthCanvas.transform.position = Camera.main.WorldToScreenPoint(transform.position * 2);
+        
     }
 
     public void ShowPreviewHealthBar(float damage, string attackerType) {

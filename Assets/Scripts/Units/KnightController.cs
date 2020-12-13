@@ -27,6 +27,8 @@ public class KnightController : MonoBehaviour {
     public TMPro.TextMeshProUGUI healthDamageTextPreview; // Text preview of the damage the player will deal
     public TMPro.TextMeshProUGUI armorDamageTextPreview; // Text preview of the damage the player will deal to armor
     public Vector3 location;
+
+    private Quaternion selectorRotation;
     
     public bool isAttacking = false;
     public bool isMoving = false;
@@ -69,6 +71,7 @@ public class KnightController : MonoBehaviour {
         maxArmor = armor;
         destination = transform.position;    
         location = transform.position;
+        selectorRotation = this.transform.Find("Selector").GetComponent<MeshRenderer>().transform.rotation;
 
         healthText.text = health + "/" + maxHealth;
         healthText.fontSize = 20;
@@ -228,9 +231,10 @@ public class KnightController : MonoBehaviour {
     }
 
     public bool StartMoving(Vector3 dest, HexCell hex) {
-        float length = Vector3.Distance(transform.position, dest);
-        if(length >= 1000000){
-            print(length);
+        HexCell destCell = grid.GetCell(dest);
+        HexCell currCell = grid.GetCell(transform.position);
+        //veit ekki range ið
+        if(!currCell.HexRange.Contains(destCell)){
             print("no way hosey");
             return false; 
         }else{
@@ -243,8 +247,9 @@ public class KnightController : MonoBehaviour {
             startPlayingMoveAnimation = true;
             isMoving = true;
             isIdle = false;
-            IndexedLocation = hex.coordinates; 
-            grid.OccupyCell(hex);
+            IndexedLocation = hex.coordinates;
+            bool isknight = true; 
+            grid.OccupyCell(hex, team, isknight );
             if(CurrCell != null){
                 grid.UnOccupyCell(CurrCell);
             } 
@@ -394,6 +399,7 @@ public class KnightController : MonoBehaviour {
     //moving healthbar to face the camera
     public void MoveHealthBar(){
         HealthCanvas.transform.LookAt(camera.transform.position);
+        this.transform.Find("Selector").GetComponent<MeshRenderer>().transform.rotation = selectorRotation;
     }
 
     public void ShowPreviewHealthBar(float damage, string attackerType) {

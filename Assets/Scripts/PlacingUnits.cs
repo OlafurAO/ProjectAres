@@ -61,6 +61,10 @@ public class PlacingUnits : MonoBehaviour {
     public TMPro.TextMeshProUGUI ArcherGold2;
     public TMPro.TextMeshProUGUI ArcherAttack2;
 
+    int blueUnitCount = 0;
+    int redUnitCount = 0;
+    public TMPro.TextMeshProUGUI unitLimitText;
+
     
     void Start(){
         PlayerTwoCanvas.enabled = false;
@@ -160,6 +164,12 @@ public class PlacingUnits : MonoBehaviour {
 
     }
     public void CreateUnit(string type){
+        if(player == 1) {
+            blueUnitCount++;
+        } else {
+            redUnitCount++;
+        }
+
         FindObjectOfType<AudioManager>().Play("menu_button_click", 0.0f);
         if(player == 1){
             if(type == "Knight"){
@@ -172,8 +182,11 @@ public class PlacingUnits : MonoBehaviour {
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[0]);
                 FinalUnit.tag = "KnightBlue";
                 FinalUnit.transform.position = index.transform.position; 
+                FinalUnit.GetComponent<KnightController>().CurrCell = index; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
+                index.isKnight = true;
+                index.team = "blue";
                 units.Add(FinalUnit);
                 return; 
             }else if(type == "Archer"){
@@ -186,8 +199,10 @@ public class PlacingUnits : MonoBehaviour {
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[1]);
                 FinalUnit.tag = "ArcherBlue";
                 FinalUnit.transform.position = index.transform.position; 
+                FinalUnit.GetComponent<ArcherController>().CurrCell = index; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
+                index.team = "blue";
                 units.Add(FinalUnit);
                 return; 
             }else if(type == "Wizard"){
@@ -199,9 +214,11 @@ public class PlacingUnits : MonoBehaviour {
                 }
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[2]);
                 FinalUnit.tag = "WizardBlue";
-                FinalUnit.transform.position = index.transform.position; 
+                FinalUnit.transform.position = index.transform.position;
+                FinalUnit.GetComponent<WizardController>().CurrCell = index; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
+                index.team = "blue";
                 units.Add(FinalUnit);
                 return; 
             }
@@ -216,8 +233,11 @@ public class PlacingUnits : MonoBehaviour {
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[3]);
                 FinalUnit.tag = "KnightRed";
                 FinalUnit.transform.position = index.transform.position; 
+                FinalUnit.GetComponent<KnightController>().CurrCell = index; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
+                index.team = "red";
+                index.isKnight = true;
                 units.Add(FinalUnit);
                 return; 
             }else if(type == "Archer"){
@@ -230,8 +250,10 @@ public class PlacingUnits : MonoBehaviour {
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[4]);
                 FinalUnit.tag = "ArcherRed";
                 FinalUnit.transform.position = index.transform.position; 
+                FinalUnit.GetComponent<ArcherController>().CurrCell = index; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
+                index.team = "red";
                 units.Add(FinalUnit);
                 return; 
             }else if (type == "Wizard"){
@@ -244,8 +266,10 @@ public class PlacingUnits : MonoBehaviour {
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[5]);
                 FinalUnit.tag = "WizardRed";
                 FinalUnit.transform.position = index.transform.position; 
+                FinalUnit.GetComponent<WizardController>().CurrCell = index; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
+                index.team = "red";
                 units.Add(FinalUnit);
                 return; 
             }
@@ -254,6 +278,13 @@ public class PlacingUnits : MonoBehaviour {
     }
 
     public void PlayerOneFinished(){
+        if(blueUnitCount < 2) {
+            unitLimitText.gameObject.SetActive(true);
+            return;
+        } else {
+            unitLimitText.gameObject.SetActive(false);
+        }
+
         PlayerOneCanvas.enabled = false; 
         player = 2; 
         PlayerTwoCanvas.enabled = true;
@@ -267,8 +298,17 @@ public class PlacingUnits : MonoBehaviour {
         if(SelectedCell != null){
             grid.DisableButton(currButtonCanvas);
         }
+        grid.NoCellsForBlue();
+        grid.CellsForRed();
     }
     public void PlayerTwoFinished(){
+        if(redUnitCount < 2) {
+            unitLimitText.gameObject.SetActive(true);
+            return;
+        } else {
+            unitLimitText.gameObject.SetActive(false);
+        }
+        
         print(placing);
         PlayerTwoCanvas.enabled = false;
         placing = false;
@@ -276,14 +316,22 @@ public class PlacingUnits : MonoBehaviour {
         if(SelectedCell != null){
             grid.DisableButton(currButtonCanvas);
         }
+        grid.NoCellsForRed();
     }
 
     public void DeleteUnit(){
+        if(player == 1) {
+            blueUnitCount--;
+        } else {
+            redUnitCount--;
+        }
+
         foreach (GameObject unit in units)
         {
             if(unit.transform.position == index.transform.position){
                 unit.SetActive(false);
                 index.isOccupied = false;
+                break;
             }
         }
     }

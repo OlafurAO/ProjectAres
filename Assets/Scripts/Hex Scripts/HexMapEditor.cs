@@ -191,6 +191,8 @@ public class HexMapEditor : MonoBehaviour {
 				hexGrid.Load(reader);
 			}
 		}
+		
+		hexGrid.CellsForBlue();
 	}
 
 	public void Load () {
