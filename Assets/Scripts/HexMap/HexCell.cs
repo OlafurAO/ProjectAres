@@ -413,22 +413,24 @@ public class HexCell : MonoBehaviour {
 	public void ShowWalkRange(){
 		foreach (HexCell neigh in HexRange)
 		{
+			if(!neigh.IsUnderwater){
 				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
-				if(neigh.isOccupied){
-					if(team == neigh.team){
+			}
+			neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+			if(neigh.isOccupied){
+				if(team == neigh.team){
+					neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+				}else if (neigh.team == ""){
+					return;
+				}else {
+					if (!isKnight){
+						neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+					}else{
 						neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
-					}else if (neigh.team == ""){
-						return;
-					}else {
-						if (!isKnight){
-							neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
-						}else{
-							neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
-							
-						}
+						
 					}
 				}
+			}
 		}
 		if(isKnight){
 			foreach (HexCell unit in neighbors)

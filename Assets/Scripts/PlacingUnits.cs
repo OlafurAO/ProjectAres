@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class PlacingUnits : MonoBehaviour {
+    public Canvas InformationCanvas;
     public Canvas PlayerOneCanvas;
     public Canvas PlayerTwoCanvas; 
     public Image BackgroundImage;
@@ -363,6 +364,13 @@ public class PlacingUnits : MonoBehaviour {
         }
     }
     
+    public void Information(){
+        InformationCanvas.GetComponent<Canvas>().enabled = true;
+    }
+    public void StopInformation(){
+        InformationCanvas.GetComponent<Canvas>().enabled = false;
+
+    }
     
 }
 
