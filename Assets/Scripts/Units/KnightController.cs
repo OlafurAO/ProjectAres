@@ -228,9 +228,10 @@ public class KnightController : MonoBehaviour {
     }
 
     public bool StartMoving(Vector3 dest, HexCell hex) {
-        float length = Vector3.Distance(transform.position, dest);
-        if(length >= 1000000){
-            print(length);
+        HexCell destCell = grid.GetCell(dest);
+        HexCell currCell = grid.GetCell(transform.position);
+        //veit ekki range ið
+        if(!currCell.HexRange.Contains(destCell)){
             print("no way hosey");
             return false; 
         }else{
@@ -243,8 +244,9 @@ public class KnightController : MonoBehaviour {
             startPlayingMoveAnimation = true;
             isMoving = true;
             isIdle = false;
-            IndexedLocation = hex.coordinates; 
-            grid.OccupyCell(hex, team);
+            IndexedLocation = hex.coordinates;
+            bool isknight = true; 
+            grid.OccupyCell(hex, team, isknight );
             if(CurrCell != null){
                 grid.UnOccupyCell(CurrCell);
             } 

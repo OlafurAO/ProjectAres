@@ -21,6 +21,7 @@ public class HexCell : MonoBehaviour {
 	public bool RedCanPlace;
 	public List<HexCell> HexRange = new List<HexCell>();
 	public string team;
+	public bool isKnight; 
 
 	public Color Color {
 		get {
@@ -411,12 +412,26 @@ public class HexCell : MonoBehaviour {
 				if(neigh.isOccupied){
 					if(team == neigh.team){
 						neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
-					}else if (team == ""){
+					}else if (neigh.team == ""){
 						return;
-					}else{
-						neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+					}else {
+						if (!isKnight){
+							neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+						}else{
+							neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+							
+						}
 					}
 				}
+		}
+		if(isKnight){
+			foreach (HexCell unit in neighbors)
+			{
+					if(unit.isOccupied && unit.team != team && unit.team != ""){
+						unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+						unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+					}
+			}
 		}
 	}
 	
@@ -425,6 +440,48 @@ public class HexCell : MonoBehaviour {
 		foreach (HexCell neigh in HexRange)
 		{
 				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+		}
+	}
+	//makes a red hexagon appear beneath a enemy that you can attack 
+	public void ShowAttackRange(string type){
+		if(type == "knight"){
+			foreach (HexCell unit in neighbors)
+			{
+				if(unit.isOccupied && unit.team != team){
+					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+				}
+			}
+		}else{
+			foreach (HexCell unit in HexRange)
+			{
+				if(unit.isOccupied && unit.team != team && unit.team != ""){
+					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+				}
+			}
+
+		}
+	}
+	//make attack hexagon dissapear
+	public void NoShowAttackRange(string type){
+		if(type == "knight"){
+			foreach (HexCell unit in neighbors)
+			{
+				if(unit.isOccupied && unit.team != team){
+					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+				}
+			}
+		}else{
+			foreach (HexCell unit in HexRange)
+			{
+				if(unit.isOccupied && unit.team != team){
+					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+				}
+			}
+
 		}
 	}
 }

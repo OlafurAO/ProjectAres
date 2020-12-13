@@ -162,17 +162,19 @@ public class HexGrid : MonoBehaviour {
 		int localZ = z - chunkZ * HexMetrics.chunkSizeZ;
 		chunk.AddCell(localX + localZ * HexMetrics.chunkSizeX, cell);
 	}
-	public void OccupyCell(HexCell cell, string team){
+	public void OccupyCell(HexCell cell, string team, bool isKnight){
 		print(team);
 		print("teamabove");
 		int index = cell.coordinates.X + cell.coordinates.Z * cellCountX + cell.coordinates.Z / 2;
 		cells[index].isOccupied = true; 
 		cells[index].team = team; 
+		cells[index].isKnight = isKnight; 
 	}
 	public void UnOccupyCell(HexCell cell){
 		int index = cell.coordinates.X + cell.coordinates.Z * cellCountX + cell.coordinates.Z / 2;
-		cells[index].isOccupied = false;
 		cells[index].team = "";
+		cells[index].isOccupied = false;
+		cells[index].isKnight = false;
 
 	}
 

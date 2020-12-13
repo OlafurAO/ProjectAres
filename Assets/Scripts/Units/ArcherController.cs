@@ -269,7 +269,7 @@ public class ArcherController : MonoBehaviour {
             isMoving = true;
             isIdle = false;
             IndexedLocation = hex.coordinates;
-            grid.OccupyCell(hex, team);
+            grid.OccupyCell(hex, team, false);
             if(CurrCell != null){
                 grid.UnOccupyCell(CurrCell);
             } 
