@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
+    public HexMapEditor editor;
     public static Camera mainCamera;
     public GameObject canvas;
 
@@ -124,6 +125,7 @@ public class GameManager : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        
         FindObjectOfType<AudioManager>().PlayLoop("deploy_phase", 0.0f, true);
         Color red = UnityEngine.Color.red;
         red.a = 0.5f;

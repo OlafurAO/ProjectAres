@@ -58,10 +58,10 @@ public class HexMapEditor : MonoBehaviour {
 		roadMode = (OptionalToggle)mode;
 	}
 
+
 	//public void ShowUI (bool visible) {
 	//	hexGrid.ShowUI(visible);
 	//}
-
 	void Update () {
 		if (
 			Input.GetMouseButton(0) &&
@@ -162,8 +162,7 @@ public class HexMapEditor : MonoBehaviour {
 		activeTerrainTypeIndex = index;
 	}
 	public void Save () {
-		string path = Path.Combine(Application.streamingAssetsPath, "test.map");
-
+		string path = Path.Combine(Application.persistentDataPath, "test.map");
 		using (
 			BinaryWriter writer =
 				new BinaryWriter(File.Open(path, FileMode.Create))
@@ -193,18 +192,20 @@ public class HexMapEditor : MonoBehaviour {
 		}
 		
 		hexGrid.CellsForBlue();
+		gameObject.SetActive(false);
 	}
 
 	public void Load () {
 		StartCoroutine(LoadMap());
-	}
 
+
+	}
 	public void ShowGrid (bool visible) {
 		if (visible) {
-			terrainMaterial.EnableKeyword("GRID_ON");
+			terrainMaterial.DisableKeyword("GRID_ON");
 		}
 		else {
-			terrainMaterial.DisableKeyword("GRID_ON");
+			terrainMaterial.EnableKeyword("GRID_ON");
 		}
 	}
 

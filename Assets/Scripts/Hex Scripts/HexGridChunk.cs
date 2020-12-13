@@ -6,7 +6,6 @@ public class HexGridChunk : MonoBehaviour {
 	public HexMesh terrain, rivers, roads, water, waterShore;
 
 	HexCell[] cells;
-
 	Canvas gridCanvas;
 	static Color color1 = new Color(1f, 0f, 0f);
 	static Color color2 = new Color(0f, 1f, 0f);
@@ -16,7 +15,7 @@ public class HexGridChunk : MonoBehaviour {
 		gridCanvas = GetComponentInChildren<Canvas>();
 
 		cells = new HexCell[HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ];
-		//howUI(false);
+		//ShowUI(false);
 	}
 
 	public void AddCell (int index, HexCell cell) {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class HexCell : MonoBehaviour {
+
 	public int Distance {
 		get {
 			return distance;
@@ -14,7 +15,6 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 	int distance;
-
 	public HexCoordinates coordinates;
 
 	public RectTransform uiRect;
@@ -34,6 +34,7 @@ public class HexCell : MonoBehaviour {
 	public List<HexCell> HexRange = new List<HexCell>();
 	public string team;
 	public bool isKnight; 
+
 	public Color Color {
 		get {
 			return HexMetrics.colors[terrainTypeIndex];
@@ -419,11 +420,6 @@ public class HexCell : MonoBehaviour {
 
 	}
 	
-	void UpdateDistanceLabel () {
-		UnityEngine.UI.Text label = uiRect.GetComponent<UnityEngine.UI.Text>();
-		label.text = distance.ToString();
-	}	
-	
 	//show range on map (walking range)
 	public void ShowWalkRange(){
 		foreach (HexCell neigh in HexRange)
@@ -507,5 +503,9 @@ public class HexCell : MonoBehaviour {
 			if(HexRange.Contains(victimLocation)){return true;}
 			return false;
 		}
+	}
+	void UpdateDistanceLabel () {
+		Text label = uiRect.GetComponent<Text>();
+		label.text = distance == int.MaxValue ? "" : distance.ToString();
 	}
 }
