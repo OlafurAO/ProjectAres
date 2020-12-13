@@ -61,6 +61,10 @@ public class PlacingUnits : MonoBehaviour {
     public TMPro.TextMeshProUGUI ArcherGold2;
     public TMPro.TextMeshProUGUI ArcherAttack2;
 
+    int blueUnitCount = 0;
+    int redUnitCount = 0;
+    public TMPro.TextMeshProUGUI unitLimitText;
+
     
     void Start(){
         PlayerTwoCanvas.enabled = false;
@@ -160,6 +164,12 @@ public class PlacingUnits : MonoBehaviour {
 
     }
     public void CreateUnit(string type){
+        if(player == 1) {
+            blueUnitCount++;
+        } else {
+            redUnitCount++;
+        }
+
         FindObjectOfType<AudioManager>().Play("menu_button_click", 0.0f);
         if(player == 1){
             if(type == "Knight"){
@@ -254,6 +264,13 @@ public class PlacingUnits : MonoBehaviour {
     }
 
     public void PlayerOneFinished(){
+        if(blueUnitCount < 2) {
+            unitLimitText.gameObject.SetActive(true);
+            return;
+        } else {
+            unitLimitText.gameObject.SetActive(false);
+        }
+
         PlayerOneCanvas.enabled = false; 
         player = 2; 
         PlayerTwoCanvas.enabled = true;
@@ -271,6 +288,13 @@ public class PlacingUnits : MonoBehaviour {
         grid.CellsForRed();
     }
     public void PlayerTwoFinished(){
+        if(redUnitCount < 2) {
+            unitLimitText.gameObject.SetActive(true);
+            return;
+        } else {
+            unitLimitText.gameObject.SetActive(false);
+        }
+        
         print(placing);
         PlayerTwoCanvas.enabled = false;
         placing = false;
@@ -282,11 +306,18 @@ public class PlacingUnits : MonoBehaviour {
     }
 
     public void DeleteUnit(){
+        if(player == 1) {
+            blueUnitCount--;
+        } else {
+            redUnitCount--;
+        }
+
         foreach (GameObject unit in units)
         {
             if(unit.transform.position == index.transform.position){
                 unit.SetActive(false);
                 index.isOccupied = false;
+                break;
             }
         }
     }
