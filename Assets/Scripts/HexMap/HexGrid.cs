@@ -12,6 +12,7 @@ public class HexGrid : MonoBehaviour {
 	public Canvas CreateUnitCanvas1;
 	public Canvas DeleteUnitCanvas1;
 	public Canvas HexRangeCanvas1;
+	public Canvas HexHoverImageCanvas1;
 	public Texture2D noiseSource;
 	public Camera camera;
 	public Text cellLabelPrefab;
@@ -103,12 +104,14 @@ public class HexGrid : MonoBehaviour {
 		Canvas temp4 = Instantiate<Canvas>(CreateUnitCanvas1);
 		Canvas temp5 = Instantiate<Canvas>(DeleteUnitCanvas1);
 		Canvas temp6 = Instantiate<Canvas>(HexRangeCanvas1);
+		Canvas temp7 = Instantiate<Canvas>(HexHoverImageCanvas1);
 		temp.transform.SetParent(cell.transform, false);
 		temp2.transform.SetParent(cell.transform, false);
 		temp3.transform.SetParent(cell.transform, false);
 		temp4.transform.SetParent(cell.transform, false);
 		temp5.transform.SetParent(cell.transform, false);
 		temp6.transform.SetParent(cell.transform, false);
+		temp7.transform.SetParent(cell.transform, false);
 		
 		cell.MoveCanvas = temp;
 		cell.AttackCanvas = temp2;
@@ -117,6 +120,7 @@ public class HexGrid : MonoBehaviour {
 		cell.DeleteCanvas = temp5;
 		cell.ActualPosition = cell.transform.position;
 		cell.HexRangeCanvas = temp6;
+		cell.HexHoverImageCanvas = temp7;
 		
 		cell.MoveCanvas.enabled = false;
 		cell.AttackCanvas.enabled = false;
@@ -173,7 +177,6 @@ public class HexGrid : MonoBehaviour {
 		int index = cell.coordinates.X + cell.coordinates.Z * cellCountX + cell.coordinates.Z / 2;
 		cells[index].isOccupied = false;
 		cells[index].team = "";
-
 	}
 
 	public HexCell MovementCell(Vector3 position){
