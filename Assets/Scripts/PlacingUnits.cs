@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class PlacingUnits : MonoBehaviour {
+    public Canvas InformationCanvas;
     public Canvas PlayerOneCanvas;
     public Canvas PlayerTwoCanvas; 
     public Image BackgroundImage;
@@ -356,6 +357,18 @@ public class PlacingUnits : MonoBehaviour {
         foreach (GameObject unit in units)
         {
             if(unit.transform.position == index.transform.position){
+                if(unit.tag.Contains("knight")){
+                    gold += unit.GetComponent<KnightController>().goldCost;
+                    goldText.text = gold.ToString();
+                }else if (unit.tag.Contains("Archer")){
+                    gold += unit.GetComponent<ArcherController>().goldCost;
+                    goldText.text = gold.ToString();
+                    
+                }else if(unit.tag.Contains("Wizard")){
+                    gold += unit.GetComponent<WizardController>().goldCost;
+                    goldText.text = gold.ToString();
+
+                }
                 unit.SetActive(false);
                 index.isOccupied = false;
                 break;
@@ -363,6 +376,13 @@ public class PlacingUnits : MonoBehaviour {
         }
     }
     
+    public void Information(){
+        InformationCanvas.GetComponent<Canvas>().enabled = true;
+    }
+    public void StopInformation(){
+        InformationCanvas.GetComponent<Canvas>().enabled = false;
+
+    }
     
 }
 

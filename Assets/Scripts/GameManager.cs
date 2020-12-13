@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
+    public HexMapEditor editor;
     public static Camera mainCamera;
     public GameObject canvas;
 
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviour {
 
     private HexCell SelectedCell; 
     private HexCell lastHoveredCell;
+    public Canvas InformationCanvas;
 
     private string[] portraitTextureNames = {
         "KnightBlue", "ArcherBlue", "WizardBlue", 
@@ -127,6 +129,7 @@ public class GameManager : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        
         FindObjectOfType<AudioManager>().PlayLoop("deploy_phase", 0.0f, true);
         Color red = UnityEngine.Color.red;
         red.a = 0.5f;
@@ -1134,5 +1137,13 @@ public class GameManager : MonoBehaviour {
             var script = currentUnit.GetComponent<WizardController>();
             return script.isMoving || script.isAttacking;
         }
+    }
+
+    public void Information(){
+        InformationCanvas.GetComponent<Canvas>().enabled = true;
+    }
+    public void StopInformation(){
+        InformationCanvas.GetComponent<Canvas>().enabled = false;
+
     }
 }

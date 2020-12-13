@@ -7,6 +7,8 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class HexMapEditor : MonoBehaviour {
+	bool editMode;
+	public Material terrainMaterial;
 
 	int activeTerrainTypeIndex;
 	public HexGrid hexGrid;
@@ -56,10 +58,10 @@ public class HexMapEditor : MonoBehaviour {
 		roadMode = (OptionalToggle)mode;
 	}
 
-	public void ShowUI (bool visible) {
-		hexGrid.ShowUI(visible);
-	}
 
+	//public void ShowUI (bool visible) {
+	//	hexGrid.ShowUI(visible);
+	//}
 	void Update () {
 		if (
 			Input.GetMouseButton(0) &&
@@ -83,7 +85,12 @@ public class HexMapEditor : MonoBehaviour {
 			else {
 				isDrag = false;
 			}
-			EditCells(currentCell);
+			if (editMode) {
+				EditCells(currentCell);
+			}
+			else {
+				hexGrid.FindDistancesTo(currentCell);
+			}
 			previousCell = currentCell;
 		}
 		else {
@@ -185,9 +192,26 @@ public class HexMapEditor : MonoBehaviour {
 		}
 		
 		hexGrid.CellsForBlue();
+		gameObject.SetActive(false);
 	}
 
 	public void Load () {
 		StartCoroutine(LoadMap());
+	}
+	public void ShowGrid (bool visible) {
+		if (visible) {
+			terrainMaterial.DisableKeyword("GRID_ON");
+		}
+		else {
+			terrainMaterial.EnableKeyword("GRID_ON");
+		}
+	}
+
+	void Awake () {
+		terrainMaterial.DisableKeyword("GRID_ON");
+	}
+	public void SetEditMode (bool toggle) {
+		editMode = toggle;
+		hexGrid.ShowUI(!toggle);
 	}
 }

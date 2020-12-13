@@ -1,9 +1,20 @@
 ﻿using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class HexCell : MonoBehaviour {
 
+	public int Distance {
+		get {
+			return distance;
+		}
+		set {
+			distance = value;
+			UpdateDistanceLabel();
+		}
+	}
+	int distance;
 	public HexCoordinates coordinates;
 
 	public RectTransform uiRect;
@@ -413,22 +424,24 @@ public class HexCell : MonoBehaviour {
 	public void ShowWalkRange(){
 		foreach (HexCell neigh in HexRange)
 		{
+			if(!neigh.IsUnderwater){
 				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
-				if(neigh.isOccupied){
-					if(team == neigh.team){
+			}
+			neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
+			if(neigh.isOccupied){
+				if(team == neigh.team){
+					neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+				}else if (neigh.team == ""){
+					return;
+				}else {
+					if (!isKnight){
+						neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+					}else{
 						neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
-					}else if (neigh.team == ""){
-						return;
-					}else {
-						if (!isKnight){
-							neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
-						}else{
-							neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
-							
-						}
+						
 					}
 				}
+			}
 		}
 		if(isKnight){
 			foreach (HexCell unit in neighbors)
@@ -492,5 +505,9 @@ public class HexCell : MonoBehaviour {
 			if(HexRange.Contains(victimLocation)){return true;}
 			return false;
 		}
+	}
+	void UpdateDistanceLabel () {
+		Text label = uiRect.GetComponent<Text>();
+		label.text = distance == int.MaxValue ? "" : distance.ToString();
 	}
 }
