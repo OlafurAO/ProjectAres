@@ -252,10 +252,10 @@ public class ArcherController : MonoBehaviour {
     }
 
     public bool StartMoving(Vector3 dest, HexCell hex) {
-        print(dest);
-        float length = Vector3.Distance(transform.position, dest);
+        HexCell destCell = grid.GetCell(dest);
+        HexCell currCell = grid.GetCell(transform.position);
         //veit ekki range ið
-        if(length > 1000000){
+        if(!currCell.HexRange.Contains(destCell)){
             print("no way hosey");
             return false;
         }else{
@@ -269,7 +269,7 @@ public class ArcherController : MonoBehaviour {
             isMoving = true;
             isIdle = false;
             IndexedLocation = hex.coordinates;
-            grid.OccupyCell(hex);
+            grid.OccupyCell(hex, team);
             if(CurrCell != null){
                 grid.UnOccupyCell(CurrCell);
             } 

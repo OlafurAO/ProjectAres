@@ -184,6 +184,7 @@ public class PlacingUnits : MonoBehaviour {
                 FinalUnit.transform.position = index.transform.position; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
+                index.team = "blue";
                 units.Add(FinalUnit);
                 return; 
             }else if(type == "Archer"){
@@ -198,6 +199,7 @@ public class PlacingUnits : MonoBehaviour {
                 FinalUnit.transform.position = index.transform.position; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
+                index.team = "blue";
                 units.Add(FinalUnit);
                 return; 
             }else if(type == "Wizard"){
@@ -212,6 +214,7 @@ public class PlacingUnits : MonoBehaviour {
                 FinalUnit.transform.position = index.transform.position; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
+                index.team = "blue";
                 units.Add(FinalUnit);
                 return; 
             }
@@ -228,6 +231,7 @@ public class PlacingUnits : MonoBehaviour {
                 FinalUnit.transform.position = index.transform.position; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
+                index.team = "red";
                 units.Add(FinalUnit);
                 return; 
             }else if(type == "Archer"){
@@ -242,6 +246,7 @@ public class PlacingUnits : MonoBehaviour {
                 FinalUnit.transform.position = index.transform.position; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
+                index.team = "red";
                 units.Add(FinalUnit);
                 return; 
             }else if (type == "Wizard"){
@@ -256,6 +261,7 @@ public class PlacingUnits : MonoBehaviour {
                 FinalUnit.transform.position = index.transform.position; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
+                index.team = "red";
                 units.Add(FinalUnit);
                 return; 
             }

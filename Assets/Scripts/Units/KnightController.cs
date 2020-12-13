@@ -244,7 +244,7 @@ public class KnightController : MonoBehaviour {
             isMoving = true;
             isIdle = false;
             IndexedLocation = hex.coordinates; 
-            grid.OccupyCell(hex);
+            grid.OccupyCell(hex, team);
             if(CurrCell != null){
                 grid.UnOccupyCell(CurrCell);
             } 
