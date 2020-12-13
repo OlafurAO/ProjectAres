@@ -63,6 +63,9 @@ public class GameManager : MonoBehaviour {
     //when is player is finished placing units then this can stop
     bool isPlacingUnits = true; 
 
+    private bool isTurnOver = false;
+    private int endTurnFlashDirection = 1;
+
     private bool isMouseOverEnemyUnit = false;
     private bool isShuffling = false;
     // The current unit that the mouse is hovering over
@@ -402,6 +405,10 @@ public class GameManager : MonoBehaviour {
         currCell.NoShowWalkRange();
         
         if(IsCurrentUnitMovingOrAttacking() || isShuffling) return;
+
+        canvas.transform.Find("OutOfMovesText").gameObject.SetActive(false);
+        canvas.transform.Find("EndTurn").GetComponent<Image>().color = new Vector4(0f, 0f, 0f, 255f);
+        isTurnOver = false;
         
         // If the list is over, then the round is over and initiative needs to be rolled again
         if(currentUnitIndex != allUnits.Count - 1) {
@@ -680,6 +687,20 @@ public class GameManager : MonoBehaviour {
             gameOver = true;
         }
 
+        if(isTurnOver) {
+            var color = canvas.transform.Find("EndTurn").GetComponent<Image>().color;
+            color.r += 0.03f * endTurnFlashDirection;
+            color.g += 0.03f * endTurnFlashDirection;
+            color.b += 0.03f * endTurnFlashDirection;
+
+            canvas.transform.Find("EndTurn").GetComponent<Image>().color = color;
+            if(color.r >= 1f) {
+                endTurnFlashDirection = -1;
+            } else if(color.r <= 0) {
+                endTurnFlashDirection = 1;
+            }
+        }
+
         // Is player hovering over an object?
         Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit rhInfo;
@@ -922,6 +943,9 @@ public class GameManager : MonoBehaviour {
         var apCanvas = canvas.gameObject.transform.Find("ActionPointsCanvas");
         apCanvas.transform.Find("MovesText").GetComponent<TMPro.TextMeshProUGUI>().text = "Action Points: 0";
         apCanvas.transform.Find("AvailableMoves").GetComponent<TMPro.TextMeshProUGUI>().text = "";
+        canvas.transform.Find("OutOfMovesText").gameObject.SetActive(true);
+        isTurnOver = true;
+        endTurnFlashDirection = 1;
 
         if(currentUnit.tag.Contains("Knight")) {
             var attackerScript = currentUnit.GetComponent<KnightController>();
@@ -960,6 +984,13 @@ public class GameManager : MonoBehaviour {
 
     public void Defend(){
         //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
+        var apCanvas = canvas.gameObject.transform.Find("ActionPointsCanvas");
+        apCanvas.transform.Find("MovesText").GetComponent<TMPro.TextMeshProUGUI>().text = "Action Points: 0";
+        apCanvas.transform.Find("AvailableMoves").GetComponent<TMPro.TextMeshProUGUI>().text = "";
+        canvas.transform.Find("OutOfMovesText").gameObject.SetActive(true);
+        isTurnOver = true;
+        endTurnFlashDirection = 1;
+
         if(currentUnit.tag.Contains("Knight")) {
             var attackerScript = currentUnit.GetComponent<KnightController>();
             attackerScript.Defend(); 
