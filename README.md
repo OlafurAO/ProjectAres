@@ -2,6 +2,7 @@
 
 HOW TO RUN THE GAME:
 The main Scene to run in unity is under Assets > Scenes > "SampleScene.unity" 
+you can also run it in itch.io by clicking this link:
 
 Controlls:
 Please Use A mouse to Command units and play the game, And keyboard to move the camera "WASD" and the scroll wheel to zoom in and out.
