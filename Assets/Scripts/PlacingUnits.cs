@@ -357,6 +357,18 @@ public class PlacingUnits : MonoBehaviour {
         foreach (GameObject unit in units)
         {
             if(unit.transform.position == index.transform.position){
+                if(unit.tag.Contains("knight")){
+                    gold += unit.GetComponent<KnightController>().goldCost;
+                    goldText.text = gold.ToString();
+                }else if (unit.tag.Contains("Archer")){
+                    gold += unit.GetComponent<ArcherController>().goldCost;
+                    goldText.text = gold.ToString();
+                    
+                }else if(unit.tag.Contains("Wizard")){
+                    gold += unit.GetComponent<WizardController>().goldCost;
+                    goldText.text = gold.ToString();
+
+                }
                 unit.SetActive(false);
                 index.isOccupied = false;
                 break;
