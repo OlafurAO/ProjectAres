@@ -414,6 +414,7 @@ public class HexCell : MonoBehaviour {
 		foreach (HexCell neigh in HexRange)
 		{
 				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
 				if(neigh.isOccupied){
 					if(team == neigh.team){
 						neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
@@ -470,23 +471,12 @@ public class HexCell : MonoBehaviour {
 	}
 	//make attack hexagon dissapear
 	public void NoShowAttackRange(string type){
-		if(type == "knight"){
-			foreach (HexCell unit in neighbors)
-			{
-				if(unit.isOccupied && unit.team != team){
-					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
-					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
-				}
+		foreach (HexCell unit in HexRange)
+		{
+			if(unit.isOccupied && unit.team != team){
+				unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+				unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
 			}
-		}else{
-			foreach (HexCell unit in HexRange)
-			{
-				if(unit.isOccupied && unit.team != team){
-					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
-					unit.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
-				}
-			}
-
 		}
 	}
 }
