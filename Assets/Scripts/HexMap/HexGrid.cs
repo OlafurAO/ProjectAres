@@ -142,7 +142,7 @@ public class HexGrid : MonoBehaviour {
 		Text label = Instantiate<Text>(cellLabelPrefab);
 		label.rectTransform.anchoredPosition =
 			new Vector2(position.x, position.z);
-		label.text = cell.coordinates.ToStringOnSeparateLines();
+		//label.text = cell.coordinates.ToStringOnSeparateLines();
 		cell.uiRect = label.rectTransform;
 
 		cell.Elevation = 0;
@@ -264,6 +264,12 @@ public class HexGrid : MonoBehaviour {
 		foreach (HexCell cell in cells)
 		{
 				cell.SetRange();
+		}
+	}
+	public void FindDistancesTo (HexCell cell) {
+		for (int i = 0; i < cells.Length; i++) {
+			cells[i].Distance = 
+				cell.coordinates.DistanceTo(cells[i].coordinates);
 		}
 	}
 }

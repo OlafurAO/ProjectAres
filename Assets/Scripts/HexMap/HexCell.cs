@@ -1,8 +1,19 @@
 ﻿using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class HexCell : MonoBehaviour {
+	public int Distance {
+		get {
+			return distance;
+		}
+		set {
+			distance = value;
+			UpdateDistanceLabel();
+		}
+	}
+	int distance;
 
 	public HexCoordinates coordinates;
 
@@ -16,11 +27,11 @@ public class HexCell : MonoBehaviour {
 	public Canvas CreateCanvas;
 	public Canvas DeleteCanvas;
 	public Canvas HexRangeCanvas;
-	public Vector3 ActualPosition;
 	public bool BlueCanPlace;
 	public bool RedCanPlace;
 	public List<HexCell> HexRange = new List<HexCell>();
 
+	public Vector3 ActualPosition;
 	public Color Color {
 		get {
 			return HexMetrics.colors[terrainTypeIndex];
@@ -401,6 +412,11 @@ public class HexCell : MonoBehaviour {
 		*/
 	}
 	
+	void UpdateDistanceLabel () {
+		UnityEngine.UI.Text label = uiRect.GetComponent<UnityEngine.UI.Text>();
+		label.text = distance.ToString();
+	}	
+	
 	//show range on map (walking range)
 	public void ShowWalkRange(){
 		foreach (HexCell neigh in HexRange)
@@ -419,4 +435,6 @@ public class HexCell : MonoBehaviour {
 				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
 		}
 	}
+
+
 }

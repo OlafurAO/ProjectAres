@@ -1,18 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using System.IO;
-<<<<<<< HEAD
-using UnityEngine.Networking;
-
-
-=======
 using System.Text;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.Collections;
->>>>>>> 40a8d9651fa4c234ee8dec9b4f773a5b30b783c4
 
 public class HexMapEditor : MonoBehaviour {
+	bool editMode;
+	public Material terrainMaterial;
 
 	int activeTerrainTypeIndex;
 	public HexGrid hexGrid;
@@ -62,9 +58,9 @@ public class HexMapEditor : MonoBehaviour {
 		roadMode = (OptionalToggle)mode;
 	}
 
-	public void ShowUI (bool visible) {
-		hexGrid.ShowUI(visible);
-	}
+	//public void ShowUI (bool visible) {
+	//	hexGrid.ShowUI(visible);
+	//}
 
 	void Update () {
 		if (
@@ -89,7 +85,12 @@ public class HexMapEditor : MonoBehaviour {
 			else {
 				isDrag = false;
 			}
-			EditCells(currentCell);
+			if (editMode) {
+				EditCells(currentCell);
+			}
+			else {
+				hexGrid.FindDistancesTo(currentCell);
+			}
 			previousCell = currentCell;
 		}
 		else {
@@ -171,19 +172,6 @@ public class HexMapEditor : MonoBehaviour {
 		}
 	}
 
-<<<<<<< HEAD
-	public void Load () {
-		string path = Path.Combine(Application.streamingAssetsPath, "test.map");
-
-		var unityWebRequest = UnityWebRequest.Get(path);
-		unityWebRequest.SendWebRequest();
-		var stuff = unityWebRequest.downloadHandler.data;
-		
-		using (
-			BinaryReader reader =
-				new BinaryReader(File.OpenRead(path))) {
-					hexGrid.Load(reader);
-=======
 	IEnumerator LoadMap() {
 		var loadingRequest = UnityWebRequest.Get(Path.Combine(Application.streamingAssetsPath, "test.map"));
 		Debug.Log("Sending request");
@@ -202,11 +190,27 @@ public class HexMapEditor : MonoBehaviour {
 			using (BinaryReader reader = new BinaryReader(stream)) {
 				hexGrid.Load(reader);
 			}
->>>>>>> 40a8d9651fa4c234ee8dec9b4f773a5b30b783c4
 		}
 	}
 
 	public void Load () {
 		StartCoroutine(LoadMap());
+	}
+
+	public void ShowGrid (bool visible) {
+		if (visible) {
+			terrainMaterial.EnableKeyword("GRID_ON");
+		}
+		else {
+			terrainMaterial.DisableKeyword("GRID_ON");
+		}
+	}
+
+	void Awake () {
+		terrainMaterial.DisableKeyword("GRID_ON");
+	}
+	public void SetEditMode (bool toggle) {
+		editMode = toggle;
+		hexGrid.ShowUI(!toggle);
 	}
 }

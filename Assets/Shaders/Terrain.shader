@@ -19,6 +19,7 @@
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.5
+        #pragma multi_compile _ GRID_ON
 
         UNITY_DECLARE_TEX2DARRAY(_MainTex);
         sampler2D _GridTex;
@@ -57,12 +58,13 @@
 				GetTerrainColor(IN, 0) +
 				GetTerrainColor(IN, 1) +
 				GetTerrainColor(IN, 2);
-            
-            float2 gridUV = IN.worldPos.xz;
-			gridUV.x *= 1 / (6.928203232);
-			gridUV.y *= 1 / (6.00);
-
-            fixed4 grid = tex2D(_GridTex, gridUV);
+            fixed4 grid = 1;
+            #if defined(GRID_ON)
+                float2 gridUV = IN.worldPos.xz;
+			    gridUV.x *= 1 / (6.928203232);
+			    gridUV.y *= 1 / (6.00);
+                grid = tex2D(_GridTex, gridUV);
+            #endif
 
 			o.Albedo = c.rgb * grid * _Color;
 			o.Metallic = _Metallic;
