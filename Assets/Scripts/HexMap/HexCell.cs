@@ -16,6 +16,7 @@ public class HexCell : MonoBehaviour {
 	public Canvas CreateCanvas;
 	public Canvas DeleteCanvas;
 	public Canvas HexRangeCanvas;
+	public Canvas HexHoverImageCanvas;
 	public Vector3 ActualPosition;
 	public bool BlueCanPlace;
 	public bool RedCanPlace;
@@ -400,6 +401,10 @@ public class HexCell : MonoBehaviour {
 			roads[i] = reader.ReadBoolean();
 		}
 		*/
+	}
+
+	public void HoverHighlight() {
+
 	}
 	
 	//show range on map (walking range)
