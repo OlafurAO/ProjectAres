@@ -481,8 +481,8 @@ public class HexCell : MonoBehaviour {
 	}
 
 	
-	public bool CanAttack(string type, HexCell victimLocation){
-		if(type == "knight"){
+	public bool CanAttack(HexCell victimLocation){
+		if(isKnight){
 			foreach (var units in neighbors)
 			{
 					if(units == victimLocation){return true;}
