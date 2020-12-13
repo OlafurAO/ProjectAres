@@ -327,7 +327,7 @@ public class HexGrid : MonoBehaviour {
 
 	public bool CanMove(HexCell current, Vector3 desti){
 		HexCell destCell = GetCell(desti);
-		if(current.HexRange.Contains(destCell)){
+		if(current.HexRange.Contains(destCell) && !destCell.IsUnderwater){
 			return true;
 		}else{
 			return false;

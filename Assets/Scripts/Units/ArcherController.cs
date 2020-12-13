@@ -15,7 +15,7 @@ public class ArcherController : MonoBehaviour {
     
     public string type = "archer";
     public string weaknessType = "knight";
-    public int goldCost = 20;
+    public int goldCost = 25;
     public int movementRange = 10;
     public int attackRange = 2;
     public TMPro.TextMeshProUGUI damageTakenText;

@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour {
 
     private HexCell SelectedCell; 
     private HexCell lastHoveredCell;
+    public Canvas InformationCanvas;
 
     private string[] portraitTextureNames = {
         "KnightBlue", "ArcherBlue", "WizardBlue", 
@@ -63,6 +64,9 @@ public class GameManager : MonoBehaviour {
     bool action; 
     //when is player is finished placing units then this can stop
     bool isPlacingUnits = true; 
+
+    private bool isTurnOver = false;
+    private int endTurnFlashDirection = 1;
 
     private bool isMouseOverEnemyUnit = false;
     private bool isShuffling = false;
@@ -188,6 +192,11 @@ public class GameManager : MonoBehaviour {
         
         currCell = grid.GetCell(currentUnit.transform.position);
         currCell.ShowWalkRange();
+
+        var apCanvas = canvas.gameObject.transform.Find("ActionPointsCanvas");
+        apCanvas.transform.Find("MovesText").GetComponent<TMPro.TextMeshProUGUI>().text = "Action Points: 2";
+        apCanvas.transform.Find("AvailableMoves").GetComponent<TMPro.TextMeshProUGUI>().text = "Movement: 1 AP\nAttack/Defend: All AP";
+        apCanvas.gameObject.SetActive(true);
     }
 
     // Make sure a team won't be able to move more than 2 times in a row
@@ -399,6 +408,10 @@ public class GameManager : MonoBehaviour {
         currCell.NoShowWalkRange();
         
         if(IsCurrentUnitMovingOrAttacking() || isShuffling) return;
+
+        canvas.transform.Find("OutOfMovesText").gameObject.SetActive(false);
+        canvas.transform.Find("EndTurn").GetComponent<Image>().color = new Vector4(0f, 0f, 0f, 255f);
+        isTurnOver = false;
         
         // If the list is over, then the round is over and initiative needs to be rolled again
         if(currentUnitIndex != allUnits.Count - 1) {
@@ -406,6 +419,10 @@ public class GameManager : MonoBehaviour {
             currentUnitIndex++;
             DisableCurrentUnitCircle();
             currentUnit = allUnits[currentUnitIndex];
+
+            var apCanvas = canvas.gameObject.transform.Find("ActionPointsCanvas");
+            apCanvas.transform.Find("MovesText").GetComponent<TMPro.TextMeshProUGUI>().text = "Action Points: 2";
+            apCanvas.transform.Find("AvailableMoves").GetComponent<TMPro.TextMeshProUGUI>().text = "Movement: 1 AP\nAttack/Defend: All AP";
             
             GetCurrentUnitDamageAndType();
             EnableCurrentUnitCircle();
@@ -673,6 +690,20 @@ public class GameManager : MonoBehaviour {
             gameOver = true;
         }
 
+        if(isTurnOver) {
+            var color = canvas.transform.Find("EndTurn").GetComponent<Image>().color;
+            color.r += 0.03f * endTurnFlashDirection;
+            color.g += 0.03f * endTurnFlashDirection;
+            color.b += 0.03f * endTurnFlashDirection;
+
+            canvas.transform.Find("EndTurn").GetComponent<Image>().color = color;
+            if(color.r >= 1f) {
+                endTurnFlashDirection = -1;
+            } else if(color.r <= 0) {
+                endTurnFlashDirection = 1;
+            }
+        }
+
         // Is player hovering over an object?
         Ray toMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit rhInfo;
@@ -865,6 +896,11 @@ public class GameManager : MonoBehaviour {
         if(SelectedCell == null) return; 
         var index = SelectedCell;
         Vector3 destination = index.ActualPosition;
+
+        var apCanvas = canvas.gameObject.transform.Find("ActionPointsCanvas");
+        apCanvas.transform.Find("MovesText").GetComponent<TMPro.TextMeshProUGUI>().text = "Action Points: 1";
+        apCanvas.transform.Find("AvailableMoves").GetComponent<TMPro.TextMeshProUGUI>().text = "Attack/Defend: All AP";
+
         if(currentUnit.tag.Contains("Knight")) {
             var script = currentUnit.GetComponent<KnightController>();
             bool move = script.StartMoving(destination, index);
@@ -907,6 +943,13 @@ public class GameManager : MonoBehaviour {
         // Line attack animation up with take damage animation
         float victimTakeDamageDelay = 0.5f;
 
+        var apCanvas = canvas.gameObject.transform.Find("ActionPointsCanvas");
+        apCanvas.transform.Find("MovesText").GetComponent<TMPro.TextMeshProUGUI>().text = "Action Points: 0";
+        apCanvas.transform.Find("AvailableMoves").GetComponent<TMPro.TextMeshProUGUI>().text = "";
+        canvas.transform.Find("OutOfMovesText").gameObject.SetActive(true);
+        isTurnOver = true;
+        endTurnFlashDirection = 1;
+
         if(currentUnit.tag.Contains("Knight")) {
             var attackerScript = currentUnit.GetComponent<KnightController>();
             damage = attackerScript.baseDamage;
@@ -944,6 +987,13 @@ public class GameManager : MonoBehaviour {
 
     public void Defend(){
         //copy af koðanum til að láta unitið vera í "defend" ef hann clickar á sjálfan sig 
+        var apCanvas = canvas.gameObject.transform.Find("ActionPointsCanvas");
+        apCanvas.transform.Find("MovesText").GetComponent<TMPro.TextMeshProUGUI>().text = "Action Points: 0";
+        apCanvas.transform.Find("AvailableMoves").GetComponent<TMPro.TextMeshProUGUI>().text = "";
+        canvas.transform.Find("OutOfMovesText").gameObject.SetActive(true);
+        isTurnOver = true;
+        endTurnFlashDirection = 1;
+
         if(currentUnit.tag.Contains("Knight")) {
             var attackerScript = currentUnit.GetComponent<KnightController>();
             attackerScript.Defend(); 
@@ -1087,5 +1137,13 @@ public class GameManager : MonoBehaviour {
             var script = currentUnit.GetComponent<WizardController>();
             return script.isMoving || script.isAttacking;
         }
+    }
+
+    public void Information(){
+        InformationCanvas.GetComponent<Canvas>().enabled = true;
+    }
+    public void StopInformation(){
+        InformationCanvas.GetComponent<Canvas>().enabled = false;
+
     }
 }
