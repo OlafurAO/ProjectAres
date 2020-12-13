@@ -182,8 +182,10 @@ public class PlacingUnits : MonoBehaviour {
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[0]);
                 FinalUnit.tag = "KnightBlue";
                 FinalUnit.transform.position = index.transform.position; 
+                FinalUnit.GetComponent<KnightController>().CurrCell = index; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
+                index.isKnight = true;
                 index.team = "blue";
                 units.Add(FinalUnit);
                 return; 
@@ -197,6 +199,7 @@ public class PlacingUnits : MonoBehaviour {
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[1]);
                 FinalUnit.tag = "ArcherBlue";
                 FinalUnit.transform.position = index.transform.position; 
+                FinalUnit.GetComponent<ArcherController>().CurrCell = index; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
                 index.team = "blue";
@@ -211,7 +214,8 @@ public class PlacingUnits : MonoBehaviour {
                 }
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[2]);
                 FinalUnit.tag = "WizardBlue";
-                FinalUnit.transform.position = index.transform.position; 
+                FinalUnit.transform.position = index.transform.position;
+                FinalUnit.GetComponent<WizardController>().CurrCell = index; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
                 index.team = "blue";
@@ -229,9 +233,11 @@ public class PlacingUnits : MonoBehaviour {
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[3]);
                 FinalUnit.tag = "KnightRed";
                 FinalUnit.transform.position = index.transform.position; 
+                FinalUnit.GetComponent<KnightController>().CurrCell = index; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
                 index.team = "red";
+                index.isKnight = true;
                 units.Add(FinalUnit);
                 return; 
             }else if(type == "Archer"){
@@ -244,6 +250,7 @@ public class PlacingUnits : MonoBehaviour {
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[4]);
                 FinalUnit.tag = "ArcherRed";
                 FinalUnit.transform.position = index.transform.position; 
+                FinalUnit.GetComponent<ArcherController>().CurrCell = index; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
                 index.team = "red";
@@ -259,6 +266,7 @@ public class PlacingUnits : MonoBehaviour {
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[5]);
                 FinalUnit.tag = "WizardRed";
                 FinalUnit.transform.position = index.transform.position; 
+                FinalUnit.GetComponent<WizardController>().CurrCell = index; 
                 FinalUnit.SetActive(true); 
                 index.isOccupied = true;
                 index.team = "red";
