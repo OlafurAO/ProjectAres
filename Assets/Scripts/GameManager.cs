@@ -781,15 +781,15 @@ public class GameManager : MonoBehaviour {
                     if(SelectedCell != null){
                         grid.DisableButton(currButtonCanvas);
                     }
+                    if(index != null){
+                        if(!grid.CanMove(index, rhInfo.point)){return;}
+                    }
 
                     var cell = grid.GetCell(rhInfo.point);
                     if(!cell.isOccupied) {
                         index = grid.MovementCell(rhInfo.point);
                         currButtonCanvas = index.MoveCanvas;
                         SelectedCell = index; 
-                    }
-                    if(index != null){
-                        if(!grid.CanMove(index, rhInfo.point)){return;}
                     }
                 }
             }
