@@ -854,6 +854,7 @@ public class GameManager : MonoBehaviour {
                 movement = false;
                 HexCell currCell1 = grid.GetCell(currentUnit.transform.position);
                 currCell1.NoShowWalkRange();
+                index.ShowAttackRange("knight");
             }  
         } else if(currentUnit.tag.Contains("Archer")) {
             var script = currentUnit.GetComponent<ArcherController>();  
@@ -862,6 +863,7 @@ public class GameManager : MonoBehaviour {
                 movement = false;
                 HexCell currCell1 = grid.GetCell(currentUnit.transform.position);
                 currCell1.NoShowWalkRange();
+                index.ShowAttackRange("Archer");
             }  
         } else {
             var script = currentUnit.GetComponent<WizardController>();
@@ -870,6 +872,7 @@ public class GameManager : MonoBehaviour {
                 movement = false;
                 HexCell currCell1 = grid.GetCell(currentUnit.transform.position);
                 currCell1.NoShowWalkRange();
+                index.ShowAttackRange("Wizard");
             }  
         }
     }
