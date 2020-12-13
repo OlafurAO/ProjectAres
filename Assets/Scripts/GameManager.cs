@@ -698,7 +698,7 @@ public class GameManager : MonoBehaviour {
                 return;
             }
 
-            HexCell index; 
+            HexCell index = grid.GetCell(currentUnit.transform.position); 
 
             // Did player click on a unit?
             if(didHit && (rhInfo.collider.gameObject.tag.Contains("Knight") || rhInfo.collider.gameObject.tag.Contains("Archer") 
@@ -779,6 +779,9 @@ public class GameManager : MonoBehaviour {
                         index = grid.MovementCell(rhInfo.point);
                         currButtonCanvas = index.MoveCanvas;
                         SelectedCell = index; 
+                    }
+                    if(index != null){
+                        if(!grid.CanMove(index, rhInfo.point)){return;}
                     }
                 }
             }

@@ -166,13 +166,17 @@ public class HexGrid : MonoBehaviour {
 		int localZ = z - chunkZ * HexMetrics.chunkSizeZ;
 		chunk.AddCell(localX + localZ * HexMetrics.chunkSizeX, cell);
 	}
-	public void OccupyCell(HexCell cell){
+	public void OccupyCell(HexCell cell, string team){
+		print(team);
+		print("teamabove");
 		int index = cell.coordinates.X + cell.coordinates.Z * cellCountX + cell.coordinates.Z / 2;
 		cells[index].isOccupied = true; 
+		cells[index].team = team; 
 	}
 	public void UnOccupyCell(HexCell cell){
 		int index = cell.coordinates.X + cell.coordinates.Z * cellCountX + cell.coordinates.Z / 2;
 		cells[index].isOccupied = false;
+		cells[index].team = "";
 	}
 
 	public HexCell MovementCell(Vector3 position){
@@ -279,6 +283,7 @@ public class HexGrid : MonoBehaviour {
 		{
 				if(cell.BlueCanPlace){
 					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.blue);
 				}
 		}
 	}
@@ -287,6 +292,7 @@ public class HexGrid : MonoBehaviour {
 		{
 				if(cell.BlueCanPlace){
 					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
 				}
 		}
 	}
@@ -296,6 +302,7 @@ public class HexGrid : MonoBehaviour {
 		{
 				if(cell.RedCanPlace){
 					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
 				}
 		}
 		
@@ -305,8 +312,18 @@ public class HexGrid : MonoBehaviour {
 		{
 				if(cell.RedCanPlace){
 					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+					cell.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow);
 				}
 		}
 		
+	}
+
+	public bool CanMove(HexCell current, Vector3 desti){
+		HexCell destCell = GetCell(desti);
+		if(current.HexRange.Contains(destCell)){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

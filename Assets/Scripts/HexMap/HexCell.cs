@@ -21,6 +21,7 @@ public class HexCell : MonoBehaviour {
 	public bool BlueCanPlace;
 	public bool RedCanPlace;
 	public List<HexCell> HexRange = new List<HexCell>();
+	public string team;
 
 	public Color Color {
 		get {
@@ -412,9 +413,15 @@ public class HexCell : MonoBehaviour {
 		foreach (HexCell neigh in HexRange)
 		{
 				neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-				/*if(neigh.isOccupied){
-					neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-				}*/
+				if(neigh.isOccupied){
+					if(team == neigh.team){
+						neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+					}else if (team == ""){
+						return;
+					}else{
+						neigh.HexRangeCanvas.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_Color", Color.red);
+					}
+				}
 		}
 	}
 	
