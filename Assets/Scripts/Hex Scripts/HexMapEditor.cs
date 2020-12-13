@@ -197,8 +197,6 @@ public class HexMapEditor : MonoBehaviour {
 
 	public void Load () {
 		StartCoroutine(LoadMap());
-
-
 	}
 	public void ShowGrid (bool visible) {
 		if (visible) {
