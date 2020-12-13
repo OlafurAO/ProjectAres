@@ -74,7 +74,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
                     if(currLocation == targetLocation) {
                         oldCardsGathered++;    
                     } else {
-                        portrait.transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 7.5f);
+                        portrait.transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 8.5f);
                         currLocation = portrait.transform.localPosition;
                     }                    
                 }
@@ -92,7 +92,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
                     Vector2 targetLocation = new Vector2(loc.x - 60, loc.y + 60);
                     
                     if(currLocation != targetLocation) {
-                        currPortraits[currentPortraitIndex].transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 7f);
+                        currPortraits[currentPortraitIndex].transform.localPosition = Vector3.MoveTowards(currLocation, targetLocation, 8f);
                     } else {
                         currentPortraitIndex++;
                         if(currentPortraitIndex != currPortraits.Count) {
@@ -164,7 +164,7 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
         // Set the animator game object as the portrait's parents and set their location in the middle of the screen
         foreach(GameObject image in currPortraits) {
             image.gameObject.transform.SetParent(this.gameObject.transform);
-            image.gameObject.transform.localPosition = new Vector3(0f, 0f, 0f);
+            image.gameObject.transform.localPosition = new Vector3(0f, 5f, 0f);
 
             // During the first round, the portraits are small for some reason but not in later rounds.
             // This code fixes their size
