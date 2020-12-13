@@ -50,6 +50,8 @@ public class GameManager : MonoBehaviour {
         "KnightRed", "ArcherRed", "WizardRed",
     };
 
+    public Button restart;
+
     private int blueUnitsRemaining = 0;
     private int redUnitsRemaining = 0;
     public bool gameOver = false;
@@ -576,12 +578,12 @@ public class GameManager : MonoBehaviour {
         // Scroll wheel zoom
         if(Input.GetAxis("Mouse ScrollWheel") > 0f) {
             if(mainCamera.transform.position.y > 15) {
-                mainCamera.transform.Translate(new Vector3(0, 0, 50f * Time.deltaTime));
+                mainCamera.transform.Translate(new Vector3(0, 0, 100f * Time.deltaTime));
                 didCameraMove = true;
             }
         } else if(Input.GetAxis("Mouse ScrollWheel") < 0f) {
             if(mainCamera.transform.position.y < 32) {
-                mainCamera.transform.Translate(new Vector3(0, 0, -50f * Time.deltaTime));
+                mainCamera.transform.Translate(new Vector3(0, 0, -100f * Time.deltaTime));
                 didCameraMove = true;
             }
         }
@@ -725,6 +727,7 @@ public class GameManager : MonoBehaviour {
             FindObjectOfType<AudioManager>().Stop("battle_phase");
             FindObjectOfType<AudioManager>().Play("victory_song", 0.0f);
             FindObjectOfType<AudioManager>().Play("victory_scream", 0.0f);
+            restart.gameObject.SetActive(true);
             gameOver = true;
         } else if(redUnitsRemaining == 0) {
             winnerLabel.text = "Blue team wins!";
@@ -732,6 +735,7 @@ public class GameManager : MonoBehaviour {
             FindObjectOfType<AudioManager>().Stop("battle_phase");
             FindObjectOfType<AudioManager>().Play("victory_song", 0.0f);
             FindObjectOfType<AudioManager>().Play("victory_scream", 0.0f);
+            restart.gameObject.SetActive(true);
             gameOver = true;
         }
 
@@ -1075,6 +1079,8 @@ public class GameManager : MonoBehaviour {
 
     public void FinishedPlacingUnits(){
         CountUnits();
+        if(redUnitsRemaining < 2 || blueUnitsRemaining < 2) return;
+        
         isPlacingUnits = false; 
         RollInitiative();
         placingUnits.enabled = false;
@@ -1086,6 +1092,9 @@ public class GameManager : MonoBehaviour {
 
     public void CountUnits() {
         List<GameObject> units = new List<GameObject>();
+        blueUnitsRemaining = 0;
+        redUnitsRemaining = 0;
+
         foreach(string tag in tags) {
             var tmp = new List<GameObject>(GameObject.FindGameObjectsWithTag(tag));
             units = units.Concat(tmp).ToList();
