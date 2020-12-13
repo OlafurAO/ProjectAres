@@ -10,7 +10,7 @@ public class PlacingUnits : MonoBehaviour {
     public Canvas PlayerOneCanvas;
     public Canvas PlayerTwoCanvas; 
     public Image BackgroundImage;
-    private int gold = 1000; 
+    private int gold = 400; 
     
     //temporary list of all units and color ("knihtObject", "blue")
     public List<GameObject> tempUnits;
@@ -64,6 +64,7 @@ public class PlacingUnits : MonoBehaviour {
     int blueUnitCount = 0;
     int redUnitCount = 0;
     public TMPro.TextMeshProUGUI unitLimitText;
+    public TMPro.TextMeshProUGUI notEnoughGoldText;
 
     
     void Start(){
@@ -174,10 +175,14 @@ public class PlacingUnits : MonoBehaviour {
         if(player == 1){
             if(type == "Knight"){
                 if(gold < tempUnits[0].GetComponent<KnightController>().goldCost){
+                    notEnoughGoldText.gameObject.SetActive(true);
+                    unitLimitText.gameObject.SetActive(false);
                     print("to expensive");
                     return;
                 }else{
                     gold -= tempUnits[0].GetComponent<KnightController>().goldCost;
+                    notEnoughGoldText.gameObject.SetActive(false);
+                    unitLimitText.gameObject.SetActive(false);
                 }
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[0]);
                 FinalUnit.tag = "KnightBlue";
@@ -191,10 +196,14 @@ public class PlacingUnits : MonoBehaviour {
                 return; 
             }else if(type == "Archer"){
                 if(gold < tempUnits[1].GetComponent<ArcherController>().goldCost){
+                    notEnoughGoldText.gameObject.SetActive(true);
+                    unitLimitText.gameObject.SetActive(false);
                     print("to expensive");
                     return;
                 }else{
                     gold -= tempUnits[1].GetComponent<ArcherController>().goldCost;
+                    notEnoughGoldText.gameObject.SetActive(false);
+                    unitLimitText.gameObject.SetActive(false);
                 }
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[1]);
                 FinalUnit.tag = "ArcherBlue";
@@ -207,10 +216,14 @@ public class PlacingUnits : MonoBehaviour {
                 return; 
             }else if(type == "Wizard"){
                 if(gold < tempUnits[2].GetComponent<WizardController>().goldCost){
+                    notEnoughGoldText.gameObject.SetActive(true);
+                    unitLimitText.gameObject.SetActive(false);
                     print("to expensive");
                     return;
                 }else{
                     gold -= tempUnits[2].GetComponent<WizardController>().goldCost;
+                    notEnoughGoldText.gameObject.SetActive(false);
+                    unitLimitText.gameObject.SetActive(false);
                 }
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[2]);
                 FinalUnit.tag = "WizardBlue";
@@ -225,10 +238,14 @@ public class PlacingUnits : MonoBehaviour {
         }else if(player == 2){
             if(type == "Knight"){
                 if(gold < tempUnits[0].GetComponent<KnightController>().goldCost){
+                    notEnoughGoldText.gameObject.SetActive(true);
+                    unitLimitText.gameObject.SetActive(false);
                     print("to expensive");
                     return;
                 }else{
                     gold -= tempUnits[0].GetComponent<KnightController>().goldCost;
+                    notEnoughGoldText.gameObject.SetActive(false);
+                    unitLimitText.gameObject.SetActive(false);
                 }
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[3]);
                 FinalUnit.tag = "KnightRed";
@@ -242,10 +259,14 @@ public class PlacingUnits : MonoBehaviour {
                 return; 
             }else if(type == "Archer"){
                 if(gold < tempUnits[1].GetComponent<ArcherController>().goldCost){
+                    notEnoughGoldText.gameObject.SetActive(true);
+                    unitLimitText.gameObject.SetActive(false);
                     print("to expensive");
                     return;
                 }else{
                     gold -= tempUnits[1].GetComponent<ArcherController>().goldCost;
+                    notEnoughGoldText.gameObject.SetActive(false);
+                    unitLimitText.gameObject.SetActive(false);
                 }
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[4]);
                 FinalUnit.tag = "ArcherRed";
@@ -258,10 +279,14 @@ public class PlacingUnits : MonoBehaviour {
                 return; 
             }else if (type == "Wizard"){
                 if(gold < tempUnits[2].GetComponent<WizardController>().goldCost){
+                    notEnoughGoldText.gameObject.SetActive(true);
+                    unitLimitText.gameObject.SetActive(false);
                     print("to expensive");
                     return;
                 }else{
                     gold -= tempUnits[2].GetComponent<WizardController>().goldCost;
+                    notEnoughGoldText.gameObject.SetActive(false);
+                    unitLimitText.gameObject.SetActive(false);
                 }
                 GameObject FinalUnit = Instantiate<GameObject>(tempUnits[5]);
                 FinalUnit.tag = "WizardRed";
@@ -278,6 +303,7 @@ public class PlacingUnits : MonoBehaviour {
     }
 
     public void PlayerOneFinished(){
+        notEnoughGoldText.gameObject.SetActive(false);
         if(blueUnitCount < 2) {
             unitLimitText.gameObject.SetActive(true);
             return;
@@ -292,7 +318,7 @@ public class PlacingUnits : MonoBehaviour {
         Color red = UnityEngine.Color.red;
         red.a = 0.5f;
         BackgroundImage.color = red;
-        gold = 1000;
+        gold = 400;
         goldText = goldText2;
         FindObjectOfType<AudioManager>().Play("menu_button_click", 0.0f);
         if(SelectedCell != null){
@@ -302,6 +328,7 @@ public class PlacingUnits : MonoBehaviour {
         grid.CellsForRed();
     }
     public void PlayerTwoFinished(){
+        notEnoughGoldText.gameObject.SetActive(false);
         if(redUnitCount < 2) {
             unitLimitText.gameObject.SetActive(true);
             return;
