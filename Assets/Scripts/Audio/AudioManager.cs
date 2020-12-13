@@ -28,12 +28,14 @@ public class AudioManager : MonoBehaviour {
 
     public void Play(string name, float delay) {
         Sound s = Array.Find(sounds, sound => sound.name == name);
-        s.source.PlayDelayed(delay);
+        if(s.source != null){
+            s.source.PlayDelayed(delay);
+        }
     }
 
     public void PlayLoop(string name, float delay, bool loop) {
         Sound s = Array.Find(sounds, sound => sound.name == name);
-        if(s == null){
+        if(s.source == null){
             return;
         }
         s.source.loop = loop;
@@ -42,6 +44,9 @@ public class AudioManager : MonoBehaviour {
 
     public void Stop(string name) {
         Sound s = Array.Find(sounds, sound => sound.name == name);
-        s.source.Stop();
+        if(s.source != null){
+            s.source.Stop();    
+        }
+
     }
 }
