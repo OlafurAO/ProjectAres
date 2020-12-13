@@ -744,6 +744,7 @@ public class GameManager : MonoBehaviour {
                     EnemyHealthAfter.text = afterDamage[0].Item2.ToString();
                     EnemyAttackAfter.text = afterDamage[0].Item3.ToString();
                 } else if(rhInfo.collider.gameObject.tag.Contains("Archer")) {
+                    
                     archVictim = rhInfo.collider.gameObject.GetComponent<ArcherController>();
                     VictimUnit = "Archer";
                     EnemyUnitProfile.GetComponent<Image>().sprite = archVictim.GetComponent<Image>().sprite;
@@ -896,16 +897,27 @@ public class GameManager : MonoBehaviour {
         float victimTakeDamageDelay = 0.5f;
 
         if(currentUnit.tag.Contains("Knight")) {
+            if(SelectedCell != null){
+                if(!SelectedCell.CanAttack("Knight", grid.GetCell(victimLocation))){return;}
+            }
             var attackerScript = currentUnit.GetComponent<KnightController>();
             damage = attackerScript.baseDamage;
             type = attackerScript.type;
             InRange = attackerScript.Attack(victimLocation);
         } else if(currentUnit.tag.Contains("Archer")) {
+            
+            if(SelectedCell != null){
+                if(!SelectedCell.CanAttack("Archer", grid.GetCell(victimLocation))){return;}
+            }
             var attackerScript = currentUnit.GetComponent<ArcherController>();
             damage = attackerScript.baseDamage;
             type = attackerScript.type;
             InRange = attackerScript.Attack(victimLocation);             
         } else {
+            
+            if(SelectedCell != null){
+                if(!SelectedCell.CanAttack("Wizard", grid.GetCell(victimLocation))){return;}
+            }
             var attackerScript = currentUnit.GetComponent<WizardController>();
             damage = attackerScript.baseDamage;
             type = attackerScript.type;
