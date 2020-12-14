@@ -439,7 +439,7 @@ RectTransform:
   m_LocalScale: {x: 0.73319995, y: 0.73319995, z: 0.73319995}
   m_Children: []
   m_Father: {fileID: 623721537}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -918,11 +918,11 @@ RectTransform:
   m_LocalScale: {x: 0.73319995, y: 0.73319995, z: 0.73319995}
   m_Children: []
   m_Father: {fileID: 623721537}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -68.100006, y: -156}
+  m_AnchoredPosition: {x: -68.100006, y: -80}
   m_SizeDelta: {x: 114.08247, y: 5.7448597}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &37103612
@@ -944,10 +944,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: " \nhow the armor mechanic works is that if an enemy attacks the unit while
-    it has armor it will recive only half damage, however if the unit is weak to
-    the type of attacking unit then it will recieve full damage to the armor it will
-    damage it\xB4s health. "
+  m_text: '
+
+    Each unit type has a weakness which can pierce through its armor.
+    If a unit attacks another unit who''s weak against it, it will not take armor
+    damage but instead take health damage regardless of  how many armor points it
+    has.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5363,7 +5365,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -5374,7 +5376,7 @@ MonoBehaviour:
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 21300000, guid: 047b929beb10565479851d39b452dfb6, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
@@ -5423,14 +5425,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 47eaa4f43430bf14f996b113a313b0cc, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: efee20b64d1e73942a29ba61ce3379c3, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -10874,11 +10876,11 @@ RectTransform:
   m_LocalScale: {x: 0.73319995, y: 0.73319995, z: 0.73319995}
   m_Children: []
   m_Father: {fileID: 623721537}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -40, y: -15}
+  m_AnchoredPosition: {x: -25, y: -25}
   m_SizeDelta: {x: 89.11961, y: 14.069897}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &401016723
@@ -11237,7 +11239,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0.13342321, b: 0.31132078, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -12017,11 +12019,11 @@ RectTransform:
   m_LocalScale: {x: 0.73319995, y: 0.73319995, z: 0.73319995}
   m_Children: []
   m_Father: {fileID: 623721537}
-  m_RootOrder: 17
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -26, y: -158}
+  m_AnchoredPosition: {x: -26, y: -82}
   m_SizeDelta: {x: 89.11961, y: 14.069897}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &457446027
@@ -12642,7 +12644,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 0.8, b: 0, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -12937,12 +12939,12 @@ PrefabInstance:
     - target: {fileID: 7931741804927597534, guid: 32236f86c4f9d3a40af6bda51d4776cb,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 830
+      value: -664
       objectReference: {fileID: 0}
     - target: {fileID: 7931741804927597534, guid: 32236f86c4f9d3a40af6bda51d4776cb,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 470
+      value: 354
       objectReference: {fileID: 0}
     - target: {fileID: 7931741805352819932, guid: 32236f86c4f9d3a40af6bda51d4776cb,
         type: 3}
@@ -14891,7 +14893,6 @@ RectTransform:
   - {fileID: 2032470425}
   - {fileID: 1089385952}
   - {fileID: 262961691}
-  - {fileID: 793602688}
   - {fileID: 2146387873}
   - {fileID: 1553241930}
   - {fileID: 15564260}
@@ -18728,15 +18729,15 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 793602687}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.0000133794}
-  m_LocalScale: {x: 0.73319995, y: 0.73319995, z: 0.73319995}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 623721537}
-  m_RootOrder: 5
+  m_Father: {fileID: 1089385952}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 19.599995, y: 163}
+  m_AnchoredPosition: {x: 202.67322, y: 0}
   m_SizeDelta: {x: 59.0317, y: 57.061234}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &793602689
@@ -22893,16 +22894,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 949587085}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.0000234144}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.73319995, y: 0.73319995, z: 0.73319995}
   m_Children: []
   m_Father: {fileID: 623721537}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -68.100006, y: -74}
-  m_SizeDelta: {x: 114.08247, y: 5.7448597}
+  m_AnchoredPosition: {x: 4, y: -189}
+  m_SizeDelta: {x: 892.90283, y: 156.58649}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &949587087
 MonoBehaviour:
@@ -22923,12 +22924,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '
-
-    How the weakness mechanic works is that units that are weak will
-    deal damage to the armor of a unit and health no matter the armor, but enemies
-    that are weak will only deal damage to the armor untill it has been broken(reduced
-    to 0)'
+  m_text: "\nEach unit type has a weakness which can pierce through its armor. If
+    a unit attacks another unitwho's weak against it, it will not take armor damage
+    but instead take health                                        damage regardless
+    of \r how many armor points it has."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -22991,7 +22990,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 1
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -299.89453, y: -26.602875, z: -527.9962, w: -88.49062}
+  m_margin: {x: 0.7852031, y: -2.7404752, z: -3.8209913, w: 1.3742783}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -25211,7 +25210,7 @@ RectTransform:
   m_LocalScale: {x: 0.73319995, y: 0.73319995, z: 0.73319995}
   m_Children: []
   m_Father: {fileID: 623721537}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -27162,7 +27161,8 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.0000133794}
   m_LocalScale: {x: 0.73319995, y: 0.73319995, z: 0.73319995}
-  m_Children: []
+  m_Children:
+  - {fileID: 793602688}
   m_Father: {fileID: 623721537}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -27717,11 +27717,11 @@ RectTransform:
   m_LocalScale: {x: 0.73319995, y: 0.73319995, z: 0.73319995}
   m_Children: []
   m_Father: {fileID: 623721537}
-  m_RootOrder: 16
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -26, y: -77}
+  m_AnchoredPosition: {x: -26, y: -148}
   m_SizeDelta: {x: 89.11961, y: 14.069897}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1125044285
@@ -36822,7 +36822,7 @@ RectTransform:
   m_LocalScale: {x: 0.73319995, y: 0.73319995, z: 0.73319995}
   m_Children: []
   m_Father: {fileID: 623721537}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -36848,11 +36848,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "The game begins by \"blue\" placing units on the map depending on how
-    much gold he has, then it\xB4s 'Red's turn to place his units. Then a RANDOM
-    initative vill be chosen, after all unit\xB4s have been comanded, then the initative
-    vill be Randomized again, untill all units on either side have been defeated,
-    and the game ends "
+  m_text: The game begins with the blue team placing units on the map. What types
+    of units and how many depends on the amount of gold available. After that it's
+    the red team's turn to place. In each round of the battle, a random initiative
+    order is decided which will decide the order in which each unit takes their turn.
+    When all units have had their turn, the order is randomized again. W en all units
+    in one team have been defeated, the game ends.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -39490,7 +39491,7 @@ RectTransform:
   m_LocalScale: {x: 0.73319995, y: 0.73319995, z: 0.73319995}
   m_Children: []
   m_Father: {fileID: 623721537}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -40148,7 +40149,7 @@ RectTransform:
   m_Children:
   - {fileID: 495422873}
   m_Father: {fileID: 623721537}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -40173,7 +40174,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -40184,7 +40185,7 @@ MonoBehaviour:
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 21300000, guid: 047b929beb10565479851d39b452dfb6, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
@@ -40239,8 +40240,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: efee20b64d1e73942a29ba61ce3379c3, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -46168,11 +46169,11 @@ RectTransform:
   m_LocalScale: {x: 0.73319995, y: 0.73319995, z: 0.73319995}
   m_Children: []
   m_Father: {fileID: 623721537}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 67.30002, y: -46.700005}
+  m_AnchoredPosition: {x: 67.30002, y: -58.000008}
   m_SizeDelta: {x: 419.16168, y: 101.75687}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1788099507
@@ -46194,8 +46195,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\non each unit\xB4s turn they can either \"move then attack\", just \"attack\"
-    or just \"defend\","
+  m_text: "\nOn each unit's turn, they have two Action Points (AP) to spend. They
+    can use AP to move (costs 1 AP), attack (costs ALL remaining AP) or defend (costs
+    ALL remaining AP). \r\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -53477,7 +53479,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.8, b: 0, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -55101,7 +55103,7 @@ RectTransform:
   m_LocalScale: {x: 0.73319995, y: 0.73319995, z: 0.73319995}
   m_Children: []
   m_Father: {fileID: 623721537}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
