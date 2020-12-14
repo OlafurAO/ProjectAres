@@ -1,15 +1,27 @@
-# ProjectAres
 
-HOW TO RUN THE GAME:
-The main Scene to run in unity is under Assets > Scenes > "SampleScene.unity" 
-you can also run it in itch.io by clicking this link:
-
-Controlls:
-Please Use A mouse to Command units and play the game, And keyboard to move the camera "WASD" and the scroll wheel to zoom in and out.
+HOW TO LAUNCH THE GAME:
 
 
-ASSETS:
- Art:
+Running in Unity:
+
+Open the main scene under Assets > Scenes > SampleScene.unity and press play
+
+
+
+Running in browser:
+
+
+
+
+
+Controls:
+
+Use the mouse and left mouse button to command the units. Use "WASD" on the keyboard to move the 
+camera around, "E" and "Q" to rotate it and 
+the mouse scroll wheel to zoom in and out.
+
+
+Art:
 Units - https://assetstore.unity.com/packages/3d/characters/toony-tiny-rts-set-135258
 Buttons - https://assetstore.unity.com/packages/2d/gui/icons/simple-button-set-01-153979
 Heart icon - https://assetstore.unity.com/packages/2d/gui/icons/2d-pixel-item-asset-pack-99645
@@ -32,12 +44,18 @@ Archer attack - https://freesound.org/people/brendan89/sounds/321553/
 Wizard attack - https://freesound.org/people/qubodup/sounds/442774/
 Unit defend - https://freesound.org/people/nekoninja/sounds/370203/
 Unit take damage - https://freesound.org/people/nekoninja/sounds/512785/
-Unit deth - https://freesound.org/people/bumpelsnake/sounds/456613/
+Unit death - https://freesound.org/people/bumpelsnake/sounds/456613/
 Card shuffle - https://freesound.org/people/f4ngy/sounds/240778/
 Card flip - https://freesound.org/people/f4ngy/sounds/240776/
 Round start - https://freesound.org/people/InspectorJ/sounds/458583/
 Button click - https://freesound.org/people/volkbutphan/sounds/485486/
 Victory drums - https://freesound.org/people/Sheyvan/sounds/470083/
 Victory cries - https://freesound.org/people/chripei/sounds/165491/
+
+
+
+
+
+
 
 
