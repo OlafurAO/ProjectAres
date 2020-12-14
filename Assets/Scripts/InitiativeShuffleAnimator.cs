@@ -49,6 +49,10 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
             }
         } else if(isShiftingPortraits) {
             for(int i = removeIndex; i < prevPortraits.Count; i++) {
+                if(prevPortraits[i].gameObject == null) {
+                    continue;
+                }
+                
                 Vector2 currLocation = prevPortraits[i].transform.localPosition;
                 var loc = prevPortraitLocations[i];
                 Vector2 targetLocation = new Vector2(loc.x - 60, loc.y + 60);
@@ -86,6 +90,11 @@ public class InitiativeShuffleAnimator : MonoBehaviour {
                 }
             } else {
                 if(currentPortraitIndex < currPortraits.Count) {
+                    if(currPortraits[currentPortraitIndex].gameObject == null) {
+                        currentPortraitIndex++;
+                        return;
+                    }
+
                     Vector2 currLocation = currPortraits[currentPortraitIndex].transform.localPosition;
 
                     var loc = currPortraitLocations[currentPortraitIndex];

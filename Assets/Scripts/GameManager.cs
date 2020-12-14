@@ -405,10 +405,9 @@ public class GameManager : MonoBehaviour {
     }
 
     public void EndTurn() {
+        if(IsCurrentUnitMovingOrAttacking() || isShuffling) return;
         HexCell currCell = grid.GetCell(currentUnit.transform.position);
         currCell.NoShowWalkRange();
-        
-        if(IsCurrentUnitMovingOrAttacking() || isShuffling) return;
 
         canvas.transform.Find("OutOfMovesText").gameObject.SetActive(false);
         canvas.transform.Find("EndTurn").GetComponent<Image>().color = new Vector4(0f, 0f, 0f, 255f);
